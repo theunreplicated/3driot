@@ -14,6 +14,11 @@ namespace Windows{
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
 
+		NONCLIENTMETRICS ncm;//http://stackoverflow.com/questions/3323541/how-can-i-make-the-win32-api-window-more-modern-looking
+		ncm.cbSize = sizeof(NONCLIENTMETRICS);
+		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
+		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 	}
 	WindowRect Window::Position_get(){
 		RECT rCtlWin;                   // Koordinaten des Controls

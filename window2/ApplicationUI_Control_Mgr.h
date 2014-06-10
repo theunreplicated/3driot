@@ -5,9 +5,9 @@
 #include "WindowStructs.h"
 #include <Windows.h>
 #include <vector>
-using std::vector;
+//using std::vector;
 struct TripleEditWindow{
-	Windows::Window x, y, z;
+	Windows::Window* x,* y,* z;
 
 };
 class ApplicationUI_Control_Mgr{
@@ -17,9 +17,10 @@ public:
 	static void addEditControls();
 	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam);
 private:
-	vector<TripleEditWindow>windowInsts;
+	static std::vector<TripleEditWindow>windowInsts;
 	static int edit_startpoint_h;
 	static Windows::Window *new_row_add_button;
+	static Windows::Window*action_button;
 	static int m_width, m_height, editheight,padding;
 	static Windows::ApplicationWindow *ApplicationWindow;
 };

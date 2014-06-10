@@ -113,6 +113,8 @@ namespace Windows{
 			dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
 			NULL, NULL, hInstance, NULL);
+
+	
 	}
 	void ApplicationWindow::addOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		winproc_callback_function_struct d = {message,callbackf};
