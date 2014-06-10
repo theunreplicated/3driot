@@ -19,6 +19,7 @@ namespace Windows{
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		HDC DeviceContext_get();
 		int DeviceContext_release(HDC device_context);//TODO:ohne arg,selbes wie _get
+		RECT  Rect_get();
 	
 	};
 }

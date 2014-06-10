@@ -21,6 +21,11 @@ namespace Windows{
 		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
 		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 	}
+	RECT  Window::Rect_get(){//vll.t entfernen//@deprecated
+		RECT rect;
+		GetWindowRect(window_handle, &rect);
+		return rect;
+	}
 	WindowRect Window::Position_get(){
 		RECT rCtlWin;                   // Koordinaten des Controls
 

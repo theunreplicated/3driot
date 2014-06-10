@@ -5,6 +5,7 @@
 #include "WindowStructs.h"
 #include <Windows.h>
 #include <vector>
+#include <string>
 //using std::vector;
 struct TripleEditWindow{
 	Windows::Window* x,* y,* z;

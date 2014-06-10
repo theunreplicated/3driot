@@ -17,7 +17,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	editheight = 20;
 	padding = editheight + 20;
 	edit_startpoint_h = 30;
-	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
 }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
@@ -44,11 +44,24 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 	//jetzt unwichtig
 	HDC hDC = static_draw_field->DeviceContext_get();
 
-	RECT rect;
-	rect.left = 40;
-	rect.top = 10;
-	const char* message = "My First Window";
-	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP);
+	//
+	/*std::string s = std::to_string(value_x);http://stackoverflow.com/questions/10847237/how-to-convert-from-int-to-char
+	char const *pchar = s.c_str();  //use char const* as target type
+	MessageBox(NULL, pchar, pchar, MB_OK);/*
+	*/
+	int iteration_count = 0;
+	for (TripleEditWindow data : windowInsts){
+		int value_x = atoi(data.x->Text_get());
+		int value_y = atoi(data.y->Text_get());
+		int value_z = atoi(data.z->Text_get());
+		RECT rect;
+		rect.left = 400;
+		rect.top = data.z->Position_get().y;
+		const char* message = "My First Window";
+		DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP);
+		iteration_count++;
+	}
+	iteration_count = 0;
 
 	static_draw_field->DeviceContext_release(hDC);
 }
