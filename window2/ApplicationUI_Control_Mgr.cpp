@@ -9,6 +9,7 @@ vector<TripleEditWindow> ApplicationUI_Control_Mgr::windowInsts;
 Windows::ApplicationWindow *ApplicationUI_Control_Mgr::ApplicationWindow;
 Windows::Window *ApplicationUI_Control_Mgr::new_row_add_button;
 Windows::Window*ApplicationUI_Control_Mgr::action_button;
+Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
 	m_width = width;
@@ -16,6 +17,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	editheight = 20;
 	padding = editheight + 20;
 	edit_startpoint_h = 30;
+	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
@@ -35,20 +37,36 @@ void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM 
 	//pos.height
 
 }
+void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam){
+
+//	int cx = GetSystemMetrics(SM_CXSCREEN);
+	//int cy = GetSystemMetrics(SM_CYSCREEN);
+	//jetzt unwichtig
+	HDC hDC = static_draw_field->DeviceContext_get();
+
+	RECT rect;
+	rect.left = 40;
+	rect.top = 10;
+	const char* message = "My First Window";
+	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP);
+
+	static_draw_field->DeviceContext_release(hDC);
+}
 void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	int editwidth = 100, editheight = 20, edit_startpoint_w = m_width - editwidth - 30, edit_startpoint_h = 30, padding = editheight + 20, padding_w = 20;
 	new_row_add_button=new Windows::Window({ "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50 }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
 	//SetFocus(new_row_add_button->window_handle);
 	action_button = new Windows::Window({ "button", "Actionnnn" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50+padding }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
 	new_row_add_button->on(wpe, btn_add_row_cb);
+	action_button->on(wpe,btn_action);
 
 }
 void ApplicationUI_Control_Mgr::addEditControls(){
 	using Windows::Window;
 	int editwidth = 100,  edit_startpoint_w = m_width - editwidth - 30, padding_w = 20;
-	Window*x=new Window( { "edit", "x" }, { editwidth, editheight,edit_startpoint_w - ((editwidth + padding_w) * 2), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
-	Window*y=new Window( { "edit", "y" }, { editwidth, editheight,edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
-	Window*z=new Window({ "edit", "z" }, { editwidth, editheight,edit_startpoint_w, edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
+	Window*x=new Window( { "edit", "x" }, { editwidth, editheight,edit_startpoint_w - ((editwidth + padding_w) * 2), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow,WS_EX_CLIENTEDGE);
+	Window*y = new Window({ "edit", "y" }, { editwidth, editheight, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	Window*z = new Window({ "edit", "z" }, { editwidth, editheight, edit_startpoint_w, edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 
 
 	windowInsts.push_back({x,y,z});

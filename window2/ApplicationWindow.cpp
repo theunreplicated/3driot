@@ -103,7 +103,8 @@ namespace Windows{
 		wc.hInstance = hInstance;
 		wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);//einfach IDC_* ändern
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	//	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;//win-api.de
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = names.lpClassName;
 		RegisterClass(&wc);
@@ -114,7 +115,6 @@ namespace Windows{
 			rect.x, rect.y, rect.width, rect.height,
 			NULL, NULL, hInstance, NULL);
 
-	
 	}
 	void ApplicationWindow::addOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		winproc_callback_function_struct d = {message,callbackf};

@@ -1,9 +1,10 @@
 #include "Window.h"
 #include <functional>
+#include <Windows.h>
 namespace Windows{
-	Window::Window( WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw){
+	Window::Window( WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw,DWORD dwExStyle){
 		m_ApplicationWindow = aw;
-		window_handle = CreateWindowEx(WS_EX_CLIENTEDGE,
+		window_handle = CreateWindowEx(dwExStyle,
 			names.lpClassName,
 			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
@@ -81,5 +82,12 @@ namespace Windows{
 		m_ApplicationWindow->additional_winproc_data.push_back(wads);
 		
 	}
+	HDC Window::DeviceContext_get(){
+		return ::GetDC(window_handle);
+		
+	}
+	int Window::DeviceContext_release(HDC device_context){
+		return ::ReleaseDC(window_handle,device_context);
 
+	}
 };

@@ -16,7 +16,9 @@ public:
 	static void addButtons(Windows::winproc_promise_event wpe);
 	static void addEditControls();
 	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam);
+	static void btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam);
 private:
+	static Windows::Window *static_draw_field;
 	static std::vector<TripleEditWindow>windowInsts;
 	static int edit_startpoint_h;
 	static Windows::Window *new_row_add_button;
