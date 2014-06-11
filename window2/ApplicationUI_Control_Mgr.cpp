@@ -63,7 +63,7 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 	}
 	iteration_count = 0;
 
-	static_draw_field->DeviceContext_release(hDC);
+	//static_draw_field->DeviceContext_release(hDC);
 }
 void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	int editwidth = 100, editheight = 20, edit_startpoint_w = m_width - editwidth - 30, edit_startpoint_h = 30, padding = editheight + 20, padding_w = 20;
