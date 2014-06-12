@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <stdio.h>
 #include "ApplicationUI_Control_Mgr.h"
+
+
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
@@ -39,6 +41,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
 	//aw->addOnMessageInvoke(WM_MOUSEMOVE,winproc_callback_function5);//WM_CREATE shafft er net
+
+
 	aw->addOnMessageInvoke(WM_PAINT,winproc_callback_function5);
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 

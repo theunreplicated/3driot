@@ -1,4 +1,9 @@
 #include "ApplicationUI_Control_Mgr.h"
+
+#include "OpenGLContext.h"
+#include "SysUtils_Load_Library.h"
+#include "OpenGLImport.h"
+#include "GLMain.h"
 int ApplicationUI_Control_Mgr::m_width;
 int ApplicationUI_Control_Mgr::m_height;
 int ApplicationUI_Control_Mgr::editheight;
@@ -10,6 +15,12 @@ Windows::ApplicationWindow *ApplicationUI_Control_Mgr::ApplicationWindow;
 Windows::Window *ApplicationUI_Control_Mgr::new_row_add_button;
 Windows::Window*ApplicationUI_Control_Mgr::action_button;
 Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
+
+SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
+PROC __stdcall getProcAddresswglintf(LPCSTR name){
+
+	return dll_opengl->get_ProcAddress(name);
+}
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
 	m_width = width;
@@ -17,7 +28,17 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	editheight = 20;
 	padding = editheight + 20;
 	edit_startpoint_h = 30;
+
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
+	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
+
+	OpenGLContext*ctx = new OpenGLContext(static_draw_field->window_handle, dll_opengl);
+	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
+
+
+	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
+	glm->render();
+	
 }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	

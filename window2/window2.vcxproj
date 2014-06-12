@@ -68,15 +68,21 @@
     <ClCompile Include="ApplicationWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
+    <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="standard_window.cpp" />
+    <ClCompile Include="SysUtils_Load_Library.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationUI_Control_Mgr.h" />
     <ClInclude Include="ApplicationWindow.h" />
+    <ClInclude Include="ext\skia\GrGLFunctions.h" />
+    <ClInclude Include="GLMain.h" />
     <ClInclude Include="MessageLoop.h" />
-    <ClInclude Include="myVector.h" />
+    <ClInclude Include="OpenGLContext.h" />
+    <ClInclude Include="OpenGLImport.h" />
     <ClInclude Include="standard_window.h" />
+    <ClInclude Include="SysUtils_Load_Library.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowStructs.h" />
   </ItemGroup>

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\OpenGL">
+      <UniqueIdentifier>{72fdad57-3bb4-491c-92bf-620138d28590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\OpenGL">
+      <UniqueIdentifier>{6434668d-24f9-41e0-b11d-8d91afd39dbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,6 +39,12 @@
     <ClCompile Include="standard_window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="SysUtils_Load_Library.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLContext.cpp">
+      <Filter>Quelldateien\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -47,14 +59,26 @@
     <ClInclude Include="WindowStructs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="myVector.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ApplicationUI_Control_Mgr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="standard_window.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GLMain.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLImport.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLContext.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="SysUtils_Load_Library.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\skia\GrGLFunctions.h">
+      <Filter>Headerdateien\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
