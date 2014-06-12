@@ -26,11 +26,6 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
 }
 
-void onclick(HWND hWnd, WPARAM wParam, LPARAM lParam)
-{
-
-	MessageBox(NULL,"fd","ds",MB_OK);
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
@@ -43,7 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//aw->addOnMessageInvoke(WM_MOUSEMOVE,winproc_callback_function5);//WM_CREATE shafft er net
 
 
-	aw->addOnMessageInvoke(WM_PAINT,winproc_callback_function5);
+	//aw->addOnMessageInvoke(WM_PAINT,winproc_callback_function5);
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true /*default=false*/};
