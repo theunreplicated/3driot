@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include "ApplicationWindow.h"
 #include "WindowStructs.h"
+#include "standard_window.h"
 namespace Windows{
-	class Window{
+	class Window:public standard_window{
 	private:
 		ApplicationWindow* m_ApplicationWindow;
 		//enum lpClassNames { BUTTON, EDIT };
@@ -12,15 +13,18 @@ namespace Windows{
 		void ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam);
 		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL);
 		HWND window_handle;
+		void on(winproc_promise_event pe, winproc_callback_function callbackf);
+		/*
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);
 		WindowRect Position_get();
 		int Position_set(WindowRect rect,bool repaint=true);
-		void on(winproc_promise_event pe, winproc_callback_function callbackf);
+		
 		HDC DeviceContext_get();
 		int DeviceContext_release(HDC device_context);//TODO:ohne arg,selbes wie _get
 		RECT  Rect_get();
-	
+		int show(int show_command=SW_SHOW);
+	*/
 	};
 }
 #endif

@@ -92,7 +92,7 @@ namespace Windows{
 
 
 	}
-	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle){
+	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle):standard_window(&native_window_handle,&native_window_handle){
 		WNDCLASS wc;
 		m_hInstance= hInstance;
 		// register window class

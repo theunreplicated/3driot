@@ -68,6 +68,7 @@
     <ClCompile Include="ApplicationWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
+    <ClCompile Include="standard_window.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +76,7 @@
     <ClInclude Include="ApplicationWindow.h" />
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="myVector.h" />
+    <ClInclude Include="standard_window.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowStructs.h" />
   </ItemGroup>

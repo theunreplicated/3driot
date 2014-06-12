@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <vector>
 #include "WindowStructs.h"
+#include "standard_window.h"
 namespace Windows{
 	
 	struct winproc_callback_function_struct{
@@ -21,7 +22,7 @@ namespace Windows{
 	
 
 	
-	class ApplicationWindow{
+	class ApplicationWindow:public standard_window{
 	//private:
 	//public://TODO:Friend calss
 		
