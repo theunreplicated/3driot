@@ -38,7 +38,7 @@ namespace Windows{
 		m_ApplicationWindow->additional_winproc_data.push_back(wads);
 
 	}
-	WindowRect Window::Position_get(){
+	WindowRect Window::Position_get(){//funzt in ApplicationWindow net,ich weiﬂ aber warum
 		RECT rCtlWin;                   // Koordinaten des Controls
 
 		POINT p0;
