@@ -47,7 +47,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	
 	//erstelle controls am rechten Rand
 
-	aw->show();
+
+	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
 	uicontrol->addButtons(BTN_CLICK);

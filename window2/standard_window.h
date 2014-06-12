@@ -12,7 +12,7 @@ namespace Windows{
 		
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);
-		WindowRect Position_get();
+		
 		int Position_set(WindowRect rect, bool repaint = true);
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		HDC DeviceContext_get();
