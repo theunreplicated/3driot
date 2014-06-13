@@ -45,6 +45,9 @@
     <ClCompile Include="OpenGLContext.cpp">
       <Filter>Quelldateien\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="file_dialog.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="ext\skia\GrGLFunctions.h">
       <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="file_dialog.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

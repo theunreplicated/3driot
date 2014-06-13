@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <stdio.h>
 #include "ApplicationUI_Control_Mgr.h"
-
+#include "file_dialog.h"
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
@@ -45,8 +45,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//wbtn->on(BTN_CLICK,onclick);
 	
 	//erstelle controls am rechten Rand
-
-
+	using Windows::Dialogs::File_Dialog;
+	File_Dialog*dc = new File_Dialog();
+	dc->ofn.hwndOwner = aw->native_window_handle;
+	//dc->OpenFileName(L"C:\\");
+	//dc->SaveFileName(L"C:\\");
 	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
