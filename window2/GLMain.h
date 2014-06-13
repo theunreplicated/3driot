@@ -9,7 +9,7 @@ enum draw_method{ kArrays, kElements };//konstant davor,falls Konflikte
 struct THREEDObject{
 	draw_method dm;
 	GLfloat * vertices;
-	GLuint * indices;//nur falls Elemente
+	GLuint * indices=NULL;//nur falls Elemente
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize,indices_totalsize;
@@ -56,6 +56,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 
 	memcpy(pp.vertices, vertices, sizeof(vertices));
 	if (indices != NULL){
+		pp.indices_totalsize = sizeof(indices);
 		pp.indices_num = sizeof(indices) / sizeof(T_indices_data);
 		//indices/kann auch null sein
 		pp.indices = new GLuint[pp.indices_num];
@@ -208,6 +209,7 @@ template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
 	GLenum GL_STATIC_DRAW = 0x88E4;
+	GLenum GL_ELEMENT_ARRAY_BUFFER=0x8893;
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
@@ -216,17 +218,25 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	vertexbuffer = new GLuint[num_draw_elements];
-	glGenBuffers(num_draw_elements, vertexbuffer);
+	glGenBuffers(num_draw_elements*2, vertexbuffer);
+	int buffer_add_counter = 0;
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
 
 		THREEDObject pc = draw_elements[i];
 		// The following commands will talk about our 'vertexbuffer' buffer
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[i]);
+
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
+		buffer_add_counter++;
 
 		// Give our vertices to OpenGL.
 		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
+		if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
+		}
+		buffer_add_counter++;
 	}
 
 	glUseProgram(programId);
@@ -235,7 +245,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
-	GLenum GL_UNSIGNED_INT = 0x1405;
+	GLenum GL_UNSIGNED_INT = 0x1405; GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
 	GLenum GL_UNSIGNED_SHORT = 0x1403;
 	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
 	GLenum GL_STATIC_DRAW = 0x88E4;
@@ -255,9 +265,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
-
+		int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[i]/*testweise*/);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
@@ -266,15 +276,17 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			0,                  // stride
 			(void*)0            // array buffer offset
 			);
-
+		buffer_add_counter++;
 		// Draw the triangle !
 		if (pc.dm == kArrays){
 			glDrawArrays(GL_TRIANGLES, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
 		}
 		else if (pc.dm == kElements){
-			glDrawElements(GL_TRIANGLES, pc.draw_call_num_elements, GL_UNSIGNED_INT, pc.indices);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
+			glDrawElements(GL_TRIANGLES, pc.draw_call_num_elements, GL_UNSIGNED_INT, /*pc.indices*/0);
 
 		}
+		buffer_add_counter++;
 	}
 
 	glDisableVertexAttribArray(0);
