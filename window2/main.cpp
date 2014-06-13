@@ -6,6 +6,11 @@
 #include "ApplicationUI_Control_Mgr.h"
 #include "file_dialog.h"
 
+#include "OpenGLContext.h"
+#include "SysUtils_Load_Library.h"
+#include "OpenGLImport.h"
+#include "GLMain.h"
+
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
@@ -26,7 +31,11 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
 }
 
+SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
+PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
+	return dll_opengl->get_ProcAddress(name);
+}
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
 {
@@ -47,23 +56,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//erstelle controls am rechten Rand
 	using Windows::Dialogs::File_Dialog;
 	File_Dialog*dc = new File_Dialog();
-	dc->ofn.hwndOwner = aw->native_window_handle;
+	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	//dc->OpenFileName(L"C:\\");
-	//dc->SaveFileName(L"C:\\");
+	dc->SaveFileName(L"C:\\");
 	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
 	uicontrol->addButtons(BTN_CLICK);
-	//cc(aw);
-	//cc*dd = new cc(aw);
-//	dd->ccs();
 
 
-	//new Window(hInstance, { "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h+50 }, WS_CHILD | WS_VISIBLE, aw);
-	//new Window(hInstance, { "edit", "x" }, { editwidth, editheight, edit_startpoint_w, edit_startpoint_h+padding }, WS_CHILD | WS_VISIBLE, aw);
+	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
+
+
+	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
+	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
+
+
+	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
 
 
 
 
-		(new MessageLoop())->GetMessage_Approach();
+
+
+		//(new MessageLoop())->GetMessage_Approach();
+	MessageLoop* ml = new MessageLoop();
+	while (ml->Message_Get()){
+		glm->render();
+		ml->Message_Pump();
+	}
+	return ml->Message_Pump_End();
 }
