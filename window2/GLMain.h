@@ -10,8 +10,9 @@ struct THREEDObject{
 	draw_method dm;
 	GLfloat * vertices;
 	GLuint * indices;//nur falls Elemente
-	int vertices_num, indices_num;
+	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
+	size_t vertices_totalsize,indices_totalsize;
 };
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 class GLMain{
@@ -30,11 +31,43 @@ private:
 	THREEDObject * draw_elements;
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
+	template <typename T_vertices_data, typename T_indices_data>
+	void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
 };
 
 
 
 using namespace OGL;
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+template <typename T_vertices_data, typename T_indices_data>//@NOTE:Hier ist die Reiheinfolge der template- (Davorschreibungen?)-wichtig,sonst meckert er,dass Deklaration und Def ungleich wären,lustigerweise sond sie doch gleich(nach der Anzeige),wtf
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw){
+	THREEDObject pp;
+	pp.dm = dm;
+	/*const GLfloat g_vertex_buffer_data[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+	};*/
+//	pp.vertices_num = sizeof(vertices) / sizeof(GLfloat);
+	pp.vertices_totalsize = sizeof(vertices);
+	
+	pp.vertices = new GLfloat[sizeof(vertices)/sizeof(GLfloat)/*vertices müssen glfloat sein*/];//@TODO. das hir irgendwie besser machen
+
+	memcpy(pp.vertices, vertices, sizeof(vertices));
+	if (indices != NULL){
+		pp.indices_num = sizeof(indices) / sizeof(T_indices_data);
+		//indices/kann auch null sein
+		pp.indices = new GLuint[pp.indices_num];
+		memcpy(pp.indices, indices, sizeof(indices));
+		
+	}
+	pp.draw_call_num_elements = num_elements_to_draw;
+	draw_elements[num_draw_elements] = pp;
+	num_draw_elements += 1;
+	
+
+}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
 
@@ -45,7 +78,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	//T_swapBuffersFuncType sw=(swapBuffersFuncClass->*swapBuffersFunc2)();
 	swap_buffers_func_class = swapBuffersFuncClass;
 	swapBuffersFunc = swapBuffersFunc2;
-
+	/*
 	THREEDObject pp;
 	pp.dm = kArrays;
 	const GLfloat g_vertex_buffer_data[] = {
@@ -53,43 +86,42 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 		1.0f, -1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 	};
-	pp.vertices_num = sizeof(g_vertex_buffer_data) / sizeof(GLfloat);
+	//pp.vertices_num = sizeof(g_vertex_buffer_data) / sizeof(GLfloat);
+	pp.vertices_totalsize = sizeof(g_vertex_buffer_data);
 	pp.vertices = new GLfloat[pp.vertices_num];
 	memcpy(pp.vertices, g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
 	pp.indices = NULL;
 	pp.draw_call_num_elements = 0;
-	num_draw_elements += 1;
+	num_draw_elements++;
 	draw_elements[0] = pp;
-
-
-
-	THREEDObject pc;
+	*/
+	
+		THREEDObject pc;
 	pc.dm = kElements;
+	
 	const GLfloat g_vertices_rectangle_data[] = {
 		-0.5f, 0.5f, 0.0f,   // top left
 		-0.5f, -0.5f, 0.0f,   // bottom left
 		0.5f, -0.5f, 0.0f,   // bottom right
 		0.5f, 0.5f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
 	};
-	/*const GLfloat g_vertex_buffer_data[] = {
-	-1.0f, -1.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-	};*/
+
 	const GLuint g_indices_data[] = {
 		0, 1, 2, 0, 2, 3
 
 	};
-	pc.vertices_num = sizeof(g_vertices_rectangle_data) / sizeof(GLfloat);
+	/*pc.vertices_num = sizeof(g_vertices_rectangle_data) / sizeof(GLfloat);
 	pc.vertices = new GLfloat[pc.vertices_num];
 	memcpy(pc.vertices, g_vertices_rectangle_data, sizeof(g_vertices_rectangle_data));
 	pc.indices_num = sizeof(g_indices_data) / sizeof(GLuint);
 	pc.indices = new GLuint[pc.indices_num];
 	memcpy(pc.indices, g_indices_data, sizeof(g_indices_data));
+	//pc.indices = &g_indices_data;
 	pc.draw_call_num_elements = 6;
 	num_draw_elements += 1;
 	draw_elements[1] = pc;
-
+	*/
+	addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
 
 	initGL();
 }
@@ -194,7 +226,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[i]);
 
 		// Give our vertices to OpenGL.
-		glBufferData(GL_ARRAY_BUFFER, pc.vertices_num*sizeof(GLfloat), pc.vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
 	}
 
 	glUseProgram(programId);
