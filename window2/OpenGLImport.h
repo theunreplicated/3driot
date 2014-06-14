@@ -41,6 +41,7 @@ namespace OGL{
 	IMPORT_GL_DECLARE(AttachShader);
 	IMPORT_GL_DECLARE(ClearColor);
 	IMPORT_GL_DECLARE(Clear);
+	IMPORT_GL_DECLARE(GetString);
 	//draw calls
 	IMPORT_GL_DECLARE(DrawArrays);
 	IMPORT_GL_DECLARE(DrawElements);
@@ -53,7 +54,9 @@ namespace OGL{
 	IMPORT_GL_DECLARE(GetProgramiv);
 	IMPORT_GL_DECLARE(GetProgramInfoLog);
 	IMPORT_GL_DECLARE(UseProgram);
-
+	
+	IMPORT_GL_DECLARE(BindAttribLocation);
+	IMPORT_GL_DECLARE(GetUniformLocation);
 	//struct Vertex_Attrib_Pointers{
 	IMPORT_GL_DECLARE(VertexAttribPointer);
 	IMPORT_GL_DECLARE(EnableVertexAttribArray);
@@ -72,7 +75,22 @@ namespace OGL{
 	IMPORT_GL_DECLARE(BufferData);
 
 }
-GLenum GL_VERTEX_SHADER = 0x8B31;
+
+namespace OGL{
+	GLenum GL_VERTEX_SHADER = 0x8B31;
+	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
+	GLenum GL_STATIC_DRAW = 0x88E4;
+	GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
+
+	GLenum GL_FRAGMENT_SHADER = 0x8B30;//https://chromium.googlesource.com/angle/angle/+/master/include/GLES2/gl2.h
+	GLenum  GL_LINK_STATUS = 0x8B82;
+	GLenum GL_UNSIGNED_INT = 0x1405;
+	GLenum GL_UNSIGNED_SHORT = 0x1403;
+	GLenum GL_FALSE = 0;
+	GLenum GL_TRUE = 0;
+	GLenum GL_FLOAT = 0x1406;
+	GLenum GL_TRIANGLES = 0x0004;
+}
 class OpenGLImport{
 
 public:
@@ -103,6 +121,7 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(AttachShader);
 	IMPORT_GL_FUNC(ClearColor);
 	IMPORT_GL_FUNC(Clear);
+	IMPORT_GL_FUNC(GetString);//glValidate ist wohl veraltet
 
 	IMPORT_GL_FUNC(DrawArrays);
 	IMPORT_GL_FUNC(DrawElements);
@@ -113,6 +132,9 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(GetProgramiv);
 	IMPORT_GL_FUNC(GetProgramInfoLog);
 	IMPORT_GL_FUNC(UseProgram);
+
+	IMPORT_GL_FUNC(BindAttribLocation);//muss vor dem Linken aufgerufen werden http://stackoverflow.com/questions/12550570/some-names-for-glbindattriblocation-dont-work-objective-c-issue
+	IMPORT_GL_FUNC(GetUniformLocation);
 
 	IMPORT_GL_FUNC(VertexAttribPointer);
 	IMPORT_GL_FUNC(EnableVertexAttribArray);

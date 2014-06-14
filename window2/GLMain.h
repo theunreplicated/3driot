@@ -127,11 +127,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	initGL();
 }
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
-	GLenum GL_VERTEX_SHADER = 0x8B31;
-
-	GLenum GL_FALSE = 0;
-	GLenum GL_FRAGMENT_SHADER = 0x8B30;//https://chromium.googlesource.com/angle/angle/+/master/include/GLES2/gl2.h
-	GLenum  GL_LINK_STATUS = 0x8B82;
+	
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -207,9 +203,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
-	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
-	GLenum GL_STATIC_DRAW = 0x88E4;
-	GLenum GL_ELEMENT_ARRAY_BUFFER=0x8893;
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
@@ -245,13 +238,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
-	GLenum GL_UNSIGNED_INT = 0x1405; GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
-	GLenum GL_UNSIGNED_SHORT = 0x1403;
-	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
-	GLenum GL_STATIC_DRAW = 0x88E4;
-	GLenum GL_FALSE = 0;
-	GLenum GL_FLOAT = 0x1406;
-	GLenum GL_TRIANGLES = 0x0004;
+	
 	//glCreateShader(GL_VERTEX_SHADER);
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
 

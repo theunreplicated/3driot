@@ -59,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	//dc->OpenFileName(L"C:\\");
 	dc->SaveFileName(L"C:\\");
+
 	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
