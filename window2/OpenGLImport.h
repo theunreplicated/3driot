@@ -1,7 +1,9 @@
-#ifndef Open_GL_IMPORT//_H
-#define Open_GL_IMPORT//_H
+#ifndef INC_Open_GL_IMPORT//_H
+#define INC_Open_GL_IMPORT//_H
 #include "ext\skia\GrGLFunctions.h"
+#include "OpenGL_Data_Types.h"
 #include <iostream>
+//die Makros hier können nur in dieser Klasse verwendet werden
 #define IMPORT_GL(name,proc) name=reinterpret_cast<proc>(this_scope_gl_import(#name,import,importGLES11withExceptions))
 //#define IMPORT_GL_FUNC(fname) gl ## fname=reinterpret_cast<GrGL ## fname ## Proc>(import("gl" #fname))
 #define IMPORT_GL_FUNC(fname)  IMPORT_GL(gl ## fname,GrGL ## fname ## Proc)
@@ -13,21 +15,7 @@ PROC __stdcall this_scope_gl_import(T_func_name name, T_wglgetprocadr wglgetadr,
 	return (wglres ? wglres : (globalgetadr(name) ? globalgetadr(name) : false));
 
 };
-typedef void             GLvoid;
-typedef char             GLchar;
-typedef unsigned int     GLenum;
-typedef unsigned char    GLboolean;
-typedef unsigned int     GLbitfield;
-//typedef khronos_int8_t   GLbyte;
-typedef short            GLshort;
-typedef int              GLint;
-typedef int              GLsizei;
-//typedef khronos_uint8_t  GLubyte;
-typedef unsigned short   GLushort;
-typedef unsigned int     GLuint;
-typedef float  GLfloat;
-//typedef khronos_float_t  GLclampf;
-//typedef khronos_int32_t  GLfixed;
+
 namespace OGL{
 
 	//GrGLCreateShaderProc __stdcall glCreateShader;
@@ -90,6 +78,7 @@ namespace OGL{
 	GLenum GL_TRUE = 0;
 	GLenum GL_FLOAT = 0x1406;
 	GLenum GL_TRIANGLES = 0x0004;
+	GLenum GL_VERSION = 0x1F02;
 }
 class OpenGLImport{
 

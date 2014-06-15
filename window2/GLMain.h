@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "OpenGL_Utils.h"
 enum draw_method{ kArrays, kElements };//konstant davor,falls Konflikte
 
 struct THREEDObject{

@@ -70,6 +70,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
+    <ClCompile Include="OpenGL_Utils.cpp" />
     <ClCompile Include="standard_window.cpp" />
     <ClCompile Include="SysUtils_Load_Library.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -83,6 +84,8 @@
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLImport.h" />
+    <ClInclude Include="OpenGL_Data_Types.h" />
+    <ClInclude Include="OpenGL_Utils.h" />
     <ClInclude Include="standard_window.h" />
     <ClInclude Include="SysUtils_Load_Library.h" />
     <ClInclude Include="Window.h" />

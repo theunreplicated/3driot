@@ -48,6 +48,9 @@
     <ClCompile Include="file_dialog.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL_Utils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -85,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="file_dialog.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL_Utils.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL_Data_Types.h">
+      <Filter>Headerdateien\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
