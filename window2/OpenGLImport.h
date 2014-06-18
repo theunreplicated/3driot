@@ -62,6 +62,7 @@ namespace OGL{
 	IMPORT_GL_DECLARE(BindBuffer);
 	IMPORT_GL_DECLARE(BufferData);
 
+	IMPORT_GL_DECLARE(Viewport);
 }
 
 namespace OGL{
@@ -77,7 +78,7 @@ namespace OGL{
 	GLenum GL_FALSE = 0;
 	GLenum GL_TRUE = 0;
 	GLenum GL_FLOAT = 0x1406;
-	GLenum GL_TRIANGLES = 0x0004;
+	const GLenum GL_TRIANGLES = 0x0004;
 	GLenum GL_VERSION = 0x1F02;
 }
 class OpenGLImport{
@@ -138,6 +139,7 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(BindBuffer);
 	IMPORT_GL_FUNC(BufferData);
 
+	IMPORT_GL_FUNC(Viewport);
 	if (import("glDrawElements")){ OutputDebugString("----"); }
 	else{
 		OutputDebugString("!!!");

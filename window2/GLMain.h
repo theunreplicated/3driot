@@ -15,12 +15,15 @@ public:
 
 	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass);
 	void render();
-void addTHREEDObject(THREEDObject *d);
+	void setNumDrawElements(int count);
+	void addMesh_RenderObject_struct(Mesh_RenderObject *obj);
+	void initGL();
+	void setViewPort(GLRect rect);
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
 	void swapBuffers();
-	void initGL();
+	
 	GLuint * vertexbuffer;
 	int num_draw_elements = 0;
 	THREEDObject * draw_elements;
@@ -66,18 +69,38 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addTHREEDObject(THREEDObject *d){
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setViewPort(GLRect rect){
+	glViewport(rect.x,rect.y,rect.width,rect.height);
 
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setNumDrawElements(int count){
+	draw_elements = new THREEDObject[count];
 
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj){
+	THREEDObject pp;
+	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
+	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
+	pp.indices_totalsize = obj->num_indices*sizeof(unsigned int);
+	pp.draw_call_num_elements = obj->num_indices /*/ 3==eigentlich faces*3*/;/*@TODO:ändern*/
+	pp.indices = obj->indices;
+	pp.vertices = obj->vertices;
+	pp.draw_primitive = obj->draw_primitive;
+	//pp.vertices_num=obj->//@deprecated
+	
+	draw_elements[num_draw_elements] = pp; 
+	num_draw_elements++;
 }
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
 
-	draw_elements = new THREEDObject[2];
+	//draw_elements = new THREEDObject[2];
 	//glCreateShader(GL_VERTEX_SHADER);
 	//swapBuffers = swapBuffersFunc2;
-
+	
 	//T_swapBuffersFuncType sw=(swapBuffersFuncClass->*swapBuffersFunc2)();
 	swap_buffers_func_class = swapBuffersFuncClass;
 	swapBuffersFunc = swapBuffersFunc2;
@@ -114,9 +137,9 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 
 	};
 
-	addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
+	//addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
 
-	initGL();
+	//initGL();
 }
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
@@ -184,11 +207,12 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 		buffer_add_counter++;
 		// Draw the triangle !
 		if (pc.dm == kArrays){
-			glDrawArrays(GL_TRIANGLES, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
+			glDrawArrays(pc.draw_primitive, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
 		}
 		else if (pc.dm == kElements){
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
-			glDrawElements(GL_TRIANGLES, pc.draw_call_num_elements, GL_UNSIGNED_INT, /*pc.indices*/0);
+			glDrawElements(pc.draw_primitive, pc.draw_call_num_elements, GL_UNSIGNED_INT, /*pc.indices*/0);
 
 		}
 		buffer_add_counter++;

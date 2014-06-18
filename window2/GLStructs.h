@@ -1,7 +1,10 @@
 #ifndef INC_GL_STRUCT_H
 #define INC_GL_STRUCT_H
 #include <array>
-enum PrimitiveType{ PR_TRIANGLE };
+#include <vector>
+#include "OpenGL_Data_Types.h"
+#include "WindowStructs.h"
+enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct Mesh_RenderObject{
 	PrimitiveType draw_primitive;
 	float * vertices/*durch 3 für einzelne Vertices*/; unsigned int size_vertices/*totale länge,muss noch durch 3 geteilt werden*/;
@@ -13,7 +16,7 @@ struct Mesh_RenderObject{
 
 enum draw_method{ kArrays, kElements };//konstant davor,falls Konflikte
 struct THREEDObject{
-	PrimitiveType draw_primitive;
+	PrimitiveType draw_primitive=PR_TRIANGLE;
 	draw_method dm;
 	/*GL*/float * vertices;
 	/*GLu*/unsigned int * indices = NULL;//nur falls Elemente
@@ -22,4 +25,12 @@ struct THREEDObject{
 	size_t vertices_totalsize, indices_totalsize;
 };
 
+//@TODO:mergen mit dem von windowstructs
+/*struct GLRect{
+	//	WindowRect() :width(0){};//struct ohne KonstruktOOOOR leider nur begrenzt einsetzbar,aber mit {} init werden alle anderen Values auf default-null gesetzt
+	int width, height, x, y;
+
+};*/
+
+typedef Windows::WindowRect GLRect;
 #endif

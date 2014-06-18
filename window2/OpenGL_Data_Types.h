@@ -22,4 +22,5 @@ typedef unsigned int     GLuint;
 typedef float  GLfloat;
 typedef khronos_float_t  GLclampf;
 typedef khronos_int32_t  GLfixed;
+
 #endif

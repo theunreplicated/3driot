@@ -56,28 +56,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//wbtn->on(BTN_CLICK,onclick);
 	
 	//erstelle controls am rechten Rand
-	using Windows::Dialogs::File_Dialog;
-	File_Dialog*dc = new File_Dialog();
-	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
-	LPWSTR dcc=dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+
 	//dc->SaveFileName(L"C:\\");
-	if (*dcc/*!=*L""*/){///bei Abbruch==L""
-		//open
 
-		char buffer[MAX_PATH];
-
-		// First arg is the pointer to destination char, second arg is
-		// the pointer to source wchar_t, last arg is the size of char buffer
-		//wcstom
-		//wcstombs_s(buffer, dcc, MAX_PATH);
-		size_t CharactersConverted = 0;
-		wcstombs_s(&CharactersConverted,buffer,sizeof(buffer),dcc,_TRUNCATE);
-		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
-//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
-		Mesh_RenderObject oo = aiimport->get_render_obj(0);
-		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
-		//int d2 = oo.indices[2];
-	}
 	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
@@ -92,8 +73,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
+	glm->setViewPort(uicontrol->static_draw_field->Position_get());
 
+	using Windows::Dialogs::File_Dialog;
+	File_Dialog*dc = new File_Dialog();
+	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
+	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	Assimp_Mesh_Importer*aiimport; 
+	if (*dcc/*!=*L""*/){///bei Abbruch==L""
+		//open
 
+		char buffer[MAX_PATH];
+
+		// First arg is the pointer to destination char, second arg is
+		// the pointer to source wchar_t, last arg is the size of char buffer
+		//wcstom
+		//wcstombs_s(buffer, dcc, MAX_PATH);
+		size_t CharactersConverted = 0;
+		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
+		/*Assimp_Mesh_Importer**/aiimport = new Assimp_Mesh_Importer(buffer);
+		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
+		glm->setNumDrawElements(1);
+	
+		glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0));
+		glm->initGL();
+		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
+		//int d2 = oo.indices[2]
+	}
 
 
 
