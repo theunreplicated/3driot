@@ -14,15 +14,16 @@ namespace Windows{
 			ofn.lpstrFile = flnm;
 			ofn.lpstrFile[0] = '\0';
 			ofn.nMaxFile = sizeof(flnm);
-			ofn.lpstrFilter =L"Alles\0*.*\0Text\0*.TXT\0";
+			ofn.lpstrFilter =L"Alles\0*.*\0Objs\0*.obj\0";
 			ofn.nFilterIndex = 1;
 			ofn.lpstrFileTitle = NULL;
 			ofn.nMaxFileTitle = 0;
 			
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			ofn.Flags |= OFN_EXPLORER|OFN_ENABLESIZING;
 			
 			//ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY; 
-			ofn.lpstrDefExt = L"txt";
+			ofn.lpstrDefExt = L"obj";
 			
 			
 

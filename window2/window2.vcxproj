@@ -38,15 +38,20 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,11 +71,11 @@
   <ItemGroup>
     <ClCompile Include="ApplicationUI_Control_Mgr.cpp" />
     <ClCompile Include="ApplicationWindow.cpp" />
+    <ClCompile Include="Assimp_Mesh_Importer.cpp" />
     <ClCompile Include="file_dialog.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
-    <ClCompile Include="OpenGL_Utils.cpp" />
     <ClCompile Include="standard_window.cpp" />
     <ClCompile Include="SysUtils_Load_Library.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -78,18 +83,25 @@
   <ItemGroup>
     <ClInclude Include="ApplicationUI_Control_Mgr.h" />
     <ClInclude Include="ApplicationWindow.h" />
+    <ClInclude Include="Assimp_Mesh_Importer.h" />
     <ClInclude Include="ext\skia\GrGLFunctions.h" />
     <ClInclude Include="file_dialog.h" />
     <ClInclude Include="GLMain.h" />
+    <ClInclude Include="GLStructs.h" />
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="OpenGLContext.h" />
+    <ClInclude Include="OpenGL_Utils.h" />
     <ClInclude Include="OpenGLImport.h" />
     <ClInclude Include="OpenGL_Data_Types.h" />
-    <ClInclude Include="OpenGL_Utils.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Resource_Loading.h" />
     <ClInclude Include="standard_window.h" />
     <ClInclude Include="SysUtils_Load_Library.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowStructs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource_script.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,16 +5,9 @@
 #include <string>
 #include <fstream>
 #include "OpenGL_Utils.h"
-enum draw_method{ kArrays, kElements };//konstant davor,falls Konflikte
-
-struct THREEDObject{
-	draw_method dm;
-	GLfloat * vertices;
-	GLuint * indices=NULL;//nur falls Elemente
-	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
-	int draw_call_num_elements;
-	size_t vertices_totalsize,indices_totalsize;
-};
+#include "GLStructs.h"
+//TODO:GL fixen,ich sehe manchmal n Dreieck
+using std::vector;
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 class GLMain{
 
@@ -22,6 +15,7 @@ public:
 
 	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass);
 	void render();
+void addTHREEDObject(THREEDObject *d);
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -30,6 +24,7 @@ private:
 	GLuint * vertexbuffer;
 	int num_draw_elements = 0;
 	THREEDObject * draw_elements;
+
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
 	template <typename T_vertices_data, typename T_indices_data>
@@ -53,14 +48,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 //	pp.vertices_num = sizeof(vertices) / sizeof(GLfloat);
 	pp.vertices_totalsize = sizeof(vertices);
 	
-	pp.vertices = new GLfloat[sizeof(vertices)/sizeof(GLfloat)/*vertices müssen glfloat sein*/];//@TODO. das hir irgendwie besser machen
+	pp.vertices = new /*GL*/float[sizeof(vertices)/sizeof(float)/*vertices müssen glfloat sein*/];//@TODO. das hir irgendwie besser machen
 
 	memcpy(pp.vertices, vertices, sizeof(vertices));
 	if (indices != NULL){
 		pp.indices_totalsize = sizeof(indices);
-		pp.indices_num = sizeof(indices) / sizeof(T_indices_data);
+		pp.indices_num = sizeof(indices) / sizeof(unsigned int);
 		//indices/kann auch null sein
-		pp.indices = new GLuint[pp.indices_num];
+		pp.indices = new /*GLu*/unsigned int[pp.indices_num];
 		memcpy(pp.indices, indices, sizeof(indices));
 		
 	}
@@ -70,6 +65,12 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 	
 
 }
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addTHREEDObject(THREEDObject *d){
+
+
+}
+
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
 
@@ -101,113 +102,29 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 		THREEDObject pc;
 	pc.dm = kElements;
 	
-	const GLfloat g_vertices_rectangle_data[] = {
+	float g_vertices_rectangle_data[] = {
 		-0.5f, 0.5f, 0.0f,   // top left
 		-0.5f, -0.5f, 0.0f,   // bottom left
 		0.5f, -0.5f, 0.0f,   // bottom right
 		0.5f, 0.5f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
 	};
 
-	const GLuint g_indices_data[] = {
+	const unsigned int g_indices_data[] = {
 		0, 1, 2, 0, 2, 3
 
 	};
-	/*pc.vertices_num = sizeof(g_vertices_rectangle_data) / sizeof(GLfloat);
-	pc.vertices = new GLfloat[pc.vertices_num];
-	memcpy(pc.vertices, g_vertices_rectangle_data, sizeof(g_vertices_rectangle_data));
-	pc.indices_num = sizeof(g_indices_data) / sizeof(GLuint);
-	pc.indices = new GLuint[pc.indices_num];
-	memcpy(pc.indices, g_indices_data, sizeof(g_indices_data));
-	//pc.indices = &g_indices_data;
-	pc.draw_call_num_elements = 6;
-	num_draw_elements += 1;
-	draw_elements[1] = pc;
-	*/
+
 	addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
 
 	initGL();
 }
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
-	
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-	// Read the Vertex Shader code from the file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open())
-	{
-		std::string Line = "";
-		while (getline(VertexShaderStream, Line))
-			VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
-	}
-
-	// Read the Fragment Shader code from the file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open()){
-		std::string Line = "";
-		while (getline(FragmentShaderStream, Line))
-			FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
-	}
-
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-
-
-	// Compile Vertex Shader
-	// printf("Compiling shader : %s\n", vertex_file_path);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-	glCompileShader(VertexShaderID);
-
-	// Check Vertex Shader
-	//glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	//glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	// std::vector<char> VertexShaderErrorMessage(InfoLogLength);
-	//glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-	//fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
-
-	// Compile Fragment Shader
-	// printf("Compiling shader : %s\n", fragment_file_path);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-	glCompileShader(FragmentShaderID);
-
-	// Check Fragment Shader
-	//glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	// glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	//std::vector<char> FragmentShaderErrorMessage(InfoLogLength);
-	//glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-	//fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
-
-	// Link the program
-	//fprintf(stdout, "Linking program\n");
-	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
-	glLinkProgram(ProgramID);
-
-	// Check the program
-	//glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	// glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	//std::vector<char> ProgramErrorMessage( max(InfoLogLength, int(1)) );
-	//glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-	//fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
-
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
-
-	return ProgramID;
-}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
-	GLuint programId = LoadShaders("vertex.glsl", "fragment.glsl");
+	GLuint programId = OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl");
 
 
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer

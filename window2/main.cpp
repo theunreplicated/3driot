@@ -10,7 +10,8 @@
 #include "SysUtils_Load_Library.h"
 #include "OpenGLImport.h"
 #include "GLMain.h"
-
+#include "Assimp_Mesh_Importer.h"
+#include <stringapiset.h>
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
@@ -19,6 +20,7 @@ bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 	
 	
 }
+
 void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	//MessageBox(NULL, "dd","cc", MB_OK);
 	PAINTSTRUCT   ps;
@@ -57,9 +59,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	using Windows::Dialogs::File_Dialog;
 	File_Dialog*dc = new File_Dialog();
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
-	//dc->OpenFileName(L"C:\\");
-	dc->SaveFileName(L"C:\\");
+	LPWSTR dcc=dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	//dc->SaveFileName(L"C:\\");
+	if (*dcc/*!=*L""*/){///bei Abbruch==L""
+		//open
 
+		char buffer[MAX_PATH];
+
+		// First arg is the pointer to destination char, second arg is
+		// the pointer to source wchar_t, last arg is the size of char buffer
+		//wcstom
+		//wcstombs_s(buffer, dcc, MAX_PATH);
+		size_t CharactersConverted = 0;
+		wcstombs_s(&CharactersConverted,buffer,sizeof(buffer),dcc,_TRUNCATE);
+		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+		Mesh_RenderObject oo = aiimport->get_render_obj(0);
+		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
+		//int d2 = oo.indices[2];
+	}
 	//aw->Position_set({1920,1080});
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	uicontrol->addEditControls();
@@ -80,11 +98,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 
+
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();
 	while (ml->Message_Get()){
 		glm->render();
 		ml->Message_Pump();
+		
 	}
 	return ml->Message_Pump_End();
 }

@@ -48,7 +48,7 @@
     <ClCompile Include="file_dialog.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL_Utils.cpp">
+    <ClCompile Include="Assimp_Mesh_Importer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,11 +89,28 @@
     <ClInclude Include="file_dialog.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGL_Utils.h">
-      <Filter>Headerdateien\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGL_Data_Types.h">
       <Filter>Headerdateien\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL_Utils.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Assimp_Mesh_Importer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource_Loading.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GLStructs.h">
+      <Filter>Headerdateien\OpenGL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource_script.rc">
+      <Filter>Ressourcendateien</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
