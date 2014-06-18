@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();
 	while (ml->Message_Get()){
-		glm->render();
+		glm->render();//@TODO:in proc am Schluss
 		ml->Message_Pump();
 		
 	}
