@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
-	glm->setViewPort(uicontrol->static_draw_field->Position_get());
+	glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 
 	using Windows::Dialogs::File_Dialog;
 	File_Dialog*dc = new File_Dialog();

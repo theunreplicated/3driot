@@ -13,10 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Headerdateien\OpenGL">
+    <Filter Include="Headerdateien\GL">
       <UniqueIdentifier>{72fdad57-3bb4-491c-92bf-620138d28590}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\OpenGL">
+    <Filter Include="Quelldateien\GL">
       <UniqueIdentifier>{6434668d-24f9-41e0-b11d-8d91afd39dbb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -43,7 +43,7 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="OpenGLContext.cpp">
-      <Filter>Quelldateien\OpenGL</Filter>
+      <Filter>Quelldateien\GL</Filter>
     </ClCompile>
     <ClCompile Include="file_dialog.cpp">
       <Filter>Quelldateien</Filter>
@@ -72,28 +72,28 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="GLMain.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="OpenGLImport.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="OpenGLContext.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="SysUtils_Load_Library.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ext\skia\GrGLFunctions.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="file_dialog.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="OpenGL_Data_Types.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="OpenGL_Utils.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="Assimp_Mesh_Importer.h">
       <Filter>Headerdateien</Filter>
@@ -105,7 +105,7 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="GLStructs.h">
-      <Filter>Headerdateien\OpenGL</Filter>
+      <Filter>Headerdateien\GL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

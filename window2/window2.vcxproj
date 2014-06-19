@@ -41,6 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\lib\x86;$(LibraryPath)</LibraryPath>
+    <ReferencePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3\glm;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

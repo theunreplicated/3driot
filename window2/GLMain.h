@@ -6,6 +6,7 @@
 #include <fstream>
 #include "OpenGL_Utils.h"
 #include "GLStructs.h"
+
 //TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
@@ -23,15 +24,17 @@ private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
 	void swapBuffers();
-	
+	GLuint programId;
 	GLuint * vertexbuffer;
 	int num_draw_elements = 0;
 	THREEDObject * draw_elements;
-
+	GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
 	template <typename T_vertices_data, typename T_indices_data>
 	void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
+	GLuint attrib_location_counter = 0;
+	GLuint loc_Matrix;
 };
 
 
@@ -69,6 +72,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::bindAttribLocation(const char* attrib_name){
+	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
+	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
+	glBindAttribLocation(programId,attrib_location_counter,attrib_name);
+	attrib_location_counter++;
+
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setViewPort(GLRect rect){
 	glViewport(rect.x,rect.y,rect.width,rect.height);
 
@@ -96,6 +107,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
+
+
+	programId = glCreateProgram();
 
 	//draw_elements = new THREEDObject[2];
 	//glCreateShader(GL_VERTEX_SHADER);
@@ -138,7 +152,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	};
 
 	//addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
-
+	
 	//initGL();
 }
 
@@ -147,9 +161,10 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
-	GLuint programId = OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl");
-
-
+	
+	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
+	glUseProgram(programId);
+	loc_Matrix = glGetUniformLocation(programId,"MVP");
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	vertexbuffer = new GLuint[num_draw_elements];
 	glGenBuffers(num_draw_elements*2, vertexbuffer);
@@ -173,7 +188,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 		buffer_add_counter++;
 	}
 
-	glUseProgram(programId);
+	
 
 }
 
@@ -186,7 +201,27 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(0x00004000);
+	float* mat = new float[16];
+	mat[0] = 1.0f;
+	mat[1] = 0.0f;
+	mat[2] = 0.0f;
+	mat[3] = 0.0f;
+	//=identity matrix
+	mat[4] = 0.0f;
+	mat[5] = 1.0f;
+	mat[6] = 0.0f;
+	mat[7] = 0.0f;
 
+	mat[8] = 0.0f;
+	mat[9] = 0.0f;
+	mat[10] = 1.0f;
+	mat[11] = 0.0f;
+
+	mat[12] = 0.0f;
+	mat[13] = 0.0f;
+	mat[14] = 0.0f;
+	mat[15] = 1.0f;
+	glUniformMatrix4fv(loc_Matrix,1,GL_FALSE,mat);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -202,7 +237,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            // array buffer offset
+			(void*)0            // array buffer offset//Quelle:vermutlich opengl-tutorial.org
 			);
 		buffer_add_counter++;
 		// Draw the triangle !
