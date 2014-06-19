@@ -4,6 +4,7 @@
 #include <vector>
 #include "OpenGL_Data_Types.h"
 #include "WindowStructs.h"
+#include <glm/mat4x4.hpp>
 enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct Mesh_RenderObject{
 	PrimitiveType draw_primitive;
@@ -23,6 +24,7 @@ struct THREEDObject{
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize, indices_totalsize;
+	glm::mat4 matrix;
 };
 
 //@TODO:mergen mit dem von windowstructs

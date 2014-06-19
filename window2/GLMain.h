@@ -6,7 +6,7 @@
 #include <fstream>
 #include "OpenGL_Utils.h"
 #include "GLStructs.h"
-
+#include <glm/mat4x4.hpp>
 //TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
@@ -17,7 +17,7 @@ public:
 	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass);
 	void render();
 	void setNumDrawElements(int count);
-	void addMesh_RenderObject_struct(Mesh_RenderObject *obj);
+	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, glm::mat4 pass_matrix=glm::mat4());
 	void initGL();
 	void setViewPort(GLRect rect);
 private:
@@ -90,7 +90,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setNumDrawEle
 
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj){
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj,glm::mat4 pass_matrix){
 	THREEDObject pp;
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
@@ -99,6 +99,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	pp.indices = obj->indices;
 	pp.vertices = obj->vertices;
 	pp.draw_primitive = obj->draw_primitive;
+	pp.matrix = pass_matrix;
 	//pp.vertices_num=obj->//@deprecated
 	
 	draw_elements[num_draw_elements] = pp; 
@@ -201,27 +202,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(0x00004000);
-	float* mat = new float[16];
-	mat[0] = 1.0f;
-	mat[1] = 0.0f;
-	mat[2] = 0.0f;
-	mat[3] = 0.0f;
-	//=identity matrix
-	mat[4] = 0.0f;
-	mat[5] = 1.0f;
-	mat[6] = 0.0f;
-	mat[7] = 0.0f;
 
-	mat[8] = 0.0f;
-	mat[9] = 0.0f;
-	mat[10] = 1.0f;
-	mat[11] = 0.0f;
-
-	mat[12] = 0.0f;
-	mat[13] = 0.0f;
-	mat[14] = 0.0f;
-	mat[15] = 1.0f;
-	glUniformMatrix4fv(loc_Matrix,1,GL_FALSE,mat);
+	//glm::mat4 dc = glm::mat4();
+	
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -230,6 +213,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 
 		int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
+		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, &pc.matrix[0][0]);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
