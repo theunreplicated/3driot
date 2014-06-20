@@ -51,6 +51,12 @@
     <ClCompile Include="Assimp_Mesh_Importer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Assimp_Utils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -106,6 +112,15 @@
     </ClInclude>
     <ClInclude Include="GLStructs.h">
       <Filter>Headerdateien\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="Assimp_Utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Assimp_Utils_m_convert_16.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

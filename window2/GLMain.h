@@ -6,7 +6,8 @@
 #include <fstream>
 #include "OpenGL_Utils.h"
 #include "GLStructs.h"
-#include <glm/mat4x4.hpp>
+#include "Matrix.h"
+//mat#include <glm/mat4x4.hpp>
 //TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
@@ -17,9 +18,10 @@ public:
 	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass);
 	void render();
 	void setNumDrawElements(int count);
-	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, glm::mat4 pass_matrix=glm::mat4());
+	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
 	void initGL();
 	void setViewPort(GLRect rect);
+	THREEDObject * draw_elements;
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -27,7 +29,7 @@ private:
 	GLuint programId;
 	GLuint * vertexbuffer;
 	int num_draw_elements = 0;
-	THREEDObject * draw_elements;
+	
 	GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
@@ -81,7 +83,9 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::bindAttribL
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setViewPort(GLRect rect){
-	glViewport(rect.x,rect.y,rect.width,rect.height);
+	glViewport(rect.x, rect.y, rect.width, rect.height);
+	glScissor(rect.x,rect.y,rect.width,rect.height);
+	glEnable(GL_SCISSOR_TEST);
 
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
@@ -90,7 +94,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setNumDrawEle
 
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj,glm::mat4 pass_matrix){
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj,float* pass_matrix){
 	THREEDObject pp;
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
@@ -99,6 +103,10 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	pp.indices = obj->indices;
 	pp.vertices = obj->vertices;
 	pp.draw_primitive = obj->draw_primitive;
+	//if (pass_matrix == 0){
+		//pass_matrix = new float[16];
+		
+	//}
 	pp.matrix = pass_matrix;
 	//pp.vertices_num=obj->//@deprecated
 	
@@ -137,22 +145,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	draw_elements[0] = pp;
 	*/
 	
-		THREEDObject pc;
-	pc.dm = kElements;
-	
-	float g_vertices_rectangle_data[] = {
-		-0.5f, 0.5f, 0.0f,   // top left
-		-0.5f, -0.5f, 0.0f,   // bottom left
-		0.5f, -0.5f, 0.0f,   // bottom right
-		0.5f, 0.5f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
-	};
-
-	const unsigned int g_indices_data[] = {
-		0, 1, 2, 0, 2, 3
-
-	};
-
-	//addRenderElement(g_vertices_rectangle_data,g_indices_data,kElements,6);
+		
 	
 	//initGL();
 }
@@ -163,6 +156,30 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
 	
+	THREEDObject pc;
+	pc.dm = kElements;
+
+float g_vertices_rectangle_data[] = {
+		-0.5f, 0.5f, 0.0f,   // top left
+		-0.5f, -0.5f, 0.0f,   // bottom left
+		0.5f, -0.5f, 0.0f,   // bottom right
+		0.5f, 0.5f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
+	};
+	/*float g_vertices_rectangle_data[] = {
+		-1.0f, 1.0f, 0.0f,   // top left
+		-1.0f, -1.0f, 0.0f,   // bottom left
+		1.0f, -1.0f, 0.0f,   // bottom right
+		1.0f, 1.0f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
+	};*/
+
+	const unsigned int g_indices_data[] = {
+		0, 1, 2, 0, 2, 3
+
+	};
+
+	addRenderElement(g_vertices_rectangle_data, g_indices_data, kElements, 6);
+
+
 	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
 	glUseProgram(programId);
 	loc_Matrix = glGetUniformLocation(programId,"MVP");
@@ -204,7 +221,31 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	glClear(0x00004000);
 
 	//glm::mat4 dc = glm::mat4();
-	
+	//float*mat = new float[16];
+	/*mat[0] = 1.0f;
+	mat[1] = 0.0f;
+	mat[2] = 0.0f;
+	mat[3] = -0.5f;
+
+	mat[4] = 0.0f;
+	mat[5] = 1.0f;
+	mat[6] = 0.0f;
+	mat[7] = 0.0f;
+
+	mat[8] = 0.0f;
+	mat[9] = 0.0f;
+	mat[10] = 1.0f;
+	mat[11] = 0.0f;
+
+	mat[12] = 0.0f;
+	mat[13] = 0.0f;
+	mat[14] = 0.0f;
+	mat[15] = 1.0f;*/
+
+	Matrix matrix;
+	//matrix.translate(Vector3(0.4f));
+	matrix.scale(Vector3(0.5f,0.5f,0.5f));
+	float *mat = matrix.get_as_float16();
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -213,7 +254,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 
 		int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
-		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, &pc.matrix[0][0]);
+		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, mat);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.

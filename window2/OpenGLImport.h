@@ -63,6 +63,8 @@ namespace OGL{
 	IMPORT_GL_DECLARE(BufferData);
 
 	IMPORT_GL_DECLARE(Viewport);
+	IMPORT_GL_DECLARE(Scissor);
+	IMPORT_GL_DECLARE(Enable);
 }
 
 namespace OGL{
@@ -80,6 +82,7 @@ namespace OGL{
 	GLenum GL_FLOAT = 0x1406;
 	const GLenum GL_TRIANGLES = 0x0004;
 	GLenum GL_VERSION = 0x1F02;
+	GLenum GL_SCISSOR_TEST = 0x0C11;
 }
 class OpenGLImport{
 
@@ -140,6 +143,8 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(BufferData);
 
 	IMPORT_GL_FUNC(Viewport);
+	IMPORT_GL_FUNC(Scissor);
+	IMPORT_GL_FUNC(Enable);
 	if (import("glDrawElements")){ OutputDebugString("----"); }
 	else{
 		OutputDebugString("!!!");

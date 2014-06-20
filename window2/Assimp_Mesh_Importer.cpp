@@ -1,11 +1,13 @@
 #include "Assimp_Mesh_Importer.h"
-#include <assimp\Importer.hpp>
-#include <assimp\postprocess.h>
 
+#include <assimp\postprocess.h>
+#include <d3dx9math.h>
+#include "Assimp_Utils.h"
+#pragma comment(lib, "D3dx9.lib")
 using std::string;
 Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
-	Assimp::Importer importer; //ändert irgendwie import path
-	/*const aiScene **/scene = importer.ReadFile(file_path, /*aiProcessPreset_TargetRealtime_Quality*/  aiProcess_CalcTangentSpace |
+	//Assimp::Importer importer; //ändert irgendwie import path
+	/*const aiScene **/scene = import->ReadFile(file_path, /*aiProcessPreset_TargetRealtime_Quality*/  aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType
@@ -64,26 +66,7 @@ void Assimp_Mesh_Importer::node_handler(aiNode*node,std::vector<aiMatrix4x4/***/
 		//Name steht wohl im Mesh_Name nicht immer zuverlässig drin,besser direkt von der Node
 		std::vector<std::array<std::array<float, 4>, 4>> mat_vec;
 		for (aiMatrix4x4 data : matrices){
-			std::array<std::array<float, 4>, 4>d ;
-			d[0][0] = data.a1;
-			d[0][1] = data.a2;
-			d[0][2] = data.a3;
-			d[0][3] = data.a4;
-
-			d[1][0] = data.b1;
-			d[1][1] = data.b2;
-			d[1][2] = data.b3;
-			d[1][3] = data.b4;
-
-			d[2][0] = data.c1;
-			d[2][1] = data.c2;
-			d[2][2] = data.c3;
-			d[2][3] = data.c4;
-
-			d[3][0] = data.d1;
-			d[3][1] = data.d2;
-			d[3][2] = data.d3;
-			d[3][3] = data.d4;
+			auto d = Assimp_Utils::convert_aiMatrix_to_float4x4(data);
 
 
 
@@ -162,4 +145,67 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 
 	}
 	return ret_mesh;
+}
+int Assimp_Mesh_Importer::CalculateBounds(aiNode* piNode, aiVector3D* p_avOut,
+	const aiMatrix4x4& piMatrix)
+{
+	ai_assert(NULL != piNode);
+	ai_assert(NULL != p_avOut);
+
+	aiMatrix4x4 mTemp = piNode->mTransformation;
+	mTemp.Transpose();
+	aiMatrix4x4 aiMe = mTemp * piMatrix;
+
+	for (unsigned int i = 0; i < piNode->mNumMeshes; ++i)
+	{
+		for (unsigned int a = 0; a < scene->mMeshes[
+			piNode->mMeshes[i]]->mNumVertices; ++a)
+			{
+			aiVector3D pc = scene->mMeshes[piNode->mMeshes[i]]->mVertices[a];
+
+			aiVector3D pc1;
+			D3DXVec3TransformCoord((D3DXVECTOR3*)&pc1, (D3DXVECTOR3*)&pc,
+				(D3DXMATRIX*)&aiMe);
+
+			p_avOut[0].x = std::min(p_avOut[0].x, pc1.x);
+			p_avOut[0].y = std::min(p_avOut[0].y, pc1.y);
+			p_avOut[0].z = std::min(p_avOut[0].z, pc1.z);
+			p_avOut[1].x = std::max(p_avOut[1].x, pc1.x);
+			p_avOut[1].y = std::max(p_avOut[1].y, pc1.y);
+			p_avOut[1].z = std::max(p_avOut[1].z, pc1.z);
+		}
+	}
+	for (unsigned int i = 0; i < piNode->mNumChildren; ++i)
+	{
+		CalculateBounds(piNode->mChildren[i], p_avOut, aiMe);
+	}
+	return 1;//Quelle:assimp_view
+}
+aiMatrix4x4 Assimp_Mesh_Importer::ScaleAsset(void)
+{//Quelle:assimp_view
+	aiVector3D aiVecs[2] = { aiVector3D(1e10f, 1e10f, 1e10f),
+		aiVector3D(-1e10f, -1e10f, -1e10f) };
+
+	if (scene->mRootNode)
+	{
+		aiMatrix4x4 m;
+		CalculateBounds(scene->mRootNode, aiVecs, m);
+	}
+
+	aiVector3D vDelta = aiVecs[1] - aiVecs[0];
+	aiVector3D vHalf = aiVecs[0] + (vDelta / 2.0f);
+	float fScale = 10.0f / vDelta.Length();
+
+	aiMatrix4x4 g_mWorlds=aiMatrix4x4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		-vHalf.x, -vHalf.y, -vHalf.z, 1.0f);
+	aiMatrix4x4 gw2=aiMatrix4x4(
+		fScale, 0.0f, 0.0f, 0.0f,
+		0.0f, fScale, 0.0f, 0.0f,
+		0.0f, 0.0f, fScale, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+	aiMatrix4x4 g_mWorld = g_mWorlds*gw2;
+	return g_mWorld;
 }

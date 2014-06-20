@@ -24,7 +24,8 @@ struct THREEDObject{
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize, indices_totalsize;
-	glm::mat4 matrix;
+	float* matrix;
+	bool enable_matrix = false;
 };
 
 //@TODO:mergen mit dem von windowstructs
