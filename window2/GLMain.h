@@ -107,7 +107,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 		//pass_matrix = new float[16];
 		
 	//}
-	pp.matrix = pass_matrix;
+	
+	(pass_matrix!=0 ? pp.matrix = pass_matrix:0);//@TODO:identtity matrix
 	//pp.vertices_num=obj->//@deprecated
 	
 	draw_elements[num_draw_elements] = pp; 
@@ -220,32 +221,11 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(0x00004000);
 
-	//glm::mat4 dc = glm::mat4();
-	//float*mat = new float[16];
-	/*mat[0] = 1.0f;
-	mat[1] = 0.0f;
-	mat[2] = 0.0f;
-	mat[3] = -0.5f;
 
-	mat[4] = 0.0f;
-	mat[5] = 1.0f;
-	mat[6] = 0.0f;
-	mat[7] = 0.0f;
-
-	mat[8] = 0.0f;
-	mat[9] = 0.0f;
-	mat[10] = 1.0f;
-	mat[11] = 0.0f;
-
-	mat[12] = 0.0f;
-	mat[13] = 0.0f;
-	mat[14] = 0.0f;
-	mat[15] = 1.0f;*/
-
-	Matrix matrix;
+	//Matrix matrix;
 	//matrix.translate(Vector3(0.4f));
-	matrix.scale(Vector3(0.5f,0.5f,0.5f));
-	float *mat = matrix.get_as_float16();
+	//matrix.scale(Vector3(0.5f,0.5f,0.5f));
+	//float *mat = matrix.get_as_float16();
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -254,7 +234,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 
 		int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
-		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, mat);
+		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.

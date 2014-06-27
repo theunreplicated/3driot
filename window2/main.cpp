@@ -15,6 +15,7 @@
 #include "Assimp_Mesh_Importer.h"
 #include "Assimp_Utils_m_convert_16.h"
 #include <stringapiset.h>
+#include "Matrix.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 glm::mat4 transformmat = glm::mat4(1.0f);
@@ -96,7 +97,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 	Assimp_Mesh_Importer*aiimport; 
-	
+	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
+	float aspectRatio = float(re.width) / float(re.height);
 	if (*dcc/*!=*L""*/){///bei Abbruch==L""
 		//open
 
@@ -111,13 +113,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		/*Assimp_Mesh_Importer**/aiimport = new Assimp_Mesh_Importer(buffer);
 		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
 		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
-		glm->setNumDrawElements(1);
+		
 		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
 		using glm::mat4; using glm::scale; using glm::vec3;
 		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
 		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
-		Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
-		float aspectRatio = float(re.width)/float(re.height);
+		
 		//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
 		//mat4 mat = proj_matrix*scalematrix;
 			
@@ -132,20 +133,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	);
 		//glm::mat4 finalm = proj_matrix*View*model_matrix;
 		//glm::mat4 finalm = model_matrix;
-		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0), glm::value_ptr(finalm));
-		glm->initGL();
+		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0));
+		
 		
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
-
+	glm->setNumDrawElements(1);
+	glm->initGL();
 
 
 
 
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();
+	Matrix proj_matrix,model_matrix;
+	proj_matrix.perspective(199, aspectRatio, 0.01f, 5000.0f);
+	float v = 0.75f;
+	model_matrix.scale(Vector3(v,v,v));
+	//Matrix m = proj_matrix.multiply_with(model_matrix);
+	Matrix m;
+	m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
+		glm->draw_elements[0].matrix = m.get_as_float16();
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mc);
 		//float * mat = glm->draw_elements[0].matrix;
