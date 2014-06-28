@@ -127,6 +127,10 @@ void Matrix::perspective(float field_of_view, float aspectRatio, float near_plan
 
 
 }
+void Matrix::proj_Matrix_resolve(){
+	
+
+}
 void Matrix::rotate(const Quaternion& quaternion){
 
 	

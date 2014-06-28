@@ -151,9 +151,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	proj_matrix.perspective(199, aspectRatio, 0.01f, 5000.0f);
 	float v = 0.75f;
 	model_matrix.scale(Vector3(v,v,v));
-	//Matrix m = proj_matrix.multiply_with(model_matrix);
-	Matrix m;
-	m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
+	Matrix m1 = proj_matrix.multiply_with(model_matrix);
+	Matrix m = m1.multiply_with(glm->m);
+	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
 		glm->draw_elements[0].matrix = m.get_as_float16();
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;

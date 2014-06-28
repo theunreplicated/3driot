@@ -21,7 +21,7 @@ public:
 	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
 	void initGL();
 	void setViewPort(GLRect rect);
-	THREEDObject * draw_elements;
+	THREEDObject * draw_elements; Matrix m;
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -99,7 +99,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
 	pp.indices_totalsize = obj->num_indices*sizeof(unsigned int);
-	pp.draw_call_num_elements = obj->num_indices /*/ 3==eigentlich faces*3*/;/*@TODO:ändern*/
+	pp.draw_call_num_elements = obj->num_indices /*/ 3==eigentlich faces*3-aber nur für Dreiecke*/;/*@TODO:ändern*/
 	pp.indices = obj->indices;
 	pp.vertices = obj->vertices;
 	pp.draw_primitive = obj->draw_primitive;
@@ -109,6 +109,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	//}
 	
 	(pass_matrix!=0 ? pp.matrix = pass_matrix:0);//@TODO:identtity matrix
+	//(pass_matrix != 0) && (pp.matrix = pass_matrix);//@TODO:deees ändern,vllt. komment tauschen
 	//pp.vertices_num=obj->//@deprecated
 	
 	draw_elements[num_draw_elements] = pp; 
@@ -150,7 +151,42 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	
 	//initGL();
 }
+void determine_largest_v(float* in_out_largestV,float current_value,int i){
+	
+	if (i == 0){ *in_out_largestV = current_value; }
+	else if (*in_out_largestV < current_value){
+		*in_out_largestV = current_value;
 
+	}
+
+}
+/*
+* @returns float[3] largest values,also 3d-Koordinaten,könnte theooretisch auch ne Vektor sein,ist es aber net
+*/
+float* getOverallMinMax(float*verts,int num_verts){
+	//zuerst max x
+	float *largest_Values= new float[3];//x,y,z
+	for (int i = 0; i < num_verts; i++){
+		determine_largest_v(&largest_Values[0], verts[(i * 3) + 0], i);
+		determine_largest_v(&largest_Values[1], verts[(i * 3) + 1], i);
+		determine_largest_v(&largest_Values[2], verts[(i * 3) + 2], i);
+
+	}
+	//float lx = largest_Values[0];
+	//float ly = largest_Values[1];
+	//float lz = largest_Values[2];
+	return largest_Values;
+}
+/*
+*sodass alle wohl noch im View Space sind,also NDC Range [-1;+1]
+*/
+float getScaleFactor(float*largest_V,float desired_size){
+	//kleinster Wert,bisher nur x,y, ,reicht wohl auch
+	float smallest_value_x_y=largest_V[0];
+	(largest_V[1] < smallest_value_x_y) ? smallest_value_x_y = largest_V[1]:0;
+	
+	return desired_size/smallest_value_x_y;
+}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
@@ -177,9 +213,14 @@ float g_vertices_rectangle_data[] = {
 		0, 1, 2, 0, 2, 3
 
 	};
-
+	int size_vertices = 4;
+	float* new_vertices = new float[size_vertices * 3];
+	memcpy(new_vertices, g_vertices_rectangle_data, sizeof(g_vertices_rectangle_data));
+float scalefactor=	getScaleFactor(getOverallMinMax(new_vertices,size_vertices),1.0f);
 	addRenderElement(g_vertices_rectangle_data, g_indices_data, kElements, 6);
-
+	//m = new Matrix();
+	m.scale(Vector3(scalefactor, scalefactor, scalefactor));
+	//draw_elements[0].matrix = m->get_as_float16();
 
 	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
 	glUseProgram(programId);
