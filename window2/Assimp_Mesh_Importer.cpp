@@ -20,6 +20,7 @@ Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 		throw new std::runtime_error("cannot import scene");
 	}
 	else{
+		material_importer = new Assimp_Material_Importer(scene);
 		processScene();
 
 	}
@@ -91,6 +92,10 @@ void Assimp_Mesh_Importer::node_handler(aiNode*node,std::vector<aiMatrix4x4/***/
 }
 Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	Mesh_RenderObject ret_mesh;
+	if (scene->HasMaterials()){
+	unsigned int mat_index = mesh->mMaterialIndex;//nur ein Material
+	material_importer->process_Material(mat_index);
+}
 	ret_mesh.mesh_name = mesh->mName.C_Str();
 	(mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE ? throw std::runtime_error("Primitive nicht supported/unterstützt") : (ret_mesh.draw_primitive = PR_TRIANGLE));
 	ret_mesh.vertices = new float[mesh->mNumVertices * 3];

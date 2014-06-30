@@ -1,12 +1,13 @@
 #include "Matrix.h"
 //#include <immintrin.h>
+//Komplett broken,nicht verwenden
 Matrix::Matrix(){
 
 	set_to_identity();
 
 }
 void Matrix::set_to_identity(){
-	mat[0][0] = 1.0f;
+	mat[0][0] = 1.0f;//row1
 	mat[0][1] = 0.0f;
 	mat[0][2] = 0.0f;
 	mat[0][3] = 0.0f;
@@ -33,7 +34,9 @@ float* Matrix::get_as_float16(){
 	float*retmat = new float[16];
 	for (short i = 0; i < 4; i++){
 		for (short j = 0; j < 4; j++){
-			retmat[(i * 4)+j] = mat[i][j];
+			//retmat[(i * 4)+j] = mat[i][j];
+			
+			retmat[(j * 4) + i] = mat[j][i];
 		}
 
 	}
@@ -123,12 +126,32 @@ void Matrix::perspective(float field_of_view, float aspectRatio, float near_plan
 	mat[0][0] = S1;	/*te[4] = 0;*/	/*te[8] = 0/*a*/	//te[12] = 0;//w=(-2*farv*nearv)/(farv-nearv)
 	/*te[1] = 0;*/	mat[1][1] = S2;	/*te[9] = 0/*b*/	//te[13] = 0;
 	/*te[2] = 0;*/	/*te[6] = 0;*/	mat[2][2] = row3_3_v*(far_plane + near_plane)/*c*/;	mat[3][2] = row3_3_v * (2 * far_plane * near_plane);
-	/*te[3] = 0;*/	/*te[7] = 0;*/	mat[2][3] = -1;	te[15] = 0; //std::cout << "!!" << te[14] << "!1";
+	/*te[3] = 0;*/	/*te[7] = 0;*/	mat[2][3] = -1;	//mat[15] = 0; //std::cout << "!!" << te[14] << "!1";
 
 
 }
+array<float,4> Matrix::multiply_with(Vector3 vec){
+	//w vom Vektor=1
+	//danach implementiert: http://hotmath.com/hotmath_help/topics/multiplying-vector-by-a-matrix.html
+	//http://simulationcorner.net/index.php?page=fastmatrixvector
+	//zuerst erste Reihe vom Matrix mit Vektor
+	array<float, 4> ret;
+	array<float, 4>vecn = {vec.x,vec.y,vec.z,1.0f};
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			ret[i] += mat[i][j]*vecn[j];
+
+
+		}
+
+	}
+	return ret;
+}
 void Matrix::proj_Matrix_resolve(){
-	
+	//am Ende:ndc_pos_x=(matrix[row_x]*x)/(matrix[row_w]*obj_w{Anm:obj_w=1})
+	//1.Schritt:ndc_pos_x*(matrix[row_w]*obj_w)=(matrix[row_x]*x)
+	//(ndc_pos_x*(matrix[row_w]*obj_w))/matrix[row_x]=x;
+	//float world_coord_x=(ndc_pos_x*muled_matrix_w)/
 
 }
 void Matrix::rotate(const Quaternion& quaternion){

@@ -37,6 +37,7 @@ private:
 	void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
+	GLuint loc_Position;
 };
 
 
@@ -151,6 +152,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swa
 	
 	//initGL();
 }
+
 void determine_largest_v(float* in_out_largestV,float current_value,int i){
 	
 	if (i == 0){ *in_out_largestV = current_value; }
@@ -160,32 +162,57 @@ void determine_largest_v(float* in_out_largestV,float current_value,int i){
 	}
 
 }
+void determine_smallest_v(float* in_out_smallestV, float current_value, int i){
+
+	if (i == 0){ *in_out_smallestV = current_value; }
+	else if (*in_out_smallestV > current_value){
+		*in_out_smallestV = current_value;
+
+	}//@TODO:copy n paste wegm
+
+}
+
 /*
 * @returns float[3] largest values,also 3d-Koordinaten,könnte theooretisch auch ne Vektor sein,ist es aber net
 */
-float* getOverallMinMax(float*verts,int num_verts){
+array<array<float,3>,2> getOverallMinMax(float*verts,int num_verts){
 	//zuerst max x
-	float *largest_Values= new float[3];//x,y,z
+	//float *largest_Values= new float[3];//x,y,z
+	//float *smallest_Values = new float[3];
+	array<float, 3>largest_Values;
+	array<float, 3>smallest_Values;
 	for (int i = 0; i < num_verts; i++){
 		determine_largest_v(&largest_Values[0], verts[(i * 3) + 0], i);
 		determine_largest_v(&largest_Values[1], verts[(i * 3) + 1], i);
 		determine_largest_v(&largest_Values[2], verts[(i * 3) + 2], i);
 
+		determine_smallest_v(&smallest_Values[0], verts[(i * 3) + 0], i);
+		determine_smallest_v(&smallest_Values[1], verts[(i * 3) + 1], i);
+		determine_smallest_v(&smallest_Values[2], verts[(i * 3) + 2], i);
+
 	}
 	//float lx = largest_Values[0];
 	//float ly = largest_Values[1];
 	//float lz = largest_Values[2];
-	return largest_Values;
+	array<array<float, 3>, 2> ret;
+	ret[0] = largest_Values;
+	ret[1] = smallest_Values;
+	return ret;
 }
 /*
 *sodass alle wohl noch im View Space sind,also NDC Range [-1;+1]
 */
-float getScaleFactor(float*largest_V,float desired_size){
+float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 	//kleinster Wert,bisher nur x,y, ,reicht wohl auch
-	float smallest_value_x_y=largest_V[0];
-	(largest_V[1] < smallest_value_x_y) ? smallest_value_x_y = largest_V[1]:0;
-	
-	return desired_size/smallest_value_x_y;
+	//float smallest_value_x_y=largest_V[0];
+	//(largest_V[1] < smallest_value_x_y) ? smallest_value_x_y = largest_V[1]:0;
+	float *abstaende = new float[3];//x,y,z
+	abstaende[0] = min_max[0][0] - min_max[1][0];
+	abstaende[1] = min_max[0][1] - min_max[1][1];
+	abstaende[2] = min_max[0][2] - min_max[1][2];
+	float smallest_value_x_y = abstaende[0];
+	(abstaende[1] < smallest_value_x_y) ? smallest_value_x_y = abstaende[1] : 0;
+	return desired_range/smallest_value_x_y;
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
@@ -197,10 +224,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	pc.dm = kElements;
 
 float g_vertices_rectangle_data[] = {
-		-0.5f, 0.5f, 0.0f,   // top left
-		-0.5f, -0.5f, 0.0f,   // bottom left
-		0.5f, -0.5f, 0.0f,   // bottom right
-		0.5f, 0.5f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f,
+	0.0f, 1.0f, 1.0f,//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
 	};
 	/*float g_vertices_rectangle_data[] = {
 		-1.0f, 1.0f, 0.0f,   // top left
@@ -210,20 +236,22 @@ float g_vertices_rectangle_data[] = {
 	};*/
 
 	const unsigned int g_indices_data[] = {
-		0, 1, 2, 0, 2, 3
+		0, 1, 2
 
 	};
-	int size_vertices = 4;
+	int size_vertices = 3;
 	float* new_vertices = new float[size_vertices * 3];
 	memcpy(new_vertices, g_vertices_rectangle_data, sizeof(g_vertices_rectangle_data));
-float scalefactor=	getScaleFactor(getOverallMinMax(new_vertices,size_vertices),1.0f);
-	addRenderElement(g_vertices_rectangle_data, g_indices_data, kElements, 6);
+	float scalefactor = getScaleFactor(getOverallMinMax(new_vertices, size_vertices), 2.0f);
+	//addRenderElement(g_vertices_rectangle_data, g_indices_data, kElements, 6);
 	//m = new Matrix();
-	m.scale(Vector3(scalefactor, scalefactor, scalefactor));
+	//m.scale(Vector3(scalefactor, scalefactor, scalefactor));
 	//draw_elements[0].matrix = m->get_as_float16();
 
 	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
 	glUseProgram(programId);
+	loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
+	glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
 	loc_Matrix = glGetUniformLocation(programId,"MVP");
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	vertexbuffer = new GLuint[num_draw_elements];
@@ -278,7 +306,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
 		glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			loc_Position,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?

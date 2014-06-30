@@ -17,7 +17,8 @@
 #include <stringapiset.h>
 #include "Matrix.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
+HHOOK mouse_hook;
+Windows::ApplicationWindow* aw;
 glm::mat4 transformmat = glm::mat4(1.0f);
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
@@ -42,28 +43,73 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	switch (wParam)
 	{
-	case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	//case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	case /*VK_OEM_PLUS*/107:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(1.2f, 1.2f, 1.2f));
+	case /*VK_OEM_MINUS*/109:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(0.5f, 0.5f, 0.5f));
 	default:
 		break;
 	}
 		
 
 }
+void mousedown(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	POINT p;
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	ScreenToClient(aw->native_window_handle, &mousePos);
+
+	glm::mat4 matProjection = glm::perspective(45.0f,(1024.0f/768.0f),0.1f,3000.0f);
+	glm::mat4 matInverse = glm::inverse(matProjection);
+	float in[4];
+	float winZ = 1.0;
+
+
+	in[0] = (2.0f*((float)(mousePos.x - 0) / (1024 - 0))) - 1.0f,
+		in[1] = 1.0f - (2.0f*((float)(mousePos.y - 0) / (768/*height*/ - 0)));
+	in[2] = 2.0* winZ - 1.0;
+	in[3] = 1.0;
+
+	glm::vec4 vIn = glm::vec4(in[0], in[1], in[2], in[3]);
+	glm::vec4 pos = vIn * matInverse;
+
+	pos.w = 1.0 / pos.w;
+
+	pos.x *= pos.w;
+	pos.y *= pos.w;
+	pos.z *= pos.w;
+
+
+	new Windows::Window({ "button", "Click" }, { 175, 30, 30, 50 + 50 }, WS_CHILD | WS_VISIBLE, aw);
+}
 SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
 	return dll_opengl->get_ProcAddress(name);
 }
+/*
+LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
+{
+	POINT p;
+	if (wParam == WM_LBUTTONDOWN)
+	{
+		//new Windows::Window({ "button", "Click" }, { 175, 30, 30, 50 + 50 }, WS_CHILD | WS_VISIBLE,aw);
+		GetCursorPos(&p);
+	}
+
+	//return CallNextHookEx(mouse_hook, code, wParam, lParam);
+	return NULL;
+}*/
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
 {
 	using namespace Windows;
 	int width=1024, height=768;
-	ApplicationWindow*aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
+	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
 	aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
-
+	aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
+	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
 
 	//aw->addOnMessageInvoke(WM_PAINT,winproc_callback_function5);
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
@@ -84,12 +130,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 
 
-	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
+	OpenGLContext*ctx = new OpenGLContext(/*uicontrol->static_draw_field->window_handle*/aw->native_window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 
 
 	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
-	glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
+	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	//glm->setViewPort({730,608});
 	using Windows::Dialogs::File_Dialog;
@@ -133,13 +179,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	);
 		//glm::mat4 finalm = proj_matrix*View*model_matrix;
 		//glm::mat4 finalm = model_matrix;
-		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0));
+		glm->setNumDrawElements(1);
+		glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0));
 		
 		
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
-	glm->setNumDrawElements(1);
+	
 	glm->initGL();
 
 
@@ -152,10 +199,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	float v = 0.75f;
 	model_matrix.scale(Vector3(v,v,v));
 	Matrix m1 = proj_matrix.multiply_with(model_matrix);
-	Matrix m = m1.multiply_with(glm->m);
+	//Matrix m = m1.multiply_with(glm->m);
+	Matrix m = proj_matrix;
+	glm::mat4 matt2=glm::perspective(45.0f,(1024.0f/768.0f), 0.01f, 5000.0f)*transformmat;
+	glm::mat4 model_mat = glm::mat4(1.0f);
+	glm::mat4 camera_mat = glm::lookAt(
+		glm::vec3(4,3,3),
+		glm::vec3(0,0,0),
+		glm::vec3(0,1,0)
+		);
+	glm::mat4 matt = matt2*camera_mat*model_mat;
+//	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
-		glm->draw_elements[0].matrix = m.get_as_float16();
+		//glm->draw_elements[0].matrix = m.get_as_float16();
+		glm->draw_elements[0].matrix = glm::value_ptr(matt);
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mc);
 		//float * mat = glm->draw_elements[0].matrix;

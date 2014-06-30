@@ -7,6 +7,7 @@
 #include "GLStructs.h"
 #include <assimp\ai_assert.h>
 #include <assimp\Importer.hpp>
+#include "Assimp_Material_Importer.h"
 class Assimp_Mesh_Importer{
 
 public:
@@ -16,6 +17,7 @@ public:
 	int CalculateBounds(aiNode* piNode, aiVector3D* p_avOut, const aiMatrix4x4& piMatrix);
 	aiMatrix4x4 ScaleAsset(void);
 private:
+	Assimp_Material_Importer*material_importer;
 	Assimp::Importer *import= new Assimp::Importer();
 	std::vector<Mesh_RenderObject> stor_meshes;
 	const char * file_path;

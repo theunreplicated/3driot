@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\FreeImage\Dist;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\FreeImage\Dist;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\Spiel\assimp3\Assimp\lib\x86;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -52,7 +52,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,9 +72,11 @@
   <ItemGroup>
     <ClCompile Include="ApplicationUI_Control_Mgr.cpp" />
     <ClCompile Include="ApplicationWindow.cpp" />
+    <ClCompile Include="Assimp_Material_Importer.cpp" />
     <ClCompile Include="Assimp_Mesh_Importer.cpp" />
     <ClCompile Include="Assimp_Utils.cpp" />
     <ClCompile Include="file_dialog.cpp" />
+    <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MessageLoop.cpp" />
@@ -86,6 +88,7 @@
   <ItemGroup>
     <ClInclude Include="ApplicationUI_Control_Mgr.h" />
     <ClInclude Include="ApplicationWindow.h" />
+    <ClInclude Include="Assimp_Material_Importer.h" />
     <ClInclude Include="Assimp_Mesh_Importer.h" />
     <ClInclude Include="Assimp_Utils.h" />
     <ClInclude Include="Assimp_Utils_m_convert_16.h" />
@@ -93,6 +96,7 @@
     <ClInclude Include="file_dialog.h" />
     <ClInclude Include="GLMain.h" />
     <ClInclude Include="GLStructs.h" />
+    <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="OpenGLContext.h" />

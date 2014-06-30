@@ -24,7 +24,6 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	edit_startpoint_h = 30;
 
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
-	
 }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
@@ -50,7 +49,7 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 	//int cy = GetSystemMetrics(SM_CYSCREEN);
 	//jetzt unwichtig
 	HDC hDC = static_draw_field->DeviceContext_get();
-
+	
 	//
 	/*std::string s = std::to_string(value_x);http://stackoverflow.com/questions/10847237/how-to-convert-from-int-to-char
 	char const *pchar = s.c_str();  //use char const* as target type
@@ -79,6 +78,7 @@ void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	action_button = new Windows::Window({ "button", "Actionnnn" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50+padding }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
 	new_row_add_button->on(wpe, btn_add_row_cb);
 	action_button->on(wpe,btn_action);
+
 
 }
 void ApplicationUI_Control_Mgr::addEditControls(){

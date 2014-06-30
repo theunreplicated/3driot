@@ -97,10 +97,12 @@ public:
 	void translate(/*float x = 0.0f, float y = 0.0f, float z = 0.0f*/Vector3 v);
 	void scale(Vector3 v);
 	Matrix multiply_with(Matrix mmul);
+	array<float, 4> multiply_with(Vector3 vec);
 	void operator*(Matrix mmul){ *this = multiply_with(mmul); };
 	void perspective(float field_of_view, float aspectRatio, float near_plane, float far_plane);
 	void rotate(const Quaternion& quaternion);//https://qt.gitorious.org/qt/qtbase/source/bab494e4d046f5617d19f5fec35eeff94377c51f:src/gui/math3d/qmatrix4x4.cpp#L1309
 	void proj_Matrix_resolve();/**resolve hört sich cool an,so wie die Lösung jetzt endlich geschafft,von dem groooßen Problem,so wars auch und so bleibt es jetzt von diesem Zeitpunkt her hoffentlich nicht*/
+	
 };
 
 
