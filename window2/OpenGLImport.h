@@ -65,6 +65,12 @@ namespace OGL{
 	IMPORT_GL_DECLARE(Viewport);
 	IMPORT_GL_DECLARE(Scissor);
 	IMPORT_GL_DECLARE(Enable);
+
+	IMPORT_GL_DECLARE(PixelStorei);
+	IMPORT_GL_DECLARE(GenTextures);
+	IMPORT_GL_DECLARE(BindTexture);
+	IMPORT_GL_DECLARE(TexImage2D);
+	IMPORT_GL_DECLARE(TexParameteri);
 }
 
 namespace OGL{
@@ -145,6 +151,12 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(Viewport);
 	IMPORT_GL_FUNC(Scissor);
 	IMPORT_GL_FUNC(Enable);
+
+	IMPORT_GL_FUNC(PixelStorei);
+	IMPORT_GL_FUNC(GenTextures);
+	IMPORT_GL_FUNC(BindTexture);
+	IMPORT_GL_FUNC(TexImage2D);
+	IMPORT_GL_FUNC(TexParameteri);
 	if (import("glDrawElements")){ OutputDebugString("----"); }
 	else{
 		OutputDebugString("!!!");
