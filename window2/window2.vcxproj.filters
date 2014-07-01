@@ -134,6 +134,9 @@
     <ClInclude Include="ImageLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="egl_display_binding.h">
+      <Filter>Headerdateien\GL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource_script.rc">

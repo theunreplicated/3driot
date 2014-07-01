@@ -352,7 +352,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			(void*)0            // array buffer offset//Quelle:vermutlich opengl-tutorial.org
 			);
 		buffer_add_counter++;
-		// Draw the triangle !
+		// Draw Calls kommen hier
 		if (pc.dm == kArrays){
 			glDrawArrays(pc.draw_primitive, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
 		}
