@@ -38,7 +38,9 @@ private:
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
 	GLuint loc_Position;
-	GLuint texcoord_position,diffuse_Texture_ID;
+	GLuint texcoord_position,diffuse_Texture_sample_Loc;
+	GLuint * Diffuse_Texture_IDs;
+	GLuint loadTexture(THREEDObject*mesh_data);
 
 };
 
@@ -139,11 +141,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	THREEDObject pp;
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
+	pp.texcoords_totalsize = obj->num_tex_coords*sizeof(float);
 	pp.indices_totalsize = obj->num_indices*sizeof(unsigned int);
 	pp.draw_call_num_elements = obj->num_indices /*/ 3==eigentlich faces*3-aber nur für Dreiecke*/;/*@TODO:ändern*/
 	pp.indices = obj->indices;
 	pp.vertices = obj->vertices;
 	pp.draw_primitive = obj->draw_primitive;
+	pp.has_tex_coord = obj->has_tex_coord;
+	pp.tex_coords = obj->tex_coords;
 	//if (pass_matrix == 0){
 		//pass_matrix = new float[16];
 		
@@ -157,6 +162,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	num_draw_elements++;
 }
 
+ 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
 
@@ -212,6 +218,7 @@ void determine_smallest_v(float* in_out_smallestV, float current_value, int i){
 
 }
 
+
 /*
 * @returns float[3] largest values,also 3d-Koordinaten,könnte theooretisch auch ne Vektor sein,ist es aber net
 */
@@ -255,6 +262,31 @@ float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 	return desired_range/smallest_value_x_y;
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::loadTexture(THREEDObject*mesh_data){
+	GLuint textureID;
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &textureID);
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
+	//mesh_data->texture_data.unload();//muss man nicht unbedingt machen
+	//@TODO:unload sollte klappen,keine access violation
+	/*
+	 // ... nice trilinear filtering.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+        glGenerateMipmap(GL_TEXTURE_2D);
+das kommt da normalerweise hin
+	*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	return textureID;
+}
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
@@ -292,34 +324,41 @@ float g_vertices_rectangle_data[] = {
 	glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
 	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
-	loc_Position = bindAttribLocation("vertexPosition_modelspace");
+	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders
 	texcoord_position = bindAttribLocation("vertexUV");
 	loc_Matrix = glGetUniformLocation(programId,"MVP");
-	diffuse_Texture_ID = glGetUniformLocation(programId, "myTextureSampler");
-
+	diffuse_Texture_sample_Loc = glGetUniformLocation(programId, "myTextureSampler");
+	//Diffuse_Texture_ID = loadTexture();
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	vertex_buffer = new GLuint[num_draw_elements];
 	indices_buffer = new GLuint[num_draw_elements];
+	texcoords_buffer = new GLuint[num_draw_elements];
 	glGenBuffers(num_draw_elements/**2*/, vertex_buffer);
 	glGenBuffers(num_draw_elements,indices_buffer);
+	glGenBuffers(num_draw_elements,texcoords_buffer);
+	Diffuse_Texture_IDs = new GLuint[num_draw_elements];//@TODO:es werden alle Dingens geaddet,nicht aber nur die,die ne Texture haben
 	//int buffer_add_counter = 0;
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
 
 		THREEDObject pc = draw_elements[i];
-		// The following commands will talk about our 'vertexbuffer' buffer
+		Diffuse_Texture_IDs[i] = loadTexture(&pc);
+
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer[i]);
-		//buffer_add_counter++;
-
 		// Give our vertices to OpenGL.
 		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
 		if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer[i]);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
 		}
-		//buffer_add_counter++;
+		if (pc.has_tex_coord){
+			glBindBuffer(GL_ARRAY_BUFFER, texcoords_buffer[i]);
+			// Give our vertices to OpenGL.
+			glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.texcoords_totalsize, pc.tex_coords, GL_STATIC_DRAW);
+
+		}
 	}
 
 	
@@ -331,7 +370,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	
 	//glCreateShader(GL_VERTEX_SHADER);
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
-
+	//@note normalerweise vorher gluseprogram,ein program müsste im moment reichen,da kein Wechsel,auch net brnötig
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(0x00004000);
@@ -343,13 +382,20 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	//float *mat = matrix.get_as_float16();
 
 	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(loc_Position);//@TODO:gucken ob hierhin oder in die For-SChleife,disalb emuss nach dem draw-call kommen
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
 		//int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
+
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Diffuse_Texture_IDs[i]);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(diffuse_Texture_sample_Loc, 0);
+		
+		//position vertex hinschieben
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer[i]/*testweise*/);
 		glVertexAttribPointer(
 			loc_Position,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -359,7 +405,23 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			0,                  // stride
 			(void*)0            // array buffer offset//Quelle:vermutlich opengl-tutorial.org
 			);
-		//buffer_add_counter++;
+		
+
+		glEnableVertexAttribArray(texcoord_position);
+		glBindBuffer(GL_ARRAY_BUFFER, texcoords_buffer[i]);
+		glVertexAttribPointer(
+			texcoord_position,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+			2,                                // size : U+V => 2
+			GL_FLOAT,                         // type
+			GL_FALSE,                         // normalized?
+			0,                                // stride
+			(void*)0                          // array buffer offset
+			);
+
+
+
+
+
 		// Draw Calls kommen hier
 		if (pc.dm == kArrays){
 			glDrawArrays(pc.draw_primitive, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
@@ -373,8 +435,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 		//buffer_add_counter++;
 	}
 
-	glDisableVertexAttribArray(0);
-
+	glDisableVertexAttribArray(loc_Position);
+	glDisableVertexAttribArray(texcoord_position);
 
 	swapBuffers();
 

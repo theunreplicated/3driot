@@ -71,6 +71,8 @@ namespace OGL{
 	IMPORT_GL_DECLARE(BindTexture);
 	IMPORT_GL_DECLARE(TexImage2D);
 	IMPORT_GL_DECLARE(TexParameteri);
+	IMPORT_GL_DECLARE(ActiveTexture);
+	IMPORT_GL_DECLARE(Uniform1i);
 }
 
 namespace OGL{
@@ -98,6 +100,7 @@ namespace OGL{
 	GLenum GL_NEAREST=0x2600;
 	GLenum GL_TEXTURE_MIN_FILTER=0x2801;
 	GLenum GL_TEXTURE_MAG_FILTER=0x2800;
+	GLenum GL_TEXTURE0=0x84C0;
 }
 class OpenGLImport{
 
@@ -166,11 +169,13 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(BindTexture);
 	IMPORT_GL_FUNC(TexImage2D);
 	IMPORT_GL_FUNC(TexParameteri);
-	if (import("glDrawElements")){ OutputDebugString("----"); }
-	else{
-		OutputDebugString("!!!");
+	IMPORT_GL_FUNC(ActiveTexture);
+	IMPORT_GL_FUNC(Uniform1i);
+	//if (import("glDrawElements")){ OutputDebugString("----"); }
+	//else{
+		//OutputDebugString("!!!");
 		//OutputDebugString(GetLastError()); 
-	}
+	//}
 	//glClearColor5 = reinterpret_cast<GrGLClearColorProc>(import("glClearColor"));
 	//Hinweis=einige 
 }

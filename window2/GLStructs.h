@@ -5,13 +5,15 @@
 #include "OpenGL_Data_Types.h"
 #include "WindowStructs.h"
 #include <glm/mat4x4.hpp>
+#include "Assimp_Material_Importer.h"
 enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct RenderStructBase{
 	float * tex_coords; bool has_tex_coord = false;
-
+	image_stor texture_data; bool has_texture = false;
 };
 struct Mesh_RenderObject:RenderStructBase{
 	PrimitiveType draw_primitive;
+	int num_tex_coords;
 	float * vertices/*durch 3 für einzelne Vertices*/; unsigned int size_vertices/*totale länge,muss noch durch 3 geteilt werden*/;
 	unsigned int num_indices = 0; unsigned int * indices/*@TODO:unsigned int oder long ist wohl besser*/;
 	const char * mesh_name, *node_name;
@@ -27,7 +29,7 @@ struct THREEDObject:RenderStructBase{
 	/*GLu*/unsigned int * indices = NULL;//nur falls Elemente
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
-	size_t vertices_totalsize, indices_totalsize;
+	size_t vertices_totalsize, indices_totalsize,texcoords_totalsize;
 	float* matrix;
 	bool enable_matrix = false;
 };

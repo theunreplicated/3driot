@@ -94,7 +94,9 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	Mesh_RenderObject ret_mesh;
 	if (scene->HasMaterials()){
 	unsigned int mat_index = mesh->mMaterialIndex;//nur ein Material
-	material_importer->process_Material(mat_index);
+	ret_mesh.texture_data=material_importer->process_Material(mat_index);
+	ret_mesh.has_texture = true;
+
 }
 	ret_mesh.mesh_name = mesh->mName.C_Str();
 	(mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE ? throw std::runtime_error("Primitive nicht supported/unterstützt") : (ret_mesh.draw_primitive = PR_TRIANGLE));
@@ -140,7 +142,8 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	}
 	if (mesh->HasTextureCoords(0)/*wohl ? @TODO*/){
 		ret_mesh.has_tex_coord = true;
-		ret_mesh.tex_coords = new float[2 * mesh->mNumVertices];
+		ret_mesh.num_tex_coords = 2 * mesh->mNumVertices;
+		ret_mesh.tex_coords = new float[ret_mesh.num_tex_coords];
 		for (unsigned int i = 0; i<mesh->mNumVertices; i++){
 			ret_mesh.tex_coords[i * 2] = mesh->mTextureCoords[0][i].x;
 			ret_mesh.tex_coords[(i * 2) + 1] = mesh->mTextureCoords[0][i].y;
