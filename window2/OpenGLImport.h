@@ -73,6 +73,9 @@ namespace OGL{
 	IMPORT_GL_DECLARE(TexParameteri);
 	IMPORT_GL_DECLARE(ActiveTexture);
 	IMPORT_GL_DECLARE(Uniform1i);
+	//typedef SD_GL_DepthFuncProc
+	typedef void(__stdcall*SD_GL_DepthFuncProc)(GrGLenum func);
+	SD_GL_DepthFuncProc glDepthFunc;
 }
 
 namespace OGL{
@@ -101,6 +104,10 @@ namespace OGL{
 	GLenum GL_TEXTURE_MIN_FILTER=0x2801;
 	GLenum GL_TEXTURE_MAG_FILTER=0x2800;
 	GLenum GL_TEXTURE0=0x84C0;
+	GLenum GL_RGB=0x1907;
+	GLenum GL_LESS=0x0201;
+	GLenum GL_DEPTH_BUFFER_BIT=0x00000100;
+	GLenum GL_COLOR_BUFFER_BIT=0x00004000;
 }
 class OpenGLImport{
 
@@ -171,6 +178,8 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(TexParameteri);
 	IMPORT_GL_FUNC(ActiveTexture);
 	IMPORT_GL_FUNC(Uniform1i);
+
+	IMPORT_GL(glDepthFunc,SD_GL_DepthFuncProc);
 	//if (import("glDrawElements")){ OutputDebugString("----"); }
 	//else{
 		//OutputDebugString("!!!");

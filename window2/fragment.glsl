@@ -7,6 +7,6 @@ void main()
 {
 //https://code.google.com/p/opengl-tutorial-org/source/browse/tutorial05_textured_cube/TextureFragmentShader.fragmentshader
 	// Output color = red 
-	color = vec3(1,0,0);
-//color = texture2D( myTextureSampler, UV ).rgb;
+	//color = vec3(1,0,0);
+color = texture2D( myTextureSampler, UV ).rgb;
 }

@@ -268,8 +268,22 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::loadTexture
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	GLubyte pixels[4 * 3] =
+	{
+		255, 0, 0, // Red
+		0, 255, 0, // Green
+		0, 0, 255, // Blue
+		255, 255, 0  // Yellow
+	};
+
+	// Use tightly packed data
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
+
+	// Load the texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, GL_RGB, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
 	//mesh_data->texture_data.unload();//muss man nicht unbedingt machen
 	//@TODO:unload sollte klappen,keine access violation
 	/*
@@ -294,7 +308,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	/*
 	THREEDObject pc;
 	pc.dm = kElements;
-
+	
 float g_vertices_rectangle_data[] = {
 	-1.0f, -1.0f, 1.0f,
 	1.0f, -1.0f, 1.0f,
@@ -319,8 +333,11 @@ float g_vertices_rectangle_data[] = {
 	//m = new Matrix();
 	//m.scale(Vector3(scalefactor, scalefactor, scalefactor));
 	//draw_elements[0].matrix = m->get_as_float16();
-
-	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
+	
+	/*programId = */
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
 	glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
 	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
@@ -373,7 +390,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	//@note normalerweise vorher gluseprogram,ein program müsste im moment reichen,da kein Wechsel,auch net brnötig
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(0x00004000);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 
 	//Matrix matrix;
