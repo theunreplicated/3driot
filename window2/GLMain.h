@@ -27,7 +27,7 @@ private:
 	//void(*swapBuffers)();
 	void swapBuffers();
 	GLuint programId;
-	GLuint * vertexbuffer;
+	GLuint * vertex_buffer,*indices_buffer,*texcoords_buffer;
 	int num_draw_elements = 0;
 	
 	GLuint bindAttribLocation(const char* attrib_name);
@@ -298,9 +298,11 @@ float g_vertices_rectangle_data[] = {
 	diffuse_Texture_ID = glGetUniformLocation(programId, "myTextureSampler");
 
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-	vertexbuffer = new GLuint[num_draw_elements];
-	glGenBuffers(num_draw_elements*2, vertexbuffer);
-	int buffer_add_counter = 0;
+	vertex_buffer = new GLuint[num_draw_elements];
+	indices_buffer = new GLuint[num_draw_elements];
+	glGenBuffers(num_draw_elements/**2*/, vertex_buffer);
+	glGenBuffers(num_draw_elements,indices_buffer);
+	//int buffer_add_counter = 0;
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
@@ -308,16 +310,16 @@ float g_vertices_rectangle_data[] = {
 		THREEDObject pc = draw_elements[i];
 		// The following commands will talk about our 'vertexbuffer' buffer
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
-		buffer_add_counter++;
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer[i]);
+		//buffer_add_counter++;
 
 		// Give our vertices to OpenGL.
 		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
 		if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer[i]);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
 		}
-		buffer_add_counter++;
+		//buffer_add_counter++;
 	}
 
 	
@@ -345,10 +347,10 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	for (int i = 0; i < num_draw_elements; i++)
 	{
 
-		int buffer_add_counter = 0;
+		//int buffer_add_counter = 0;
 		THREEDObject pc = draw_elements[i];
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]/*testweise*/);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer[i]/*testweise*/);
 		glVertexAttribPointer(
 			loc_Position,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
@@ -357,18 +359,18 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			0,                  // stride
 			(void*)0            // array buffer offset//Quelle:vermutlich opengl-tutorial.org
 			);
-		buffer_add_counter++;
+		//buffer_add_counter++;
 		// Draw Calls kommen hier
 		if (pc.dm == kArrays){
 			glDrawArrays(pc.draw_primitive, 0, pc.draw_call_num_elements); // 3 indices starting at 0 -> 1 triangle
 		}
 		else if (pc.dm == kElements){
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffer[buffer_add_counter]);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer[i]);
 			glDrawElements(pc.draw_primitive, pc.draw_call_num_elements, GL_UNSIGNED_INT, /*pc.indices*/0);
 
 		}
-		buffer_add_counter++;
+		//buffer_add_counter++;
 	}
 
 	glDisableVertexAttribArray(0);
