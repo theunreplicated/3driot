@@ -19,7 +19,7 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
 Windows::ApplicationWindow* aw;
-glm::mat4 transformmat = glm::mat4(1.0f);
+glm::mat4 scalemat,rotmat = glm::mat4(1.0f);
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -44,8 +44,9 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	switch (wParam)
 	{
 	//case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	case /*VK_OEM_PLUS*/107:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(2.2f, 2.2f, 2.2f));
-	case /*VK_OEM_MINUS*/109:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(0.5f, 0.5f, 0.5f));
+	case /*VK_OEM_PLUS*/107:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(2.0f, 2.0f, 2.0f)); break;
+	case /*VK_OEM_MINUS*/109:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(0.5f, 0.5f, 0.5f)); break;
+	case VK_LEFT:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
 	default:
 		break;
 	}
@@ -201,7 +202,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Matrix m1 = proj_matrix.multiply_with(model_matrix);
 	//Matrix m = m1.multiply_with(glm->m);
 	Matrix m = proj_matrix;
-	glm::mat4 matt2=glm::perspective(45.0f,(1024.0f/768.0f), 0.01f, 5000.0f)*transformmat;
+	
+	glm::mat4 matt2=glm::perspective(45.0f,(1024.0f/768.0f), 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
 		glm::vec3(4,3,3),
@@ -212,6 +214,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
+		glm::mat4 transformmat = scalemat*rotmat;
 		glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
 		//glm->draw_elements[0].matrix = m.get_as_float16();
 		glm->draw_elements[0].matrix = glm::value_ptr(matt);

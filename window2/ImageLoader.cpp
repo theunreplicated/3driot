@@ -97,10 +97,11 @@ Image_Load_Result ImageLoader::load(const char* filename){
 	
 	//int*testvar= new int;
 	//testvar[0] = 512;
-	unsigned int iBPP = FreeImage_GetBPP(dib);
-	int GL_BGR = 0x80E0;
-	int GL_LUMINANCE = 0x1909;
-	int iFormat = iBPP == 24 ? GL_BGR : iBPP == 8 ? GL_LUMINANCE : 0;
+//	unsigned int iBPP = FreeImage_GetBPP(dib);
+	//int GL_BGR = 0x80E0;
+	//int GL_LUMINANCE = 0x1909;
+	//int iFormat = iBPP == 24 ? GL_BGR : iBPP == 8 ? GL_LUMINANCE : 0;
+	int iFormat = 0;//@TODO:das wegmachen,ist nur n dummy
 	//return success
 	return{width,height,bits,dib,ColorType,iFormat,textura};
 }
