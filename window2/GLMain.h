@@ -38,6 +38,8 @@ private:
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
 	GLuint loc_Position;
+	GLuint texcoord_position,diffuse_Texture_ID;
+
 };
 
 
@@ -118,7 +120,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::bindAttribL
 	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
 	glBindAttribLocation(programId,attrib_location_counter,attrib_name);
 	attrib_location_counter++;
-
+	return (attrib_location_counter-1);
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setViewPort(GLRect rect){
@@ -257,7 +259,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
-	
+	/*
 	THREEDObject pc;
 	pc.dm = kElements;
 
@@ -265,7 +267,7 @@ float g_vertices_rectangle_data[] = {
 	-1.0f, -1.0f, 1.0f,
 	1.0f, -1.0f, 1.0f,
 	0.0f, 1.0f, 1.0f,//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
-	};
+	};*/
 	/*float g_vertices_rectangle_data[] = {
 		-1.0f, 1.0f, 0.0f,   // top left
 		-1.0f, -1.0f, 0.0f,   // bottom left
@@ -273,7 +275,7 @@ float g_vertices_rectangle_data[] = {
 		1.0f, 1.0f, 0.0f//4Eck kann man auch mittels glDrawArrays hinkriegen,auch mit 4 Vertices
 	};*/
 
-	const unsigned int g_indices_data[] = {
+	/*const unsigned int g_indices_data[] = {
 		0, 1, 2
 
 	};
@@ -288,9 +290,13 @@ float g_vertices_rectangle_data[] = {
 
 	/*programId = */OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
 	glUseProgram(programId);
-	loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
-	glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
+	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
+	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
+	loc_Position = bindAttribLocation("vertexPosition_modelspace");
+	texcoord_position = bindAttribLocation("vertexUV");
 	loc_Matrix = glGetUniformLocation(programId,"MVP");
+	diffuse_Texture_ID = glGetUniformLocation(programId, "myTextureSampler");
+
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	vertexbuffer = new GLuint[num_draw_elements];
 	glGenBuffers(num_draw_elements*2, vertexbuffer);
