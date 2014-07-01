@@ -44,7 +44,7 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	switch (wParam)
 	{
 	//case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	case /*VK_OEM_PLUS*/107:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(1.2f, 1.2f, 1.2f));
+	case /*VK_OEM_PLUS*/107:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(2.2f, 2.2f, 2.2f));
 	case /*VK_OEM_MINUS*/109:transformmat/*or...*/ = glm::scale(transformmat, glm::vec3(0.5f, 0.5f, 0.5f));
 	default:
 		break;
@@ -208,10 +208,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		glm::vec3(0,0,0),
 		glm::vec3(0,1,0)
 		);
-	glm::mat4 matt = matt2*camera_mat*model_mat;
+	
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
+		glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
 		//glm->draw_elements[0].matrix = m.get_as_float16();
 		glm->draw_elements[0].matrix = glm::value_ptr(matt);
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;

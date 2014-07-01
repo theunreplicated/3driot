@@ -20,9 +20,9 @@ Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 		throw new std::runtime_error("cannot import scene");
 	}
 	else{
-		material_importer = new Assimp_Material_Importer(scene);
+		material_importer = new Assimp_Material_Importer(scene, const_cast<char *>(file_path));
 		processScene();
-
+		
 	}
 
 }
@@ -96,6 +96,7 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	unsigned int mat_index = mesh->mMaterialIndex;//nur ein Material
 	ret_mesh.texture_data=material_importer->process_Material(mat_index);
 	ret_mesh.has_texture = true;
+
 
 }
 	ret_mesh.mesh_name = mesh->mName.C_Str();

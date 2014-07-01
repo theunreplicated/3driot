@@ -108,6 +108,8 @@ namespace OGL{
 	GLenum GL_LESS=0x0201;
 	GLenum GL_DEPTH_BUFFER_BIT=0x00000100;
 	GLenum GL_COLOR_BUFFER_BIT=0x00004000;
+	GLenum GL_BGR = 0x80E0;
+	GLenum  GL_BGRA=0x80E1;
 }
 class OpenGLImport{
 

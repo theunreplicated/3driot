@@ -149,6 +149,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 	pp.draw_primitive = obj->draw_primitive;
 	pp.has_tex_coord = obj->has_tex_coord;
 	pp.tex_coords = obj->tex_coords;
+	pp.texture_data = obj->texture_data;
 	//if (pass_matrix == 0){
 		//pass_matrix = new float[16];
 		
@@ -268,22 +269,37 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::loadTexture
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	GLubyte pixels[4 * 3] =
+	GLubyte pixels[4 * 4] =
 	{
-		255, 0, 0, // Red
-		0, 255, 0, // Green
-		0, 0, 255, // Blue
-		255, 255, 0  // Yellow
+		255, 0, 0,0, // Red
+		0, 255, 0,0, // Green
+		0, 0, 255,0, // Blue
+		255, 255, 0,0  // Yellow
 	};
 
 	// Use tightly packed data
 	
-
+	//int test_ret = mesh_data->texture_data.width;
 	// Load the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
+	GLenum texture_type=GL_RGBA;
+	if (mesh_data->texture_data.color_type == ColorData_RGB){
+		GLenum texture_type = GL_RGB;
 
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, GL_RGB, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
+	}
+	else if (mesh_data->texture_data.color_type == ColorData_RGBA){
+		GLenum texture_type = GL_RGBA;
+
+	}
+	else{
+		//@TODO:loggen,falls undefiniert
+
+	}
+	//int *testvp = mesh_data->texture_data.test;
+	//int textvar = *testvp;
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0,/* mesh_data->texture_data.format*/GL_RGBA, GL_UNSIGNED_BYTE,/*mesh_data->texture_data.bits*/(void*)mesh_data->texture_data.texture_bytes);
 	//mesh_data->texture_data.unload();//muss man nicht unbedingt machen
 	//@TODO:unload sollte klappen,keine access violation
 	/*
@@ -360,6 +376,7 @@ float g_vertices_rectangle_data[] = {
 
 
 		THREEDObject pc = draw_elements[i];
+		
 		Diffuse_Texture_IDs[i] = loadTexture(&pc);
 
 

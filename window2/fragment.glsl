@@ -9,4 +9,5 @@ void main()
 	// Output color = red 
 	//color = vec3(1,0,0);
 color = texture2D( myTextureSampler, UV ).rgb;
+
 }
