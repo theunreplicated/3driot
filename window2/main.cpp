@@ -279,11 +279,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	);
 		//glm::mat4 finalm = proj_matrix*View*model_matrix;
 		//glm::mat4 finalm = model_matrix;
-		glm->setNumDrawElements(aiimport->stor_meshes_render.size());
-		for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
-			glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+		//}
+		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+			glm->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
 		}
-		
 		
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
@@ -322,8 +324,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	while (ml->Message_Get()){
 		glm::mat4 transformmat = scalemat*rotmat;
 		glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
-		for (int i = 0; i < glm->num_draw_elements; i++){
-			glm->draw_elements[i].matrix = glm::value_ptr(matt);
+//		for (int i = 0; i < glm->num_draw_elements; i++){
+			//glm->draw_elements[i].matrix = glm::value_ptr(matt);
+		//}
+		for (THREEDObject d : glm->draw_elements){
+			d.matrix = glm::value_ptr(matt);
+
 		}
 		//glm->draw_elements[0].matrix = m.get_as_float16();
 		//glm->draw_elements[0].matrix = glm::value_ptr(matt);

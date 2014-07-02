@@ -21,8 +21,12 @@ struct Mesh_RenderObject:RenderStructBase{
 	std::vector<std::array<std::array<float, 4>, 4>>transform_matrices;//@TODO:Matrices(Matrizen) wieder auf den Heap
 };
 
+struct Interals_do_not_touch{
+GLuint 	vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
+
+};
 enum draw_method{ kArrays, kElements,kInvisible };//konstant davor,falls Konflikte
-struct THREEDObject:RenderStructBase{
+struct THREEDObject:RenderStructBase,Interals_do_not_touch{
 	PrimitiveType draw_primitive=PR_TRIANGLE;
 	draw_method dm;
 	/*GL*/float * vertices;
