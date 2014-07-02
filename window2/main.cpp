@@ -25,13 +25,63 @@
 #include "WinUtils.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
-Windows::Dialogs::File_Dialog*dc;
+
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
+Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
 glm::mat4 scalemat,rotmat = glm::mat4(1.0f);
 
 	GLMain<swapBuffersFunc, OpenGLContext> * glmain;
 
+
+	void onMeshImportButton(HWND hWnd, WPARAM wParam, LPARAM lParam){
+		// = new Windows::Dialogs::File_Dialog();
+		LPWSTR dcc = dc->OpenFileName(L"C:\\");
+		if (*dcc != *L""){///bei Abbruch==L""
+
+			char buffer[MAX_PATH];
+
+
+
+			size_t CharactersConverted = 0;
+			wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
+
+
+			Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+			//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+			//Mesh_RenderObject oo = aiimport->get_render_obj(0);
+
+			//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
+
+			//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
+			//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
+
+			//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
+			//mat4 mat = proj_matrix*scalematrix;
+
+
+			//mat4 model_matrix=glm::make_mat4(mmmm);
+			//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
+			//mat4 model_matrix = glm::mat4(1.0f);
+			//glm::mat4 View = glm::lookAt(
+			//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+			//	glm::vec3(0, 0, 0), // and looks at the origin
+			//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+			//	);
+			//glm::mat4 finalm = proj_matrix*View*model_matrix;
+			//glm::mat4 finalm = model_matrix;
+			//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+			//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+			//}
+			for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+				glmain->add_to_buffer_and_add_to_draw_list(&d);
+			}
+
+			//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
+			//int d2 = oo.indices[2]
+		}
+	}
 
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
@@ -52,6 +102,13 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	const char* message = "My First Window";
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
 }
+void oncommand(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->open_file_btn->window_handle))
+	{
+		onMeshImportButton(hWnd,wParam,lParam);
+
+	}
+}
 void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	switch (wParam)
@@ -70,35 +127,7 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		
 
 }
-void mousedown(HWND hWnd, WPARAM wParam, LPARAM lParam){//Quelle:irgendwo im INternet
-	POINT p;
-	POINT mousePos;
-	GetCursorPos(&mousePos);
-	ScreenToClient(aw->native_window_handle, &mousePos);
 
-	glm::mat4 matProjection = glm::perspective(45.0f,(1024.0f/768.0f),0.1f,3000.0f);
-	glm::mat4 matInverse = glm::inverse(matProjection);
-	float in[4];
-	float winZ = 1.0;
-
-
-	in[0] = (2.0f*((float)(mousePos.x - 0) / (1024 - 0))) - 1.0f,
-		in[1] = 1.0f - (2.0f*((float)(mousePos.y - 0) / (768/*height*/ - 0)));
-	in[2] = 2.0* winZ - 1.0;
-	in[3] = 1.0;
-
-	glm::vec4 vIn = glm::vec4(in[0], in[1], in[2], in[3]);
-	glm::vec4 pos = vIn * matInverse;
-
-	pos.w = 1.0 / pos.w;
-
-	pos.x *= pos.w;
-	pos.y *= pos.w;
-	pos.z *= pos.w;
-
-
-	new Windows::Window({ "button", "Click" }, { 175, 30, 30, 50 + 50 }, WS_CHILD | WS_VISIBLE, aw);
-}
 DWORD WINAPI threadFunc(LPVOID lpParam){
 	std::ofstream fs;
 	fs.open("file.shotgun", std::ios::out | std::ios::trunc);
@@ -126,54 +155,6 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 	return NULL;
 }*/
 
-void onMeshImportButton(HWND hWnd, WPARAM wParam, LPARAM lParam){
-
-LPWSTR dcc=	dc->OpenFileName(L"C:\\");
-	if (*dcc != *L""){///bei Abbruch==L""
-
-		char buffer[MAX_PATH];
-
-		
-
-		size_t CharactersConverted = 0;
-		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
-
-		
-		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
-		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
-		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
-
-		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
-		
-		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
-		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
-
-		//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
-		//mat4 mat = proj_matrix*scalematrix;
-
-
-		//mat4 model_matrix=glm::make_mat4(mmmm);
-		//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
-		//mat4 model_matrix = glm::mat4(1.0f);
-		//glm::mat4 View = glm::lookAt(
-		//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-		//	glm::vec3(0, 0, 0), // and looks at the origin
-		//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-		//	);
-		//glm::mat4 finalm = proj_matrix*View*model_matrix;
-		//glm::mat4 finalm = model_matrix;
-		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
-		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
-		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
-		//}
-		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-			glmain->add_to_buffer_and_add_to_draw_list(&d);
-		}
-
-		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
-		//int d2 = oo.indices[2]
-	}
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
@@ -184,7 +165,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
 	aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
-	aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
+	aw->addOnMessageInvoke(WM_COMMAND,oncommand);
+	//aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
 	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
 
 	//aw->addOnMessageInvoke(WM_PAINT,winproc_callback_function5);
@@ -253,7 +235,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	
 	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
-	uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
+	//uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);
 
@@ -262,7 +244,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
-
+	
 
 	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
@@ -271,7 +253,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
 	glmain->setViewPort({ pos.bottom, uicontrol->static_draw_field->Position_get().height, 0, 0 });
 	//using Windows::Dialogs::File_Dialog;
-	dc = new Windows::Dialogs::File_Dialog();
+	glmain->initGL();
+	/*Windows::Dialogs::File_Dialog*dc*/ dc= new Windows::Dialogs::File_Dialog();
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
 	
@@ -286,7 +269,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		glm::vec3(0, 1, 0)
 		);
 	glm::mat4 std_res = matt2*camera_mat;
-	/*LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	
 	if (*dcc!=*L""){///bei Abbruch==L""
 		//open
 
@@ -313,7 +297,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// UTF-8 narrow multibyte encoding
 		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
 		
-		/*Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
 		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
 		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
 	
@@ -341,28 +325,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
 		//}
 		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-			glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
 		}
 		
+		THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
+		std::string data = tosz->serialize(glmain->draw_elements);
+		//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
+		//Thread*t = new Thread(threadFunc,NULL);
+		HMODULE hModule = GetModuleHandleW(NULL);
+		WCHAR path[MAX_PATH];
+		GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+		wn = new Win_Utils();
+		std::string paths = wn->getdirpath(path);
+		std::string dingens_ding_path = "\\";
+		std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
+		wn->saveToFile(finalpath.c_str(), data.c_str());
+
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
 	//Thread*t = new Thread(threadFunc, NULL);
-	*/
-	glmain->initGL();
+	
+	
 	//delete aiimport;
-	//THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
-	//std::string data=tosz->serialize(glm->draw_elements,1);
-	//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
-	//Thread*t = new Thread(threadFunc,NULL);
-	HMODULE hModule = GetModuleHandleW(NULL);
-	WCHAR path[MAX_PATH];
-	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
-	Win_Utils*wn = new Win_Utils();
-	std::string paths=wn->getdirpath(path);
-	std::string dingens_ding_path="\\";
-	std::string finalpath = paths + dingens_ding_path+"scene.shotgun" ;
-	wn->saveToFile(finalpath.c_str(),"hey");
 
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();

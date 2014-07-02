@@ -6,6 +6,8 @@
 #include "WindowStructs.h"
 //#include <glm/mat4x4.hpp>
 #include "Assimp_Material_Importer.h"
+//#include "ImageLoader.h"
+
 enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct RenderStructBase{
 	float * tex_coords; bool has_tex_coord = false;

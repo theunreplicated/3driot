@@ -30,6 +30,12 @@ std::string Win_Utils::getdirpath(WCHAR *chr){
 	return buffer;
 
 }
+WCHAR *Win_Utils::getExePath(){
+	HMODULE hModule = GetModuleHandleW(NULL);
+	WCHAR path[MAX_PATH];
+	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+	return path;
+}
 bool Win_Utils::saveToFile(const char* fileName, const char * data){
 	std::ofstream fs;
 	fs.open(fileName, std::ios::out | std::ios::trunc);

@@ -5,8 +5,8 @@
 #include <string>
 #include <iostream>
 #include "Resource_Loading.h"
-#include <assimp\scene.h>
-#include <assimp\ai_assert.h>
+//#include <assimp\scene.h>
+//#include <assimp\ai_assert.h>
 //attribLocation //getAttrib-Unterscheidung und bindAttriblocation,dann mit counter hier
 //vllt. eigene opengl klassen für buffer,program,...
 namespace OpenGL_Utils{

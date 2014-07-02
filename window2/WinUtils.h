@@ -6,6 +6,7 @@ class Win_Utils{
 public:
 	std::string getdirpath(WCHAR* chr);
 	bool saveToFile(const char* fileName, const char * data);
+	WCHAR * getExePath();
 };
 
 #endif

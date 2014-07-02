@@ -326,8 +326,8 @@ das kommt da normalerweise hin
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix){
 	addMesh_RenderObject_struct(obj, pass_matrix);
-	THREEDObject d = draw_elements.back();
-	fillBuffer(d);
+	THREEDObject * d = &draw_elements.back();
+	fillBuffer(*d);
 
 }
 
@@ -443,7 +443,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(loc_Position);//@TODO:gucken ob hierhin oder in die For-SChleife,disalb emuss nach dem draw-call kommen
-	for (THREEDObject pc : draw_elements)
+	for (THREEDObject& pc : draw_elements)
 	{
 
 		//int buffer_add_counter = 0;

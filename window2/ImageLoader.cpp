@@ -1,7 +1,7 @@
 #include "ImageLoader.h"
 #include <stdexcept>
 #include <Windows.h>
-
+#include <FreeImage.h>
 ImageLoader::ImageLoader(){
 	FreeImage_Initialise();
 

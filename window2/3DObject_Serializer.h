@@ -8,6 +8,7 @@ public:
 	std::string serialize(THREEDObject * obj,int num_objects);
 	std::string serialize(std::vector<THREEDObject> v);	
 private:
+	unsigned int num_texture_file_ids=0;
 	std::string split_char = ",";
 	std::string getoutput(THREEDObject * obj);
 	std::string get_Statement(std::string name,bool data);

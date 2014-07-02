@@ -1,8 +1,9 @@
 #ifndef INC_IMAGE_LOADER_H
 #define INC_IMAGE_LOADER_H
 
-#include <FreeImage.h>
+//#include <FreeImage.h>
 enum ColorData{ ColorData_RGB, ColorData_RGBA, ColorData_UNDEFINED };
+struct FIBITMAP { void *data; };
 struct Image_Load_Result{
 	/*unsigned*/int width, height;
 	unsigned char*bits;
