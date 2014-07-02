@@ -62,7 +62,7 @@ image_stor Assimp_Material_Importer::process_Material(int material_key){
 	std::string real_texture_path = getdirpath(m_model_file_path);
 	std::string assimp_path = std::string(path.C_Str());
 	std::string real_texture_path_final = real_texture_path +"\\"+ assimp_path;
-	return import_texture(real_texture_path_final.c_str());
+	return import_texture(path.C_Str());//anstatt real_texture_path.c_str()
 
 }
 image_stor Assimp_Material_Importer::import_texture(const char* texture_file_path){

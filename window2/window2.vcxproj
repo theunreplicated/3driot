@@ -52,7 +52,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;FreeImage.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,6 +70,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3DObject_Serializer.cpp" />
     <ClCompile Include="ApplicationUI_Control_Mgr.cpp" />
     <ClCompile Include="ApplicationWindow.cpp" />
     <ClCompile Include="Assimp_Material_Importer.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3DObject_Serializer.h" />
     <ClInclude Include="ApplicationUI_Control_Mgr.h" />
     <ClInclude Include="ApplicationWindow.h" />
     <ClInclude Include="Assimp_Material_Importer.h" />

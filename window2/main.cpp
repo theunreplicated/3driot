@@ -1,4 +1,4 @@
-#include "ApplicationWindow.h"
+﻿#include "ApplicationWindow.h"
 #include "MessageLoop.h"
 #include "Window.h"
 #include <Windows.h>
@@ -16,6 +16,11 @@
 #include "Assimp_Utils_m_convert_16.h"
 #include <stringapiset.h>
 #include "Matrix.h"
+#include <CommCtrl.h>
+#include "3DObject_Serializer.h"
+#include <ostream>
+#include <sstream>
+#include <fstream>
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
 Windows::ApplicationWindow* aw;
@@ -47,13 +52,17 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	case /*VK_OEM_PLUS*/107:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(2.0f, 2.0f, 2.0f)); break;
 	case /*VK_OEM_MINUS*/109:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(0.5f, 0.5f, 0.5f)); break;
 	case VK_LEFT:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	case VK_RIGHT:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(1.0f, 1.0f, 0.0f)); break;
+	case VK_DOWN:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;//todo:vllt.eigene matrizen
+
 	default:
 		break;
 	}
 		
 
 }
-void mousedown(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void mousedown(HWND hWnd, WPARAM wParam, LPARAM lParam){//Quelle:irgendwo im INternet
 	POINT p;
 	POINT mousePos;
 	GetCursorPos(&mousePos);
@@ -100,6 +109,34 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 	//return CallNextHookEx(mouse_hook, code, wParam, lParam);
 	return NULL;
 }*/
+bool cvtLPW2stdstring(std::string& s, const LPWSTR pw,
+	UINT codepage = CP_ACP)
+{
+	bool res = false;
+	char* p = 0;
+	int bsz;
+	bsz = WideCharToMultiByte(codepage,
+		0,
+		pw, -1,
+		0, 0,
+		0, 0);
+	if (bsz > 0) {
+		p = new char[bsz];
+		int rc = WideCharToMultiByte(codepage,
+			0,
+			pw, -1,
+			p, bsz,
+			0, 0);
+		if (rc != 0) {
+			p[bsz - 1] = 0;
+			s = p;
+			res = true;
+		}
+	}
+	delete[] p;
+	return res;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
 {
@@ -123,44 +160,119 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//dc->SaveFileName(L"C:\\");
 
 	//aw->Position_set({1920,1080});
-	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
-	uicontrol->addEditControls();
-	uicontrol->addButtons(BTN_CLICK);
 
+	InitCommonControls(); // Force the common controls DLL to be loaded.
+	HWND list;
+	//http://stackoverflow.com/questions/13979371/win32-api-listview-creation-c
+	// window is a handle to my window that is already created.
+	int lwidth = 200; int lheight = 200;
+	list = CreateWindowExW(0, WC_LISTVIEWW, NULL, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, width - lwidth, 0, lwidth, lheight, aw->native_window_handle, NULL, NULL, NULL);
+
+	/*LVCOLUMN lvc;
+	//lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+	lvc.iSubItem = 0;
+	lvc.pszText = "Tdsdsadsitle";
+	lvc.cx = 50;
+	lvc.fmt = LVCFMT_LEFT;
+	ListView_InsertColumn(list, 0, &lvc);
+	http://www.cplusplus.com/forum/windows/47702/
+	//http://stackoverflow.com/questions/3217362/adding-items-to-a-listview
+
+	*/
+	//http://stackoverflow.com/questions/11923925/disable-horizontal-scroll-bar-in-list-view
+	//LONG lStyle = GetWindowLong(list, GWL_STYLE);
+	//lStyle |=WS_VSCROLL;
+	//SetWindowLong(list, GWL_STYLE, lStyle);
+	LVCOLUMN lvc;
+	
+	lvc.mask = LVCF_TEXT | LVCF_WIDTH;
+	lvc.cx = lwidth;
+	lvc.pszText = TEXT("Property");
+	ListView_InsertColumn(list, 0, &lvc);
+
+	//lvc.cx = 500;
+	//lvc.pszText = TEXT("Value");
+	//ListView_InsertColumn(list, 1, &lvc);
+
+	LVITEM lvi;
+
+	lvi.mask = LVIF_TEXT;
+	lvi.iItem = 0;
+	lvi.iSubItem = 0;
+	lvi.pszText = TEXT("File Name");
+	ListView_InsertItem(list, &lvi);
+	lvi.iItem = 1; 
+	lvi.pszText = TEXT("File Size");
+	ListView_InsertItem(list, &lvi);
+	for (int i = 2; i < 100; i++){
+		lvi.iItem = i;
+		ListView_InsertItem(list, &lvi);
+	}
+
+
+
+	//ListView_SetItemText(list, 0, 1, TEXT("123425244525"));
+	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
+	//uicontrol->addEditControls();
+	//uicontrol->addButtons(BTN_CLICK);
 
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 
 
-	OpenGLContext*ctx = new OpenGLContext(/*uicontrol->static_draw_field->window_handle*/aw->native_window_handle, dll_opengl);
+	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 
 
 	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
-	//glm->setViewPort({730,608});
+	RECT pos = uicontrol->static_draw_field->Rect_get();
+	glm->setViewPort({pos.bottom,pos.right});
 	using Windows::Dialogs::File_Dialog;
 	File_Dialog*dc = new File_Dialog();
-	//dc->ofn.hwndOwner = aw->native_window_handle;//unn�tig
-	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
+	
 	Assimp_Mesh_Importer*aiimport; 
 	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
-	float aspectRatio = float(re.width) / float(re.height);
-	if (*dcc/*!=*L""*/){///bei Abbruch==L""
-		//open
+	float aspectRatio = float(re.width) / float(re.height);//@TODO:mit Rect
 
+	glm::mat4 matt2 = glm::perspective(45.0f, (1024.0f / 768.0f), 0.01f, 5000.0f);
+	glm::mat4 model_mat = glm::mat4(1.0f);
+	glm::mat4 camera_mat = glm::lookAt(
+		glm::vec3(4, 3, 3),
+		glm::vec3(0, 0, 0),
+		glm::vec3(0, 1, 0)
+		);
+	glm::mat4 std_res = matt2*camera_mat;
+	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	if (*dcc!=*L""){///bei Abbruch==L""
+		//open
+		
 		char buffer[MAX_PATH];
 
 		// First arg is the pointer to destination char, second arg is
 		// the pointer to source wchar_t, last arg is the size of char buffer
 		//wcstom
 		//wcstombs_s(buffer, dcc, MAX_PATH);
+		
 		size_t CharactersConverted = 0;
 		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
-		/*Assimp_Mesh_Importer**/aiimport = new Assimp_Mesh_Importer(buffer);
+
+		/*std::wstring nnWString(MAX_PATH, 0);
+		nnWString.resize(MAX_PATH);
+		std::wstring ws = /*L"C:\\oo ga\\Dokument.obj"*//*dcc;
+		std::string s(ws.begin(), ws.end());
+		const char*dch = s.c_str();
+		*/
+		
+		//std::setlocale(LC_ALL, "en_US.utf8");
+		// UTF-8 narrow multibyte encoding
+		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
+		
+		aiimport = new Assimp_Mesh_Importer(buffer);
 		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
 		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
-		
+	
 		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
 		using glm::mat4; using glm::scale; using glm::vec3;
 		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
@@ -180,8 +292,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//	);
 		//glm::mat4 finalm = proj_matrix*View*model_matrix;
 		//glm::mat4 finalm = model_matrix;
-		glm->setNumDrawElements(1);
-		glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(0));
+		glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+		for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+			glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+		}
 		
 		
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
@@ -189,8 +303,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	
 	glm->initGL();
+	delete aiimport;
+	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
+	std::string data=tosz->serialize(glm->draw_elements,1);
 
+	std::ofstream fs;
+	fs.open("file.shotgun");
 
+	fs << "hey";//http://www.cplusplus.com/reference/fstream/fstream/open/
+	fs.close();
 
 
 		//(new MessageLoop())->GetMessage_Approach();
@@ -203,21 +324,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//Matrix m = m1.multiply_with(glm->m);
 	Matrix m = proj_matrix;
 	
-	glm::mat4 matt2=glm::perspective(45.0f,(1024.0f/768.0f), 0.01f, 5000.0f);
-	glm::mat4 model_mat = glm::mat4(1.0f);
-	glm::mat4 camera_mat = glm::lookAt(
-		glm::vec3(4,3,3),
-		glm::vec3(0,0,0),
-		glm::vec3(0,1,0)
-		);
+	
 	
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	while (ml->Message_Get()){
 		glm::mat4 transformmat = scalemat*rotmat;
 		glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
+		for (int i = 0; i < glm->num_draw_elements; i++){
+			glm->draw_elements[i].matrix = glm::value_ptr(matt);
+		}
 		//glm->draw_elements[0].matrix = m.get_as_float16();
-		glm->draw_elements[0].matrix = glm::value_ptr(matt);
+		//glm->draw_elements[0].matrix = glm::value_ptr(matt);
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mc);
 		//float * mat = glm->draw_elements[0].matrix;

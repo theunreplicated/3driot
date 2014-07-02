@@ -6,7 +6,7 @@ namespace Windows{
 			//http://stackoverflow.com/questions/7392164/very-strange-getopenfilename-problem
 			//OPENFILENAME ofn;
 			//LPSTR file_name = "C:\\";
-			WCHAR flnm[MAX_PATH];
+			WCHAR flnm[MAX_PATH*2];
 			
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof (ofn);

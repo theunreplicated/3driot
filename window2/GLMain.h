@@ -22,13 +22,14 @@ public:
 	void initGL();
 	void setViewPort(GLRect rect);
 	THREEDObject * draw_elements; Matrix m;
+	int num_draw_elements = 0;
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
 	void swapBuffers();
 	GLuint programId;
 	GLuint * vertex_buffer,*indices_buffer,*texcoords_buffer;
-	int num_draw_elements = 0;
+	
 	
 	GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
@@ -277,7 +278,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::loadTexture
 		255, 255, 0,0  // Yellow
 	};
 
-	// Use tightly packed data
+	
 	
 	//int test_ret = mesh_data->texture_data.width;
 	// Load the texture

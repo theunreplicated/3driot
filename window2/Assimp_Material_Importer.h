@@ -4,10 +4,7 @@
 #include "ImageLoader.h"
 #include <vector>
 #include <string>
-struct image_stor :Image_Load_Result{
-	const char* texture_name; 
 
-};
 class Assimp_Material_Importer{
 private:
 	const aiScene *m_scene;

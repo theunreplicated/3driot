@@ -4,7 +4,7 @@
 #include <vector>
 #include "OpenGL_Data_Types.h"
 #include "WindowStructs.h"
-#include <glm/mat4x4.hpp>
+//#include <glm/mat4x4.hpp>
 #include "Assimp_Material_Importer.h"
 enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct RenderStructBase{
@@ -21,11 +21,12 @@ struct Mesh_RenderObject:RenderStructBase{
 	std::vector<std::array<std::array<float, 4>, 4>>transform_matrices;//@TODO:Matrices(Matrizen) wieder auf den Heap
 };
 
-enum draw_method{ kArrays, kElements };//konstant davor,falls Konflikte
+enum draw_method{ kArrays, kElements,kInvisible };//konstant davor,falls Konflikte
 struct THREEDObject:RenderStructBase{
 	PrimitiveType draw_primitive=PR_TRIANGLE;
 	draw_method dm;
 	/*GL*/float * vertices;
+	bool has_indices /*= true*/;//@TODO:was damit machen
 	/*GLu*/unsigned int * indices = NULL;//nur falls Elemente
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;

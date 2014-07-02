@@ -63,6 +63,9 @@
     <ClCompile Include="ImageLoader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="3DObject_Serializer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="egl_display_binding.h">
       <Filter>Headerdateien\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="3DObject_Serializer.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

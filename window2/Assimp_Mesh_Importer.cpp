@@ -26,6 +26,13 @@ Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 	}
 
 }
+Assimp_Mesh_Importer::~Assimp_Mesh_Importer(){
+	delete import;
+	delete material_importer;
+	//delete scene;
+	delete file_path;
+
+}
 void ASSERT(bool cond){
 	if (!cond) throw std::runtime_error("Assertion failed in a very hard way");
 

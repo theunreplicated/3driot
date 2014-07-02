@@ -13,6 +13,10 @@ struct Image_Load_Result{
 	//void unload(){ FreeImage_Unload(dib); };
 
 };
+struct image_stor :Image_Load_Result{
+	const char* texture_name;
+
+};
 class ImageLoader{
 	
 public:
