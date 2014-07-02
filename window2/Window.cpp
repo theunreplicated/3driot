@@ -2,6 +2,14 @@
 #include <functional>
 #include <Windows.h>
 namespace Windows{
+	void Window::makeAppearBetter(){
+		NONCLIENTMETRICS ncm;//http://stackoverflow.com/questions/3323541/how-can-i-make-the-win32-api-window-more-modern-looking
+		ncm.cbSize = sizeof(NONCLIENTMETRICS);
+		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
+		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+
+	}
 	Window::Window( WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw,DWORD dwExStyle):standard_window(&window_handle,&aw->native_window_handle){
 		m_ApplicationWindow = aw;
 		window_handle = CreateWindowEx(dwExStyle,
@@ -15,13 +23,25 @@ namespace Windows{
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
 
-		NONCLIENTMETRICS ncm;//http://stackoverflow.com/questions/3323541/how-can-i-make-the-win32-api-window-more-modern-looking
-		ncm.cbSize = sizeof(NONCLIENTMETRICS);
-		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
-		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
-		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+		makeAppearBetter();
 
 		//standard_window(window_handle,aw->native_window_handle);
+	}
+	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent) :standard_window(&window_handle, &window_parent){
+
+		m_ApplicationWindow = aw;
+		window_handle = CreateWindowEx(dwExStyle,
+			names.lpClassName,
+			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
+			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
+			ES_AUTOVSCROLL*/dwStyle,
+			rect.x, rect.y, rect.width, rect.height,
+			window_parent,
+			NULL,
+			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
+			NULL);
+		makeAppearBetter();
+
 	}
 	void Window_ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		MessageBox(NULL, "dssd---", "dsds", MB_OK);

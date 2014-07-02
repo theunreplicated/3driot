@@ -21,6 +21,8 @@
 #include <ostream>
 #include <sstream>
 #include <fstream>
+#include "Thread.h"
+#include "WinUtils.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
 Windows::ApplicationWindow* aw;
@@ -32,7 +34,7 @@ bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 	
 	
 }
-
+//__declspec(dllimport)bool saveToFile(const char* fileName, const char * data);
 void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	//MessageBox(NULL, "dd","cc", MB_OK);
 	PAINTSTRUCT   ps;
@@ -91,6 +93,14 @@ void mousedown(HWND hWnd, WPARAM wParam, LPARAM lParam){//Quelle:irgendwo im INt
 
 	new Windows::Window({ "button", "Click" }, { 175, 30, 30, 50 + 50 }, WS_CHILD | WS_VISIBLE, aw);
 }
+DWORD WINAPI threadFunc(LPVOID lpParam){
+	std::ofstream fs;
+	fs.open("file.shotgun", std::ios::out | std::ios::trunc);
+
+	fs << "hey";
+	fs.close();
+	return 0;
+}
 SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -109,33 +119,6 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 	//return CallNextHookEx(mouse_hook, code, wParam, lParam);
 	return NULL;
 }*/
-bool cvtLPW2stdstring(std::string& s, const LPWSTR pw,
-	UINT codepage = CP_ACP)
-{
-	bool res = false;
-	char* p = 0;
-	int bsz;
-	bsz = WideCharToMultiByte(codepage,
-		0,
-		pw, -1,
-		0, 0,
-		0, 0);
-	if (bsz > 0) {
-		p = new char[bsz];
-		int rc = WideCharToMultiByte(codepage,
-			0,
-			pw, -1,
-			p, bsz,
-			0, 0);
-		if (rc != 0) {
-			p[bsz - 1] = 0;
-			s = p;
-			res = true;
-		}
-	}
-	delete[] p;
-	return res;
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
@@ -161,12 +144,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//aw->Position_set({1920,1080});
 
-	InitCommonControls(); // Force the common controls DLL to be loaded.
-	HWND list;
+	//InitCommonControls(); // Force the common controls DLL to be loaded.
+	//HWND list;
 	//http://stackoverflow.com/questions/13979371/win32-api-listview-creation-c
 	// window is a handle to my window that is already created.
-	int lwidth = 200; int lheight = 200;
-	list = CreateWindowExW(0, WC_LISTVIEWW, NULL, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, width - lwidth, 0, lwidth, lheight, aw->native_window_handle, NULL, NULL, NULL);
+	//int lwidth = 200; int lheight = 200;
+	//list = CreateWindowExW(0, WC_LISTVIEWW, NULL, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, width - lwidth, 0, lwidth, lheight, aw->native_window_handle, NULL, NULL, NULL);
 
 	/*LVCOLUMN lvc;
 	//lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -183,7 +166,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//LONG lStyle = GetWindowLong(list, GWL_STYLE);
 	//lStyle |=WS_VSCROLL;
 	//SetWindowLong(list, GWL_STYLE, lStyle);
-	LVCOLUMN lvc;
+	/*LVCOLUMN lvc;
 	
 	lvc.mask = LVCF_TEXT | LVCF_WIDTH;
 	lvc.cx = lwidth;
@@ -209,9 +192,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		ListView_InsertItem(list, &lvi);
 	}
 
+	
 
+	//ListView_SetItemText(list, 0, 1, TEXT("123425244525"));*/
 
-	//ListView_SetItemText(list, 0, 1, TEXT("123425244525"));
+	
 	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);
@@ -232,7 +217,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	File_Dialog*dc = new File_Dialog();
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
-	Assimp_Mesh_Importer*aiimport; 
+	
 	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
 	float aspectRatio = float(re.width) / float(re.height);//@TODO:mit Rect
 
@@ -247,7 +232,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 	if (*dcc!=*L""){///bei Abbruch==L""
 		//open
-		
+
+//		std::cout << "wrote the file successfully!" << std::endl;
+
 		char buffer[MAX_PATH];
 
 		// First arg is the pointer to destination char, second arg is
@@ -269,7 +256,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// UTF-8 narrow multibyte encoding
 		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
 		
-		aiimport = new Assimp_Mesh_Importer(buffer);
+		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
 		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
 		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
 	
@@ -301,18 +288,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
+	//Thread*t = new Thread(threadFunc, NULL);
 	
 	glm->initGL();
-	delete aiimport;
-	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
-	std::string data=tosz->serialize(glm->draw_elements,1);
-
-	std::ofstream fs;
-	fs.open("file.shotgun");
-
-	fs << "hey";//http://www.cplusplus.com/reference/fstream/fstream/open/
-	fs.close();
-
+	//delete aiimport;
+	//THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
+	//std::string data=tosz->serialize(glm->draw_elements,1);
+	//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
+	//Thread*t = new Thread(threadFunc,NULL);
+	HMODULE hModule = GetModuleHandleW(NULL);
+	WCHAR path[MAX_PATH];
+	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+	Win_Utils*wn = new Win_Utils();
+	std::string paths=wn->getdirpath(path);
+	std::string dingens_ding_path="\\";
+	std::string finalpath = paths + dingens_ding_path+"scene.shotgun" ;
+	wn->saveToFile(finalpath.c_str(),"hey");
 
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();
@@ -347,5 +338,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		ml->Message_Pump();
 		
 	}
+	
 	return ml->Message_Pump_End();
 }

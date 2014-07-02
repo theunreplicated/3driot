@@ -1,19 +1,26 @@
 #include "Assimp_Mesh_Importer.h"
 
 #include <assimp\postprocess.h>
+#include <assimp\cimport.h>
 #include <d3dx9math.h>
 #include "Assimp_Utils.h"
 #pragma comment(lib, "D3dx9.lib")
 using std::string;
 Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 	//Assimp::Importer importer; //ändert irgendwie import path
-	/*const aiScene **/scene = import->ReadFile(file_path, /*aiProcessPreset_TargetRealtime_Quality*/  aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
+	/*const aiScene **//*scene = import->ReadFile(file_path, /*aiProcessPreset_TargetRealtime_Quality*//*  aiProcess_CalcTangentSpace |
+		/*aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType
 		|aiProcess_GenUVCoords
 		| aiProcess_OptimizeMeshes
-		);
+		);*/
+	scene = aiImportFile(file_path, aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType
+		|aiProcess_GenUVCoords
+		| aiProcess_OptimizeMeshes);
 
 	if (!scene)
 	{
@@ -27,6 +34,8 @@ Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 
 }
 Assimp_Mesh_Importer::~Assimp_Mesh_Importer(){
+	aiReleaseImport(scene);
+	//import->FreeScene();
 	delete import;
 	delete material_importer;
 	//delete scene;

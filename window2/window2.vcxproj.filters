@@ -66,6 +66,12 @@
     <ClCompile Include="3DObject_Serializer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Win_Utils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">
@@ -141,6 +147,12 @@
       <Filter>Headerdateien\GL</Filter>
     </ClInclude>
     <ClInclude Include="3DObject_Serializer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

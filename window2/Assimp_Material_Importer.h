@@ -11,7 +11,7 @@ private:
 	ImageLoader * image_loader;
 	char* m_model_file_path;
 public:
-	std::string getdirpath(char* chr);
+	std::string getdirpath(char* chr);//@TODO:doppeltees entfernen bei win_utils
 	std::vector<image_stor> loaded_image_files_data;
 	Assimp_Material_Importer(const aiScene*scene, char*model_file_path);
 	image_stor process_Material(int material_key);

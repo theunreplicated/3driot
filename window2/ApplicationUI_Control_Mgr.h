@@ -19,6 +19,10 @@ public:
 	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	static void btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	static Windows::Window *static_draw_field;
+	static Windows::Window* objects_list;
+	static Windows::Window* open_file_btn;
+	static Windows::Window*save_threed_objects;
+	//static void add_objects_list_child_btn(Windows::Window );
 private:
 	
 	static std::vector<TripleEditWindow>windowInsts;

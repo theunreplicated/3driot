@@ -12,9 +12,9 @@ Windows::ApplicationWindow *ApplicationUI_Control_Mgr::ApplicationWindow;
 Windows::Window *ApplicationUI_Control_Mgr::new_row_add_button;
 Windows::Window*ApplicationUI_Control_Mgr::action_button;
 Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
-
-
-
+Windows::Window* ApplicationUI_Control_Mgr::objects_list;
+Windows::Window* ApplicationUI_Control_Mgr::open_file_btn;
+Windows::Window* ApplicationUI_Control_Mgr::save_threed_objects;
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
 	m_width = width;
@@ -24,6 +24,13 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	edit_startpoint_h = 30;
 
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
+	objects_list = new Windows::Window({ "STATIC", "" }, { 350, 650, 610, 100 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE);
+	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE);
+	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
+		//GWLP_WNDPROC, (LONG_PTR)WndProcedure);
+	//Windows::Window *btn = new Windows::Window({ "BUTTON", "hi" }, { 300, 500, 0, 0 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE,f->window_handle);
+	
 }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
