@@ -5,12 +5,15 @@
 #include <string>
 #include <fstream>
 #include "OpenGL_Utils.h"
-#include "GLStructs.h"
+//#include "GLStructs.h"
 #include "Matrix.h"
+#include "WindowStructs.h"
+#include "Import_Object_Struct.h"
 //mat#include <glm/mat4x4.hpp>
 //TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+typedef Windows::WindowRect GLRect;
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 class GLMain{
 
 public:
@@ -21,7 +24,7 @@ public:
 	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
 	void initGL();
 	void setViewPort(GLRect rect);
-	std::vector<THREEDObject> draw_elements;
+	std::vector<T_DRAW_STRUCTURE> draw_elements;
 	//THREEDObject * draw_elements; 
 	//Matrix m;
 	//int num_draw_elements = 0;
@@ -38,14 +41,14 @@ private:
 	GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
-	template <typename T_vertices_data, typename T_indices_data>
-	void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
+	//template <typename T_vertices_data, typename T_indices_data>
+	//void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
 	GLuint loc_Position;
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
-	void fillBuffer(THREEDObject& pc);
-	GLuint loadTexture(THREEDObject*mesh_data);
+	void fillBuffer(T_DRAW_STRUCTURE& pc);
+	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
 
 };
 
@@ -91,10 +94,10 @@ GLuint CreateSimpleTexture2D()
 
 
 
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+/*template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 template <typename T_vertices_data, typename T_indices_data>//@NOTE:Hier ist die Reiheinfolge der template- (Davorschreibungen?)-wichtig,sonst meckert er,dass Deklaration und Def ungleich wären,lustigerweise sond sie doch gleich(nach der Anzeige),wtf
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw){
-	THREEDObject pp;
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw){
+	T_DRAW_STRUCTURE pp;
 	pp.dm = dm;
 	/*const GLfloat g_vertex_buffer_data[] = {
 		-1.0f, -1.0f, 0.0f,
@@ -102,16 +105,16 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 		0.0f, 1.0f, 0.0f,
 	};*/
 //	pp.vertices_num = sizeof(vertices) / sizeof(GLfloat);
-	pp.vertices_totalsize = sizeof(vertices);
+	/*pp.vertices_totalsize = sizeof(vertices);
 	
-	pp.vertices = new /*GL*/float[sizeof(vertices)/sizeof(float)/*vertices müssen glfloat sein*/];//@TODO. das hir irgendwie besser machen
+	pp.vertices = new /*GL*//*float[sizeof(vertices)/sizeof(float)/*vertices müssen glfloat sein*//*];//@TODO. das hir irgendwie besser machen
 
 	memcpy(pp.vertices, vertices, sizeof(vertices));
 	if (indices != NULL){
 		pp.indices_totalsize = sizeof(indices);
 		pp.indices_num = sizeof(indices) / sizeof(unsigned int);
 		//indices/kann auch null sein
-		pp.indices = new /*GLu*/unsigned int[pp.indices_num];
+		pp.indices = new /*GLu*//*unsigned int[pp.indices_num];
 		memcpy(pp.indices, indices, sizeof(indices));
 		
 	}
@@ -120,17 +123,17 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addRenderElem
 	//num_draw_elements += 1;
 	draw_elements.push_back(pp);
 
-}
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::bindAttribLocation(const char* attrib_name){
+}*/
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::bindAttribLocation(const char* attrib_name){
 	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
 	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
 	glBindAttribLocation(programId,attrib_location_counter,attrib_name);
 	attrib_location_counter++;
 	return (attrib_location_counter-1);
 }
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setViewPort(GLRect rect){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
 	glViewport(rect.x, rect.y, rect.width, rect.height);
 	glScissor(rect.x,rect.y,rect.width,rect.height);
 	glEnable(GL_SCISSOR_TEST);
@@ -142,9 +145,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::setNumDrawEle
 	draw_elements = new THREEDObject[count];
 
 }*/
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_RenderObject_struct(Mesh_RenderObject *obj,float* pass_matrix){
-	THREEDObject pp;
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix){
+	T_DRAW_STRUCTURE pp;
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
 	pp.texcoords_totalsize = obj->num_tex_coords*sizeof(float);
@@ -171,8 +174,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::addMesh_Rende
 }
 
  
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
 
 
 	programId = glCreateProgram();
@@ -269,8 +272,8 @@ float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 	(abstaende[1] < smallest_value_x_y) ? smallest_value_x_y = abstaende[1] : 0;
 	return desired_range/smallest_value_x_y;
 }
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::loadTexture(THREEDObject*mesh_data){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::loadTexture(T_DRAW_STRUCTURE*mesh_data){
 	GLuint textureID;
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &textureID);
@@ -323,16 +326,16 @@ das kommt da normalerweise hin
 	return textureID;
 }
 
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix){
 	addMesh_RenderObject_struct(obj, pass_matrix);
-	THREEDObject * d = &draw_elements.back();
+	T_DRAW_STRUCTURE * d = &draw_elements.back();
 	fillBuffer(*d);
 
 }
 
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::fillBuffer(THREEDObject& pc){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::fillBuffer(T_DRAW_STRUCTURE& pc){
 
 	glGenBuffers(1, &pc.vertex_buffer);
 	glGenBuffers(1, &pc.indices_buffer);
@@ -359,8 +362,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::fillBuffer(TH
 	}
 
 }
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::initGL(){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
@@ -415,7 +418,7 @@ float g_vertices_rectangle_data[] = {
 	//Diffuse_Texture_IDs = new GLuint[num_draw_elements];//@TODO:es werden alle Dingens geaddet,nicht aber nur die,die ne Texture haben
 	//int buffer_add_counter = 0;
 
-	for (THREEDObject& pc: draw_elements)
+	for (T_DRAW_STRUCTURE& pc: draw_elements)
 	{
 
 		fillBuffer(pc);
@@ -425,8 +428,8 @@ float g_vertices_rectangle_data[] = {
 
 }
 
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::render(){
 	
 	//glCreateShader(GL_VERTEX_SHADER);
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
@@ -443,7 +446,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(loc_Position);//@TODO:gucken ob hierhin oder in die For-SChleife,disalb emuss nach dem draw-call kommen
-	for (THREEDObject& pc : draw_elements)
+	for (T_DRAW_STRUCTURE& pc : draw_elements)
 	{
 
 		//int buffer_add_counter = 0;
@@ -503,8 +506,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 	swapBuffers();
 
 };
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::swapBuffers(){
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::swapBuffers(){
 	(swap_buffers_func_class->*swapBuffersFunc)();
 
 }

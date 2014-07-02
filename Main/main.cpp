@@ -2,6 +2,7 @@
 #include "../window2/MessageLoop.cpp"
 #include "my_gfx_rect.h"
 #include "File_Parser.h"
+#define HIDE_IMG_STRUCT_FROM_MAIN
 #include "../window2/GLMain.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){

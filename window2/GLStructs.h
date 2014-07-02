@@ -5,23 +5,13 @@
 #include "OpenGL_Data_Types.h"
 #include "WindowStructs.h"
 //#include <glm/mat4x4.hpp>
-#include "Assimp_Material_Importer.h"
-//#include "ImageLoader.h"
 
-enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
-struct RenderStructBase{
-	float * tex_coords; bool has_tex_coord = false;
-	image_stor texture_data; bool has_texture = false;
-};
-struct Mesh_RenderObject:RenderStructBase{
-	PrimitiveType draw_primitive;
-	int num_tex_coords;
-	float * vertices/*durch 3 für einzelne Vertices*/; unsigned int size_vertices/*totale länge,muss noch durch 3 geteilt werden*/;
-	unsigned int num_indices = 0; unsigned int * indices/*@TODO:unsigned int oder long ist wohl besser*/;
-	const char * mesh_name, *node_name;
-	
-	std::vector<std::array<std::array<float, 4>, 4>>transform_matrices;//@TODO:Matrices(Matrizen) wieder auf den Heap
-};
+#include "dingens_struct_base.h"
+
+
+
+
+
 
 struct Interals_do_not_touch{
 GLuint 	vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
@@ -48,5 +38,5 @@ struct THREEDObject:RenderStructBase,Interals_do_not_touch{
 
 };*/
 
-typedef Windows::WindowRect GLRect;
+//typedef Windows::WindowRect GLRect;
 #endif

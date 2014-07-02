@@ -103,5 +103,5 @@ Image_Load_Result ImageLoader::load(const char* filename){
 	//int iFormat = iBPP == 24 ? GL_BGR : iBPP == 8 ? GL_LUMINANCE : 0;
 	int iFormat = 0;//@TODO:das wegmachen,ist nur n dummy
 	//return success
-	return{width,height,bits,dib,ColorType,iFormat,textura};
+	return{width,height,bits,/*dib,*/ColorType,iFormat,textura};
 }

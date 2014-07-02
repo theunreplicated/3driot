@@ -4,7 +4,7 @@
 #include <string>
 #include <assimp\scene.h>
 #include <vector>
-#include "GLStructs.h"
+#include "Import_Object_Struct.h"
 #include <assimp\ai_assert.h>
 #include <assimp\Importer.hpp>
 #include "Assimp_Material_Importer.h"

@@ -98,12 +98,15 @@
     <ClInclude Include="Assimp_Mesh_Importer.h" />
     <ClInclude Include="Assimp_Utils.h" />
     <ClInclude Include="Assimp_Utils_m_convert_16.h" />
+    <ClInclude Include="dingens_struct_base.h" />
     <ClInclude Include="egl_display_binding.h" />
     <ClInclude Include="ext\skia\GrGLFunctions.h" />
     <ClInclude Include="file_dialog.h" />
     <ClInclude Include="GLMain.h" />
     <ClInclude Include="GLStructs.h" />
     <ClInclude Include="ImageLoader.h" />
+    <ClInclude Include="IMGSTRUCTS.h" />
+    <ClInclude Include="Import_Object_Struct.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MessageLoop.h" />
     <ClInclude Include="OpenGLContext.h" />

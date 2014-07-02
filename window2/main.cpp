@@ -23,6 +23,7 @@
 #include <fstream>
 #include "Thread.h"
 #include "WinUtils.h"
+#include "GLStructs.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
 
@@ -31,7 +32,7 @@ ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
 glm::mat4 scalemat,rotmat = glm::mat4(1.0f);
 
-	GLMain<swapBuffersFunc, OpenGLContext> * glmain;
+	GLMain<swapBuffersFunc, OpenGLContext,THREEDObject> * glmain;
 
 
 	void onMeshImportButton(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -246,7 +247,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 	
 
-	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
+	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext,THREEDObject>(&OpenGLContext::SwapBuffers, ctx);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	RECT pos = uicontrol->static_draw_field->Rect_get();

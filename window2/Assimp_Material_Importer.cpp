@@ -79,7 +79,7 @@ image_stor Assimp_Material_Importer::import_texture(const char* texture_file_pat
 		//int d2 = *test_ret;
 		is.color_type = data.color_type;
 		is.bits = data.bits;
-		is.dib = data.dib;
+		//is.dib = data.dib;
 		is.width = data.width;
 		is.height = data.height;
 		is.format = data.format;
