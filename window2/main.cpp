@@ -25,8 +25,14 @@
 #include "WinUtils.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HHOOK mouse_hook;
+Windows::Dialogs::File_Dialog*dc;
 Windows::ApplicationWindow* aw;
+ApplicationUI_Control_Mgr*uicontrol;
 glm::mat4 scalemat,rotmat = glm::mat4(1.0f);
+
+	GLMain<swapBuffersFunc, OpenGLContext> * glmain;
+
+
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -120,6 +126,55 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 	return NULL;
 }*/
 
+void onMeshImportButton(HWND hWnd, WPARAM wParam, LPARAM lParam){
+
+LPWSTR dcc=	dc->OpenFileName(L"C:\\");
+	if (*dcc != *L""){///bei Abbruch==L""
+
+		char buffer[MAX_PATH];
+
+		
+
+		size_t CharactersConverted = 0;
+		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
+
+		
+		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
+
+		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
+		
+		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
+		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
+
+		//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
+		//mat4 mat = proj_matrix*scalematrix;
+
+
+		//mat4 model_matrix=glm::make_mat4(mmmm);
+		//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
+		//mat4 model_matrix = glm::mat4(1.0f);
+		//glm::mat4 View = glm::lookAt(
+		//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+		//	glm::vec3(0, 0, 0), // and looks at the origin
+		//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+		//	);
+		//glm::mat4 finalm = proj_matrix*View*model_matrix;
+		//glm::mat4 finalm = model_matrix;
+		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+		//}
+		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+			glmain->add_to_buffer_and_add_to_draw_list(&d);
+		}
+
+		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
+		//int d2 = oo.indices[2]
+	}
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int iCmdShow)
 {
@@ -197,7 +252,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//ListView_SetItemText(list, 0, 1, TEXT("123425244525"));*/
 
 	
-	ApplicationUI_Control_Mgr*uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
+	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
+	uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);
 
@@ -208,13 +264,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 
 
-	GLMain<swapBuffersFunc, OpenGLContext> *glm = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
+	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	RECT pos = uicontrol->static_draw_field->Rect_get();
-	glm->setViewPort({pos.bottom,pos.right});
-	using Windows::Dialogs::File_Dialog;
-	File_Dialog*dc = new File_Dialog();
+	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
+	glmain->setViewPort({ pos.bottom, uicontrol->static_draw_field->Position_get().height, 0, 0 });
+	//using Windows::Dialogs::File_Dialog;
+	dc = new Windows::Dialogs::File_Dialog();
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
 	
@@ -229,7 +286,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		glm::vec3(0, 1, 0)
 		);
 	glm::mat4 std_res = matt2*camera_mat;
-	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	/*LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 	if (*dcc!=*L""){///bei Abbruch==L""
 		//open
 
@@ -256,7 +313,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// UTF-8 narrow multibyte encoding
 		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
 		
-		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+		/*Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
 		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
 		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
 	
@@ -284,15 +341,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
 		//}
 		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-			glm->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+			glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
 		}
 		
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
 	//Thread*t = new Thread(threadFunc, NULL);
-	
-	glm->initGL();
+	*/
+	glmain->initGL();
 	//delete aiimport;
 	//THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
 	//std::string data=tosz->serialize(glm->draw_elements,1);
@@ -309,13 +366,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		//(new MessageLoop())->GetMessage_Approach();
 	MessageLoop* ml = new MessageLoop();
-	Matrix proj_matrix,model_matrix;
-	proj_matrix.perspective(199, aspectRatio, 0.01f, 5000.0f);
-	float v = 0.75f;
-	model_matrix.scale(Vector3(v,v,v));
-	Matrix m1 = proj_matrix.multiply_with(model_matrix);
-	//Matrix m = m1.multiply_with(glm->m);
-	Matrix m = proj_matrix;
+	
 	
 	
 	
@@ -327,7 +378,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //		for (int i = 0; i < glm->num_draw_elements; i++){
 			//glm->draw_elements[i].matrix = glm::value_ptr(matt);
 		//}
-		for (THREEDObject d : glm->draw_elements){
+		for (THREEDObject d : glmain->draw_elements){
 			d.matrix = glm::value_ptr(matt);
 
 		}
@@ -340,7 +391,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//glm::mat4 mm = transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mm);
 		//THREEDObject dc=glm->draw_elements[1];
-		glm->render();//@TODO:in proc am Schluss
+		glmain->render();//@TODO:in proc am Schluss
 		ml->Message_Pump();
 		
 	}

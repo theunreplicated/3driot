@@ -26,6 +26,7 @@ namespace Windows{
 					 if (lParam == (LPARAM)*data.wpe.wnd_ptr){
 						 called = true;
 						 promise_true_fragezeichen = data.wpe.wpef_callback(hWnd, wParam, lParam, *data.wpe.wnd_ptr);
+						 
 					 }
 				 }
 
@@ -40,13 +41,13 @@ namespace Windows{
 
 				 }
 
-				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam); }
+				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam);  }
 
 			 }
 
 
 		 }
-		
+		// return 0;
 		switch (message)
 		{
 

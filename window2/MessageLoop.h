@@ -3,9 +3,9 @@
 #include <Windows.h>
 namespace Windows{
 	class MessageLoop{
-	private:
-		MSG Msg;
-	public:
+	
+		
+	public:MSG Msg;
 		int GetMessage_Approach();
 		bool Message_Get();
 		void Message_Pump();

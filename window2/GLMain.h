@@ -44,7 +44,7 @@ private:
 	GLuint loc_Matrix;
 	GLuint loc_Position;
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
-
+	void fillBuffer(THREEDObject& pc);
 	GLuint loadTexture(THREEDObject*mesh_data);
 
 };
@@ -325,11 +325,40 @@ das kommt da normalerweise hin
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix){
-	addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix);
-	THREEDObject d = draw_elements->back();
+	addMesh_RenderObject_struct(obj, pass_matrix);
+	THREEDObject d = draw_elements.back();
+	fillBuffer(d);
 
 }
 
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::fillBuffer(THREEDObject& pc){
+
+	glGenBuffers(1, &pc.vertex_buffer);
+	glGenBuffers(1, &pc.indices_buffer);
+	glGenBuffers(1, &pc.texcoords_buffer);
+	//THREEDObject pc = draw_elements[i];
+
+
+
+	pc.Diffuse_Texture_IDs = loadTexture(&pc);
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, pc.vertex_buffer);
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
+	if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc.indices_buffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
+	}
+	if (pc.has_tex_coord){
+		glBindBuffer(GL_ARRAY_BUFFER, pc.texcoords_buffer);
+		// Give our vertices to OpenGL.
+		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.texcoords_totalsize, pc.tex_coords, GL_STATIC_DRAW);
+
+	}
+
+}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::initGL(){
 	GLuint VertexArrayID;
@@ -389,29 +418,7 @@ float g_vertices_rectangle_data[] = {
 	for (THREEDObject& pc: draw_elements)
 	{
 
-		glGenBuffers(1, &pc.vertex_buffer);
-		glGenBuffers(1,&pc.indices_buffer);
-		glGenBuffers(1,&pc.texcoords_buffer);
-		//THREEDObject pc = draw_elements[i];
-		
-
-
-		pc.Diffuse_Texture_IDs = loadTexture(&pc);
-
-
-		glBindBuffer(GL_ARRAY_BUFFER, pc.vertex_buffer);
-		// Give our vertices to OpenGL.
-		glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
-		if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc.indices_buffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
-		}
-		if (pc.has_tex_coord){
-			glBindBuffer(GL_ARRAY_BUFFER, pc.texcoords_buffer);
-			// Give our vertices to OpenGL.
-			glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.texcoords_totalsize, pc.tex_coords, GL_STATIC_DRAW);
-
-		}
+		fillBuffer(pc);
 	}
 
 	
@@ -460,18 +467,19 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			);
 		
 
-		glEnableVertexAttribArray(texcoord_position);
-		glBindBuffer(GL_ARRAY_BUFFER, pc.texcoords_buffer);
-		glVertexAttribPointer(
-			texcoord_position,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-			2,                                // size : U+V => 2
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
-			);
+		glEnableVertexAttribArray(texcoord_position);//@TODO:gucken ob auch in if-Anweisung
+		if (pc.has_tex_coord){
+			glBindBuffer(GL_ARRAY_BUFFER, pc.texcoords_buffer);
+			glVertexAttribPointer(
+				texcoord_position,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+				2,                                // size : U+V => 2
+				GL_FLOAT,                         // type
+				GL_FALSE,                         // normalized?
+				0,                                // stride
+				(void*)0                          // array buffer offset
+				);
 
-
+		}
 
 
 
@@ -485,6 +493,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference>::render(){
 			glDrawElements(pc.draw_primitive, pc.draw_call_num_elements, GL_UNSIGNED_INT, /*pc.indices*/0);
 
 		}
+		//bei kinvisible passiert wohl nichts
 		//buffer_add_counter++;
 	}
 
