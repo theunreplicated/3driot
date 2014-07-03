@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Physics_Input_Data.h"
+//#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -108,8 +109,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				window_rect.width, window_rect.height,
 				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
-
+#ifndef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 	::ShowWindow(native_window_handle,SW_SHOW);
+#endif
 	//Window wird nun gezeigt,Fullscreen,ok
 
 	FileParser*ps = new FileParser("scene.shotgun");
@@ -166,7 +168,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //	ph->simulate_AfterActionHandler_getTransform(0);
 
 	glmain->initGL();
-
+#ifdef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
+	::ShowWindow(native_window_handle, SW_SHOW);
+#endif
 	Windows::MessageLoop* ml = new Windows::MessageLoop();
 	while (ml->Message_Get()){
 		//glm::mat4 transformmat = scalemat*rotmat;
