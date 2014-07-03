@@ -309,11 +309,11 @@ float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::loadTexture(T_DRAW_STRUCTURE*mesh_data){
 	GLuint textureID;
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
-
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	
 	
 	//int test_ret = mesh_data->texture_data.width;
