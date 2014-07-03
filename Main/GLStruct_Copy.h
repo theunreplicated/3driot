@@ -6,7 +6,7 @@ struct Interals_do_not_touch{
 }; enum PrimitiveType{ PR_TRIANGLE = 0x0004/*=GL_TRIANGLES*/ };
 struct image_stor{
 	int width, height;
-	unsigned char * texture_bytes,*bits;
+	unsigned char /** texture_bytes,*/*bits;
 	int format;
 };
 struct RenderStructBase{

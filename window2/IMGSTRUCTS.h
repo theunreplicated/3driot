@@ -10,7 +10,7 @@ struct Image_Load_Result{
 	//FI2BITMAP *dib;//@note: dib ist ein interner Pointer,muss nach glTexImage(Sprich:Laden auf die Grafikkarte) mit FreeImage_Unload(dib) released(nicht das Release) werden
 	ColorData color_type;
 	int format;
-	unsigned char*texture_bytes;
+	//unsigned char*texture_bytes;
 	//void unload(){ ilDeleteImages(1, &il_image_id); };
 	unsigned int il_image_id;
 };

@@ -177,6 +177,10 @@ vector<THREEDObject> FileParser::parse(){
 
 
 			}
+			if (st[0] == "texture_format"){
+				obj.texture_data.format = atoi(str.c_str());
+
+			}
 			if (st[0] == "texture_id"){
 				//str = str.substr(0, st[0].size() - 2);
 				std::stringstream ssd;
@@ -184,12 +188,14 @@ vector<THREEDObject> FileParser::parse(){
 				string svv;
 				ssd >> svv;
 				string filename = "texture"+svv+".blubtex";
-				std::ifstream VertexShaderStream(filename, std::ios::in);
+				typedef std::basic_ifstream<unsigned char, std::char_traits<unsigned char> > uifstream;
+
+				uifstream VertexShaderStream(filename, std::ios::in);
 				string tex_file;
 				unsigned char *tex_data = new unsigned char[obj.texture_data.width*obj.texture_data.height];
 				if (VertexShaderStream.is_open())
 				{
-					VertexShaderStream.read(reinterpret_cast<char*>(tex_data), obj.texture_data.width*obj.texture_data.height);
+					VertexShaderStream.read(/*reinterpret_cast<char*>(*/tex_data/*)*/, obj.texture_data.width*obj.texture_data.height);
 					//while (getline(VertexShaderStream, tex_file))
 					//file_contents += "\n" + Line;
 					VertexShaderStream.close();//hmm.komisch
@@ -206,7 +212,7 @@ vector<THREEDObject> FileParser::parse(){
 				//string dcc = tex_file;
 				
 				//strcpy((char*)tex_data, dcc.c_str());
-				obj.texture_data.texture_bytes = tex_data;
+				obj.texture_data.bits = tex_data;
 			}
 
 			//if (st)

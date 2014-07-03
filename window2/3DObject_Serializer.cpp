@@ -110,15 +110,16 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 
 	ret += split_char + get_Statement("vertices_totalsize", obj->vertices_totalsize);
 	ret += split_char + get_Statement("vertices", obj->vertices, obj->vertices_totalsize);
-	
-	unsigned char* tex_bits = new unsigned char[obj->texture_data.width*obj->texture_data.height];
+	ret += split_char + get_Statement("texture_format", obj->texture_data.format);
+
+	/*unsigned char* tex_bits = new unsigned char[obj->texture_data.width*obj->texture_data.height];
 
 	for (int j = 0; j < obj->texture_data.width*obj->texture_data.height; j++)
 	{
 		tex_bits[j] = obj->texture_data.texture_bytes[j];
 
 	}//falls das überhaupt nötig ist
-	std::string sName(reinterpret_cast<char*>(tex_bits));
+	std::string sName(reinterpret_cast<char*>(tex_bits));*/
 	Win_Utils*wn = new Win_Utils();
 
 	HMODULE hModule = GetModuleHandleW(NULL);
@@ -128,9 +129,12 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	string realpath = wn->getdirpath(path) + "\\"+d;
 	//wn->saveToFile(realpath.c_str(),sName.c_str());
 
-	std::ofstream out;
+	
+	typedef std::basic_ofstream<unsigned char, std::char_traits<unsigned char> > uofstream;
+	uofstream out;
 	out.open(realpath, std::ios::out | std::ios::binary);
-	out.write(reinterpret_cast<char*>(obj->texture_data.texture_bytes), obj->texture_data.width*obj->texture_data.height);
+	//uofstream.ope
+	out.write(/*reinterpret_cast<char*>(*/obj->texture_data.bits/*)*/, obj->texture_data.width*obj->texture_data.height);
 	out.close();
 	ret += split_char + "texture_id:" + std::to_string(num_texture_file_ids);
 	//ret += split_char + 

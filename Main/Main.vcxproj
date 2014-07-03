@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath);D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3</IncludePath>
@@ -55,6 +55,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ILUT.lib;ILU.lib;DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
