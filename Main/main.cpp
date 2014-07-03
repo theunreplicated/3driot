@@ -9,6 +9,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Physics_Input_Data.h"
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -113,39 +114,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	FileParser*ps = new FileParser("scene.shotgun");
 	std::vector<THREEDObject> obj=ps->parse();
 
-	THREEDObject myobj;
-
-	float vVertices[] = { -0.5f, 0.5f, 0.0f,  // Position 0
-		-0.5f, -0.5f, 0.0f,  // Position 1
-		0.5f, -0.5f, 0.0f,  // Position 2
-	0.5f, 0.5f, 0.0f  // Position 3
-
-	};
-	const unsigned int indices[] = { 0, 1, 2, 0, 2, 3 };
-	float texcoords[] = {
-		0.0f, 0.0f,        // TexCoord 0 
-		0.0f, 1.0f,        // TexCoord 1
-		1.0f, 1.0f,        // TexCoord 2
-		1.0f, 0.0f         // TexCoord 3
-	};
-
-	GLubyte pixels[4 * 3] =
-	{
-		255, 0, 0, // Red
-		0, 255, 0, // Green
-		0, 0, 255, // Blue
-		255, 255, 0  // Yellow
-	};
-	myobj.draw_call_num_elements = 6;
-	myobj.has_indices = true;
-	myobj.vertices_totalsize = sizeof(vVertices);
-	myobj.indices_totalsize = sizeof(indices);
-	myobj.has_texture = true;
-	myobj.texcoords_totalsize = sizeof(texcoords);
-	myobj.has_tex_coord = true;
-	myobj.texture_data.width = 2;
-	myobj.texture_data.height = 2;
-	
 	
 
 
@@ -155,9 +123,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	OpenGLContext*ctx = new OpenGLContext(native_window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx);
-	glmain->draw_elements = obj;
-
-	glmain->initGL();
 	glm::mat4 matt2 = glm::perspective(45.0f, (1920.0f / 1080.0f), 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
@@ -165,18 +130,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		glm::vec3(0, 0, 0),
 		glm::vec3(0, 1, 0)
 		);
+
 	glm::mat4 std_res = matt2*camera_mat;
+	//glmain->setCameraandProjMatrix(std_res);
+	glmain->draw_elements = obj;// glmain->draw_elements.push_back(myobj);
+	for (THREEDObject& d : glmain->draw_elements){
+		glm::mat4 matt = glm::mat4();
+		d.matrix = glm::value_ptr(matt);
+
+	}
+	
+	
+	Physics::Main*ph = new Physics::Main();
+	ph->createStaticPlaneShape();
+	int num_vertices = glmain->draw_elements[0].vertices_totalsize / sizeof(float);
+	//btVector3 * v = new btVector3[num_vertices / 3];
+	for (int i = 0; i < num_vertices/3; i++){
+	//	v[i] = btVector3(glmain->draw_elements[0].vertices[(i * 3) + 0], glmain->draw_elements[0].vertices[(i * 3) + 1], glmain->draw_elements[0].vertices[(i * 3) + 2]);
+
+
+	}
+
+	//ph->add_Mesh({ v, btQuaternion::getIdentity(), btVector3(50, 0, 0), (int*)glmain->draw_elements[0].indices, (glmain->draw_elements[0].indices_totalsize/sizeof(unsigned int))/3,num_vertices,1});
+
+	//ph->simulate_ActionHandler(1/60.0f);
+//	ph->simulate_AfterActionHandler_getTransform(0);
+
+	glmain->initGL();
+
 	Windows::MessageLoop* ml = new Windows::MessageLoop();
 	while (ml->Message_Get()){
 		//glm::mat4 transformmat = scalemat*rotmat;
-		glm::mat4 matt = matt2*camera_mat*model_mat;
-		//		for (int i = 0; i < glm->num_draw_elements; i++){
+		//glm::mat4 matt = matt2*camera_mat*model_mat;
+		//	for (int i = 0; i < glm->num_draw_elements; i++){
 		//glm->draw_elements[i].matrix = glm::value_ptr(matt);
 		//}
-		for (THREEDObject& d : glmain->draw_elements){
-			d.matrix = glm::value_ptr(matt);
-
-		}
+	
 		//glm->draw_elements[0].matrix = m.get_as_float16();
 		//glm->draw_elements[0].matrix = glm::value_ptr(matt);
 		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;

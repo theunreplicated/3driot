@@ -25,4 +25,5 @@ private:
 
 };
 typedef void(OpenGLContext::*swapBuffersFunc)(void);
+
 #endif

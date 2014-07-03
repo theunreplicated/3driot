@@ -57,7 +57,7 @@ namespace Physics{
 		ph_vehicle->add(fallShape,mesh_transform);
 		fallRigidBody = ph_vehicle->m_pBody;
 		}*/
-		//fallRigidBodies.push_back(fallRigidBody);
+		fallRigidBodies.push_back(fallRigidBody);
 		dynamicsWorld->addRigidBody(fallRigidBody);
 
 
@@ -106,5 +106,22 @@ namespace Physics{
 		//int dc = 5;
 		//return &dc;
 
+	}
+	void Main::simulate_ActionHandler(float frequency/*z.b. 1/60.0f*/){
+		dynamicsWorld->stepSimulation(frequency, 10);
+
+
+	}
+	btTransform Main::simulate_AfterActionHandler_getTransform(int Mesh_uid){/*http://www.c-plusplus.de/forum/286796-full*/
+
+		btTransform trans; btRigidBody*fallRigidBody = fallRigidBodies[Mesh_uid];
+		//LOG("simulate[");
+		//LOG(Mesh_uid);
+		//LOG(trans.getOrigin().getY()); LOG("]");
+		fallRigidBody->getMotionState()->getWorldTransform(trans);
+		//myVector3 retpos = { trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ() };
+		//myQuaternion retquat = { trans.getRotation().getAxis().getX(), trans.getRotation().getAxis().getY(), trans.getRotation().getAxis().getZ(), trans.getRotation().getW() };
+		//myTransform rettrf = { retpos, retquat };
+		return trans;
 	}
 }

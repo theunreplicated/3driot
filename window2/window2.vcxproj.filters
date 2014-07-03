@@ -72,6 +72,9 @@
     <ClCompile Include="Win_Utils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="egl_display_binding.cpp">
+      <Filter>Quelldateien\GL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationWindow.h">

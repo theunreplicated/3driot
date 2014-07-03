@@ -9,6 +9,7 @@
 #include "Matrix.h"
 #include "WindowStructs.h"
 #include "Import_Object_Struct.h"
+#include <glm\mat4x4.hpp>
 //mat#include <glm/mat4x4.hpp>
 //TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
@@ -29,6 +30,7 @@ public:
 	//Matrix m;
 	//int num_draw_elements = 0;
 	void add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix=0);
+	void setCameraandProjMatrix(glm::mat4 matrix);
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -49,6 +51,8 @@ private:
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
 	void fillBuffer(T_DRAW_STRUCTURE& pc);
 	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
+	glm::mat4 proj_camera_matrix;
+	bool use_vp_matrix;
 
 };
 
@@ -124,6 +128,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	draw_elements.push_back(pp);
 
 }*/
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setCameraandProjMatrix(glm::mat4 matrix){
+	proj_camera_matrix = matrix;
+	use_vp_matrix = true;
+
+}
+
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::bindAttribLocation(const char* attrib_name){
 	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
@@ -458,8 +470,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
-
-		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
+		glm::mat4 m = glm::make_mat4(pc.matrix);
+		glm::mat4 res = proj_camera_matrix*m;
+		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE,glm::value_ptr(res) );
 		if (pc.has_texture){
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, pc.Diffuse_Texture_IDs);
