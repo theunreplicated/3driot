@@ -5,6 +5,8 @@
 #include <Windows.h>
 #include "GLStruct_Copy.h"
 #include <sstream>
+#include <glm\gtc\type_ptr.hpp>
+#include <glm\mat4x4.hpp>
 using std::ifstream; using std::string; using std::vector;
 FileParser::FileParser(std::string file_name){
 	ifstream VertexShaderStream(file_name, std::ios::in);
@@ -237,7 +239,7 @@ vector<THREEDObject> FileParser::parse(){
 
 
 	}*/
-
+	
 	vvvv.push_back(obj);
 	return vvvv;//aaaa!!!!
 }

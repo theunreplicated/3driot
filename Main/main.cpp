@@ -113,7 +113,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	FileParser*ps = new FileParser("scene.shotgun");
 	std::vector<THREEDObject> obj=ps->parse();
+	glm::mat4 dummy_mat = glm::mat4();
+	for (THREEDObject& v : obj){
+		
+		v.matrix = glm::value_ptr(dummy_mat);
 
+	}
 	
 
 
@@ -134,22 +139,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	glm::mat4 std_res = matt2*camera_mat;
 	//glmain->setCameraandProjMatrix(std_res);
 	glmain->draw_elements = obj;// glmain->draw_elements.push_back(myobj);
-	for (THREEDObject& d : glmain->draw_elements){
-		glm::mat4 matt = glm::mat4();
-		d.matrix = glm::value_ptr(matt);
+	glmain->setCameraMatrix(camera_mat);
+	glmain->setProjectionMatrix(matt2);
+	glmain->setCameraTransformMatrix(model_mat);
+	//for (THREEDObject& d : glmain->draw_elements){
+	//	glm::mat4 matt = glm::mat4();
+		//d.matrix = glm::value_ptr(matt);
 
-	}
+	//}
 	
 	
 	Physics::Main*ph = new Physics::Main();
 	ph->createStaticPlaneShape();
-	int num_vertices = glmain->draw_elements[0].vertices_totalsize / sizeof(float);
+	//int num_vertices = glmain->draw_elements[0].vertices_totalsize / sizeof(float);
 	//btVector3 * v = new btVector3[num_vertices / 3];
-	for (int i = 0; i < num_vertices/3; i++){
+	//for (int i = 0; i < num_vertices/3; i++){
 	//	v[i] = btVector3(glmain->draw_elements[0].vertices[(i * 3) + 0], glmain->draw_elements[0].vertices[(i * 3) + 1], glmain->draw_elements[0].vertices[(i * 3) + 2]);
 
 
-	}
+	//}
 
 	//ph->add_Mesh({ v, btQuaternion::getIdentity(), btVector3(50, 0, 0), (int*)glmain->draw_elements[0].indices, (glmain->draw_elements[0].indices_totalsize/sizeof(unsigned int))/3,num_vertices,1});
 

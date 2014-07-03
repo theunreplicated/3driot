@@ -1,7 +1,7 @@
 #include "ImageLoader.h"
 #include <stdexcept>
 #include <Windows.h>
-#include <FreeImage.h>
+//#include <FreeImage.h>
 #include <IL\il.h>
 #include <IL\ilut.h>
 ImageLoader::ImageLoader(){
@@ -13,7 +13,7 @@ ImageLoader::ImageLoader(){
 	ilutRenderer(ILUT_OPENGL);
 }
 ImageLoader::~ImageLoader(){
-	FreeImage_DeInitialise();
+	//FreeImage_DeInitialise();
 
 }
 /*

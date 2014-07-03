@@ -342,7 +342,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUC
 	}*/
 	//int *testvp = mesh_data->texture_data.test;
 	//int textvar = *testvp;
-	
+
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0,/* mesh_data->texture_data.format*/GL_RGBA, GL_UNSIGNED_BYTE,/*mesh_data->texture_data.bits*/(void*)mesh_data->texture_data.texture_bytes);
 	glTexImage2D(GL_TEXTURE_2D, 0, mesh_data->texture_data.format, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, mesh_data->texture_data.format, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
 	//mesh_data->texture_data.unload();//muss man nicht unbedingt machen
@@ -457,7 +457,7 @@ float g_vertices_rectangle_data[] = {
 	//glGenBuffers(num_draw_elements,texcoords_buffer);
 	//Diffuse_Texture_IDs = new GLuint[num_draw_elements];//@TODO:es werden alle Dingens geaddet,nicht aber nur die,die ne Texture haben
 	//int buffer_add_counter = 0;
-
+	
 	for (T_DRAW_STRUCTURE& pc: draw_elements)
 	{
 
@@ -492,7 +492,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
 		glm::mat4 m = glm::make_mat4(pc.matrix);
-		
+		//@TODO:das mit dem camera_transformmatrix ist wohl nicht richtigso ,gehört wohl alles in den camera aka view matrix
 		//glm::mat4 res = proj_camera_matrix*m;
 		glm::mat4 res = projection_matrix*camera_matrix*camera_transform_matrix;
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE,glm::value_ptr(res) );
