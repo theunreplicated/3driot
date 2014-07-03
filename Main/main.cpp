@@ -124,14 +124,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	
 
-
-
+	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
+	float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
 	dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 	OpenGLContext*ctx = new OpenGLContext(native_window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx);
-	glm::mat4 matt2 = glm::perspective(45.0f, (1920.0f / 1080.0f), 0.01f, 5000.0f);
+	glm::mat4 matt2 = glm::perspective(45.0f, (current_resolution_w / current_resolution_h), 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
 		glm::vec3(4, 3, 3),
