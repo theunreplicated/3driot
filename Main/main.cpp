@@ -5,6 +5,7 @@
 #include "../window2/OpenGLContext.cpp"
 #include "../window2/SysUtils_Load_Library.cpp"
 #define HIDE_IMG_STRUCT_FROM_MAIN
+#define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>

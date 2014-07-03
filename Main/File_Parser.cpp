@@ -7,8 +7,10 @@
 #include <sstream>
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\mat4x4.hpp>
+
 using std::ifstream; using std::string; using std::vector;
 FileParser::FileParser(std::string file_name){
+	img_loader = new ImageLoader();
 	ifstream VertexShaderStream(file_name, std::ios::in);
 
 	if (VertexShaderStream.is_open())
@@ -69,12 +71,12 @@ vector<THREEDObject> FileParser::parse(){
 	}//@TODO:kann aktuell nur mit einem Objekt umgehen
 
 
-	THREEDObject obj;
+	THREEDObject obj;  int texture_id;
 	for (std::vector<string>::size_type i = 0; i != exp_commas.size(); i++)//http://stackoverflow.com/questions/409348/iteration-over-vector-in-c
 	{
 		//if (i % 2 == 0){
 			//gerade
-			
+		
 			string name = exp_commas[i];
 			vector<string> st=explode(':',name);
 			string str = st[1];
@@ -181,7 +183,7 @@ vector<THREEDObject> FileParser::parse(){
 				obj.texture_data.format = atoi(str.c_str());
 
 			}
-			if (st[0] == "texture_id"){
+			/*if (st[0] == "texture_id"){
 				//str = str.substr(0, st[0].size() - 2);
 				std::stringstream ssd;
 				ssd << atoi(str.c_str());
@@ -195,10 +197,10 @@ vector<THREEDObject> FileParser::parse(){
 				unsigned char *tex_data = new unsigned char[obj.texture_data.width*obj.texture_data.height];
 				if (VertexShaderStream.is_open())
 				{
-					VertexShaderStream.read(/*reinterpret_cast<char*>(*/tex_data/*)*/, obj.texture_data.width*obj.texture_data.height);
+					VertexShaderStream.read(/*reinterpret_cast<char*>(*//*tex_data)*//*, obj.texture_data.width*obj.texture_data.height);
 					//while (getline(VertexShaderStream, tex_file))
 					//file_contents += "\n" + Line;
-					VertexShaderStream.close();//hmm.komisch
+					/*VertexShaderStream.close();//hmm.komisch
 					//}
 					
 
@@ -213,8 +215,23 @@ vector<THREEDObject> FileParser::parse(){
 				
 				//strcpy((char*)tex_data, dcc.c_str());
 				obj.texture_data.bits = tex_data;
+			}*/
+			
+			if (st[0] == "texture_id"){
+				//texture_id = str.substr(0, str.size() - 1);
+				texture_id = atoi(str.c_str());
 			}
-
+			if (st[0] == "texture_file_extension"){
+				string tex = str.substr(0, str.size() - 1);
+				std::stringstream ss;
+				ss << texture_id;
+				string texture_id_s;
+				ss >> texture_id_s;
+				string filename = "texture" + texture_id_s +"."+ tex;
+				image_stor res=img_loader->load(filename.c_str());//@TODO:Ändern,und zwar abhängig vom path von main shotgun!!AK-47,viel mehr kenn ich net
+				obj.texture_data.bits = res.bits;
+				//@TODO:devil id's mitkopieren,und zwar für das free() nach dem Laden
+			}
 			//if (st)
 
 

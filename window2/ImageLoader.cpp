@@ -4,6 +4,8 @@
 //#include <FreeImage.h>
 #include <IL\il.h>
 #include <IL\ilut.h>
+#include <fstream>
+#include <sstream>
 ImageLoader::ImageLoader(){
 	//FreeImage_Initialise();
 	ilutRenderer(ILUT_OPENGL);
@@ -111,6 +113,7 @@ Image_Load_Result ImageLoader::load(const char* filename){
 	//return success
 	return{width,height,bits,/*dib,*//*ColorType,iFormat,textura};
 }*/
+
 Image_Load_Result ImageLoader::load(const char* filename){
 	Image_Load_Result ret;
 	//http://r3dux.org/2010/11/single-call-opengl-texture-loader-in-devil/
@@ -168,6 +171,12 @@ Image_Load_Result ImageLoader::load(const char* filename){
 		ret.height = ilGetInteger(IL_IMAGE_HEIGHT);
 		ret.format = ilGetInteger(IL_IMAGE_FORMAT);
 		ret.bits = ilGetData();
+		std::stringstream s;
+		s << filename;
+		std::string str;
+		s>> str;
+		ret.file_path = str;
+		
 		// Specify the texture specification
 	/*	glTexImage2D(GL_TEXTURE_2D, 				// Type of texture
 			0,				// Pyramid level (for mip-mapping) - 0 is the top level

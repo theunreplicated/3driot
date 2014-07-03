@@ -1,5 +1,6 @@
 #ifndef INC_GL_STRUCT_COPY_H
 #define INC_GL_STRUCT_COPY_H
+//#include "../window2/ImageLoader.h"
 struct Interals_do_not_touch{
 	unsigned int vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
 
@@ -7,7 +8,7 @@ struct Interals_do_not_touch{
 struct image_stor{
 	int width, height;
 	unsigned char /** texture_bytes,*/*bits;
-	int format;
+	int format; unsigned int il_image_id;
 };
 struct RenderStructBase{
 	float * tex_coords; bool has_tex_coord = false;

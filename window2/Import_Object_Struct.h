@@ -8,8 +8,8 @@ struct Mesh_RenderObject :RenderStructBase{
 	int num_tex_coords;
 	float * vertices/*durch 3 für einzelne Vertices*/; unsigned int size_vertices/*totale länge,muss noch durch 3 geteilt werden*/;
 	unsigned int num_indices = 0; unsigned int * indices/*@TODO:unsigned int oder long ist wohl besser*/;
-	const char * mesh_name, *node_name;
-
+	const char * mesh_name, *node_name,*cooresponding_texture_path;
+	
 	std::vector<std::array<std::array<float, 4>, 4>>transform_matrices;//@TODO:Matrices(Matrizen) wieder auf den Heap
 };
 #endif

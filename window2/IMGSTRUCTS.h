@@ -2,6 +2,7 @@
 #define IMG_STRUCT_H
 //#include <IL\il.h>
 //#include <IL\ilut.h>
+#include <string>
 enum ColorData{ ColorData_RGB, ColorData_RGBA, ColorData_UNDEFINED };
 struct FI2BITMAP { void *data; };
 struct Image_Load_Result{
@@ -13,6 +14,7 @@ struct Image_Load_Result{
 	//unsigned char*texture_bytes;
 	//void unload(){ ilDeleteImages(1, &il_image_id); };
 	unsigned int il_image_id;
+	std::string file_path,file_name;
 };
 struct image_stor :Image_Load_Result{
 	const char* texture_name;

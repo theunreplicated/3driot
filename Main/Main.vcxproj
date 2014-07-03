@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="File_Parser.cpp" />
+    <ClCompile Include="ImageLoader_Copy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="my_gfx_rect.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="File_Parser.h" />
     <ClInclude Include="GLStruct_Copy.h" />
+    <ClInclude Include="ImageLoader_Copy.h" />
     <ClInclude Include="my_gfx_rect.h" />
     <ClInclude Include="Physics_Input_Data.h" />
   </ItemGroup>

@@ -30,6 +30,9 @@
     <ClCompile Include="File_Parser.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ImageLoader_Copy.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Physics_Input_Data.h">
@@ -42,6 +45,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="GLStruct_Copy.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader_Copy.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

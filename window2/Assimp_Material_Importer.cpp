@@ -86,7 +86,9 @@ image_stor Assimp_Material_Importer::import_texture(const char* texture_file_pat
 		//is.unload = data.unload;
 		is.texture_name = texture_file_path;
 //		is.texture_bytes = data.texture_bytes;
-		
+
+		is.file_name = data.file_path;
+		is.file_path = getdirpath(m_model_file_path);
 		loaded_image_files_data.push_back(is);
 	}
 	return is;

@@ -475,7 +475,12 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
 	//@note normalerweise vorher gluseprogram,ein program müsste im moment reichen,da kein Wechsel,auch net brnötig
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
+#ifndef UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+#else
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+#endif
+
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 

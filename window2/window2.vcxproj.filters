@@ -158,13 +158,13 @@
     <ClInclude Include="WinUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IMGSTRUCTS.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Import_Object_Struct.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="dingens_struct_base.h">
+      <Filter>Headerdateien\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGSTRUCTS.h">
       <Filter>Headerdateien\GL</Filter>
     </ClInclude>
   </ItemGroup>

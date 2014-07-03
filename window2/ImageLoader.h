@@ -8,7 +8,8 @@ class ImageLoader{
 public:
 	ImageLoader();
 	~ImageLoader();
-	Image_Load_Result load(const char* filename);
+	
+	/*T_res*/ Image_Load_Result load(const char* filename);
 };
 
 

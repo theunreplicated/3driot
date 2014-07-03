@@ -72,6 +72,11 @@ string THREED_Object_Serializer::get_Statement(std::string name, unsigned int *d
 	ret += "]";
 	return ret;
 }
+string getFileExtensionName(string file_name){
+	
+	return file_name.substr(file_name.find_last_of(".") + 1);
+
+}
 string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	//zuerst RenderStructBase
 
@@ -111,7 +116,8 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	ret += split_char + get_Statement("vertices_totalsize", obj->vertices_totalsize);
 	ret += split_char + get_Statement("vertices", obj->vertices, obj->vertices_totalsize);
 	ret += split_char + get_Statement("texture_format", obj->texture_data.format);
-
+	
+	
 	/*unsigned char* tex_bits = new unsigned char[obj->texture_data.width*obj->texture_data.height];
 
 	for (int j = 0; j < obj->texture_data.width*obj->texture_data.height; j++)
@@ -121,22 +127,26 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	}//falls das überhaupt nötig ist
 	std::string sName(reinterpret_cast<char*>(tex_bits));*/
 	Win_Utils*wn = new Win_Utils();
-
+	string p2ath = obj->texture_data.file_path + "\\" + obj->texture_data.file_name;
 	HMODULE hModule = GetModuleHandleW(NULL);
 	WCHAR path[MAX_PATH];
 	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
-	string d = "texture" + std::to_string(num_texture_file_ids) + ".blubtex";
-	string realpath = wn->getdirpath(path) + "\\"+d;
+	//string d = "texture" + std::to_string(num_texture_file_ids) + ".blubtex";
+	//string realpath = wn->getdirpath(path) + "\\"+d;
 	//wn->saveToFile(realpath.c_str(),sName.c_str());
-
+	std::string file_extension = getFileExtensionName(p2ath);
+	std::string n_copy_d = wn->getdirpath(path) + "\\" + "texture" + std::to_string(num_texture_file_ids)+"."+file_extension;
 	
-	typedef std::basic_ofstream<unsigned char, std::char_traits<unsigned char> > uofstream;
-	uofstream out;
-	out.open(realpath, std::ios::out | std::ios::binary);
+	::CopyFile(p2ath.c_str(),n_copy_d.c_str(), FALSE);
+	//typedef std::basic_ofstream<unsigned char, std::char_traits<unsigned char> > uofstream;
+	//uofstream out;
+	//out.open(realpath, std::ios::out | std::ios::binary);
 	//uofstream.ope
-	out.write(/*reinterpret_cast<char*>(*/obj->texture_data.bits/*)*/, obj->texture_data.width*obj->texture_data.height);
-	out.close();
+	//out.write(/*reinterpret_cast<char*>(*/obj->texture_data.bits/*)*/, obj->texture_data.width*obj->texture_data.height);
+	//out.close();
 	ret += split_char + "texture_id:" + std::to_string(num_texture_file_ids);
 	//ret += split_char + 
+	num_texture_file_ids++;
+	ret += split_char + "texture_file_extension:" + file_extension;
 	return ret;
 }
