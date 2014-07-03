@@ -26,14 +26,23 @@
 #include "GLStructs.h"
 #include "egl_display_binding.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-HHOOK mouse_hook;
+//HHOOK mouse_hook;
 //typedef void(EGL_Display_Binding::*EGLswapBuffersFunc)(void);
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 glm::mat4 std_res = glm::mat4(1.0f);
+glm::vec3 camera_add_vector = glm::vec3(0,0,0);
+glm::mat4 get_camera(glm::vec3 add_pos_Vector=glm::vec3(0,0,0)){
+	return glm::lookAt(
+		glm::vec3(4, 3, 3)+add_pos_Vector,
+		glm::vec3(0, 0, 0) + add_pos_Vector,
+		glm::vec3(0, 1, 0)
+		);
+}
 
+glm::mat4 camera_mat = get_camera();
 glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 
@@ -188,10 +197,15 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	case VK_RIGHT:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
 	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f,0.0f, 1.0f)); break;
 	case VK_DOWN:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 0.0f, 1.0f)); break;//todo:vllt.eigene matrizen
+	case VK_NUMPAD7:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;
+	case VK_NUMPAD9:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD4:translatemat = glm::translate(translatemat, glm::vec3(-1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD6:translatemat = glm::translate(translatemat, glm::vec3(1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD2:translatemat = glm::translate(translatemat, glm::vec3(0.0f, -1.0f, 0.0f)); break;
 	case VK_NUMPAD8:translatemat = glm::translate(translatemat, glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	//case VK_DELETE:{camera_add_vector += glm::vec3(1,0,0);
+		//			   glmain->setCameraMatrix(get_camera(camera_add_vector));
+	//}; break;
 
 	default:
 		break;
@@ -384,11 +398,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
-	glm::mat4 camera_mat = glm::lookAt(
-		glm::vec3(4, 3, 3),
-		glm::vec3(0, 0, 0),
-		glm::vec3(0, 1, 0)
-		);
+
 	glm::mat4 std_res = projection_matrix*camera_mat;
 //	glmain->setCameraandProjMatrix(std_res);
 	glmain->setProjectionMatrix(projection_matrix);
