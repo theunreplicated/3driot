@@ -115,7 +115,27 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	
 
 
+
 }
+	else{
+		ret_mesh.has_texture = false;
+	}
+
+	if (mesh->HasTextureCoords(0)/*wohl ? @TODO*/){
+		ret_mesh.has_tex_coord = true;
+		ret_mesh.num_tex_coords = 2 * mesh->mNumVertices;
+		ret_mesh.tex_coords = new float[ret_mesh.num_tex_coords];
+		for (unsigned int i = 0; i<mesh->mNumVertices; i++){
+			ret_mesh.tex_coords[i * 2] = mesh->mTextureCoords[0][i].x;
+			ret_mesh.tex_coords[(i * 2) + 1] = mesh->mTextureCoords[0][i].y;
+
+		}
+
+
+	}
+	else{
+		ret_mesh.has_tex_coord = false;
+	}
 	ret_mesh.mesh_name = mesh->mName.C_Str();
 	(mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE ? throw std::runtime_error("Primitive nicht supported/unterstützt") : (ret_mesh.draw_primitive = PR_TRIANGLE));
 	ret_mesh.vertices = new float[mesh->mNumVertices * 3];
@@ -158,18 +178,7 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 			}
 		}
 	}
-	if (mesh->HasTextureCoords(0)/*wohl ? @TODO*/){
-		ret_mesh.has_tex_coord = true;
-		ret_mesh.num_tex_coords = 2 * mesh->mNumVertices;
-		ret_mesh.tex_coords = new float[ret_mesh.num_tex_coords];
-		for (unsigned int i = 0; i<mesh->mNumVertices; i++){
-			ret_mesh.tex_coords[i * 2] = mesh->mTextureCoords[0][i].x;
-			ret_mesh.tex_coords[(i * 2) + 1] = mesh->mTextureCoords[0][i].y;
-
-		}
-
-
-	}
+	
 	return ret_mesh;
 }
 int Assimp_Mesh_Importer::CalculateBounds(aiNode* piNode, aiVector3D* p_avOut,

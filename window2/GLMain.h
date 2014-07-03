@@ -313,13 +313,6 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUC
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	GLubyte pixels[4 * 4] =
-	{
-		255, 0, 0,0, // Red
-		0, 255, 0,0, // Green
-		0, 0, 255,0, // Blue
-		255, 255, 0,0  // Yellow
-	};
 
 	
 	
