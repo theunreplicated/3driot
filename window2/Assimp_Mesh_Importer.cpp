@@ -112,6 +112,7 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	unsigned int mat_index = mesh->mMaterialIndex;//nur ein Material
 	ret_mesh.texture_data=material_importer->process_Material(mat_index);
 	ret_mesh.has_texture = true;
+	
 
 
 }

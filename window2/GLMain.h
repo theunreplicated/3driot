@@ -159,6 +159,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 	pp.has_tex_coord = obj->has_tex_coord;
 	pp.tex_coords = obj->tex_coords;
 	pp.texture_data = obj->texture_data;
+	pp.has_texture =obj->has_texture;
+	
 	//if (pass_matrix == 0){
 		//pass_matrix = new float[16];
 		
@@ -293,7 +295,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUC
 	// Load the texture
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	GLenum texture_type=GL_RGBA;
+	/*GLenum texture_type=GL_RGBA;
 	if (mesh_data->texture_data.color_type == ColorData_RGB){
 		GLenum texture_type = GL_RGB;
 
@@ -305,7 +307,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUC
 	else{
 		//@TODO:loggen,falls undefiniert
 
-	}
+	}*/
 	//int *testvp = mesh_data->texture_data.test;
 	//int textvar = *testvp;
 	
@@ -338,13 +340,18 @@ template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::fillBuffer(T_DRAW_STRUCTURE& pc){
 
 	glGenBuffers(1, &pc.vertex_buffer);
-	glGenBuffers(1, &pc.indices_buffer);
-	glGenBuffers(1, &pc.texcoords_buffer);
+	if (pc.indices != NULL){
+		glGenBuffers(1, &pc.indices_buffer);
+	}
+	if (pc.has_tex_coord){
+		glGenBuffers(1, &pc.texcoords_buffer);
+	}
 	//THREEDObject pc = draw_elements[i];
 
 
-
-	pc.Diffuse_Texture_IDs = loadTexture(&pc);
+	if (pc.has_texture){
+		pc.Diffuse_Texture_IDs = loadTexture(&pc);
+	}
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, pc.vertex_buffer);
@@ -453,11 +460,13 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		//THREEDObject pc = draw_elements[i];
 
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE, pc.matrix);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,pc.Diffuse_Texture_IDs);
-		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(diffuse_Texture_sample_Loc, 0);
-		
+		if (pc.has_texture){
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pc.Diffuse_Texture_IDs);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(diffuse_Texture_sample_Loc, 0);
+		}
+
 		//position vertex hinschieben
 		glBindBuffer(GL_ARRAY_BUFFER,pc.vertex_buffer/*testweise*/);
 		glVertexAttribPointer(

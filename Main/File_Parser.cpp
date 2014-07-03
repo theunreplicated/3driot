@@ -182,24 +182,29 @@ vector<THREEDObject> FileParser::parse(){
 				string svv;
 				ssd >> svv;
 				string filename = "texture"+svv+".blubtex";
-				ifstream VertexShaderStream(filename, std::ios::in);
+				std::ifstream VertexShaderStream(filename, std::ios::in);
 				string tex_file;
+				unsigned char *tex_data = new unsigned char[obj.texture_data.width*obj.texture_data.height];
 				if (VertexShaderStream.is_open())
 				{
+					VertexShaderStream.read(reinterpret_cast<char*>(tex_data), obj.texture_data.width*obj.texture_data.height);
+					//while (getline(VertexShaderStream, tex_file))
+					//file_contents += "\n" + Line;
+					VertexShaderStream.close();//hmm.komisch
+					//}
+					
 
-					while (getline(VertexShaderStream, tex_file))
-						//file_contents += "\n" + Line;
-						VertexShaderStream.close();//hmm.komisch
+					
 				}
 				else{
 					throw std::runtime_error("Could not be opened-textureDatei kann nicht geöffnet werden");
 
 				}
 
-				string dcc = tex_file;
-				unsigned char *tex_data = new unsigned char[obj.texture_data.width*obj.texture_data.height];
-				strcpy((char*)tex_data, dcc.c_str());
-	
+				//string dcc = tex_file;
+				
+				//strcpy((char*)tex_data, dcc.c_str());
+				obj.texture_data.texture_bytes = tex_data;
 			}
 
 			//if (st)

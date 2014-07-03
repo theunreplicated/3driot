@@ -1,5 +1,8 @@
 #include "3DObject_Serializer.h"
 #include <sstream>
+#include <ostream>
+#include <fstream>
+#include <iostream>
 #include "WinUtils.h"
 using std::string;
 
@@ -123,7 +126,12 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
 	string d = "texture" + std::to_string(num_texture_file_ids) + ".blubtex";
 	string realpath = wn->getdirpath(path) + "\\"+d;
-	wn->saveToFile(realpath.c_str(),sName.c_str());
+	//wn->saveToFile(realpath.c_str(),sName.c_str());
+
+	std::ofstream out;
+	out.open(realpath, std::ios::out | std::ios::binary);
+	out.write(reinterpret_cast<char*>(obj->texture_data.texture_bytes), obj->texture_data.width*obj->texture_data.height);
+	out.close();
 	ret += split_char + "texture_id:" + std::to_string(num_texture_file_ids);
 	//ret += split_char + 
 	return ret;

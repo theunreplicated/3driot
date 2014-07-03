@@ -11,7 +11,7 @@ namespace Windows{
 		 for (winproc_callback_function_struct data : winproc_callback_function_data){
 			 if (data.message == message){
 				 data.cbf(hWnd,wParam,lParam);
-
+				 //return 0;
 			 }
 
 
@@ -93,12 +93,17 @@ namespace Windows{
 
 
 	}
-	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle):standard_window(&native_window_handle,&native_window_handle){
+	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc):standard_window(&native_window_handle,&native_window_handle){
 		WNDCLASS wc;
 		m_hInstance= hInstance;
 		// register window class
 		wc.style = CS_OWNDC;
-		wc.lpfnWndProc = WndProc;
+		if (proc != NULL){
+			wc.lpfnWndProc = proc;
+		}
+		else{
+			wc.lpfnWndProc = WndProc;
+		}
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = hInstance;
