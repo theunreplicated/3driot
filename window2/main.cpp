@@ -30,7 +30,7 @@ HHOOK mouse_hook;
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
-glm::mat4 scalemat,rotmat = glm::mat4(1.0f);
+glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 
 	GLMain<swapBuffersFunc, OpenGLContext,THREEDObject> * glmain;
 
@@ -200,8 +200,12 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	case /*VK_OEM_MINUS*/109:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(0.5f, 0.5f, 0.5f)); break;
 	case VK_LEFT:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
 	case VK_RIGHT:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(1.0f, 1.0f, 0.0f)); break;
+	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(1.0f,0.0f, 0.0f)); break;
 	case VK_DOWN:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;//todo:vllt.eigene matrizen
+	case VK_NUMPAD4:translatemat = glm::translate(translatemat, glm::vec3(-1.0f, 0.0f, 0.0f)); break;
+	case VK_NUMPAD6:translatemat = glm::translate(translatemat, glm::vec3(1.0f, 0.0f, 0.0f)); break;
+	case VK_NUMPAD2:translatemat = glm::translate(translatemat, glm::vec3(0.0f, -1.0f, 0.0f)); break;
+	case VK_NUMPAD8:translatemat = glm::translate(translatemat, glm::vec3(0.0f, 1.0f, 0.0f)); break;
 
 	default:
 		break;
@@ -216,6 +220,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	case WM_CREATE:
 
 		return 0;
+	
 	case WM_COMMAND:
 		oncommand(hWnd,wParam,lParam); break;
 	case WM_CLOSE:
@@ -230,7 +235,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 		case VK_ESCAPE:
 			PostQuitMessage(0);
 			return 0;
-
+		default:keydown(hWnd,wParam,lParam); break;
 		}
 		return 0;
 
@@ -380,8 +385,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		glm::vec3(0, 1, 0)
 		);
 	glm::mat4 std_res = matt2*camera_mat;
-	LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
-	
+	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+	LPWSTR dcc = L"";
 	if (*dcc!=*L""){///bei Abbruch==L""
 		//open
 
@@ -460,7 +465,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	MSG Msg;
 	while (::GetMessage(&Msg, NULL, 0, 0) > 0){
-		glm::mat4 transformmat = scalemat*rotmat;
+		glm::mat4 transformmat = translatemat*scalemat*rotmat;
 		glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
 //		for (int i = 0; i < glm->num_draw_elements; i++){
 			//glm->draw_elements[i].matrix = glm::value_ptr(matt);
