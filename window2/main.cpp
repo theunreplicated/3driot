@@ -64,7 +64,7 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	{RECT rect;
 	rect.left = 40;
 	rect.top = 10;
-	const char* message = "My First Window";
+	const char* message = "hi";
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
 }
 void handle_add(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -73,7 +73,7 @@ void handle_add(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		if (HIWORD(wParam) == BN_CLICKED){
 
 			Windows::Dialogs::File_Dialog dccs;
-			LPWSTR dcc = dccs.OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+			LPWSTR dcc = dccs.OpenFileName(L"C:\\");
 
 			if (*dcc != *L""){///bei Abbruch==L""
 				//open
