@@ -9,11 +9,12 @@
 class FileParser{
 private:
 	std::string file_contents="";
-	
+	THREEDObject handle_object(std::string dat);
 public:
 	ImageLoader*img_loader;
 	FileParser(std::string file_name);
 	std::vector<THREEDObject> parse();
+
 };
 
 #endif
