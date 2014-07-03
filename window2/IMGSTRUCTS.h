@@ -17,7 +17,7 @@ struct Image_Load_Result{
 	std::string file_path,file_name;
 };
 struct image_stor :Image_Load_Result{
-	const char* texture_name;
-
+	/*const char**/std::string texture_name;//@note:ganz böser Fehler,hatte vergessen dass Pointer ist,am besten ist dann immer string,trotz Performancenachteil
+	bool operation_failed = false;
 };
 #endif

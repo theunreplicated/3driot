@@ -481,7 +481,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	//matrix.translate(Vector3(0.4f));
 	//matrix.scale(Vector3(0.5f,0.5f,0.5f));
 	//float *mat = matrix.get_as_float16();
-
+	 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(loc_Position);//@TODO:gucken ob hierhin oder in die For-SChleife,disalb emuss nach dem draw-call kommen
 	for (T_DRAW_STRUCTURE& pc : draw_elements)
@@ -499,7 +499,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, pc.Diffuse_Texture_IDs);
 			// Set our "myTextureSampler" sampler to user Texture Unit 0
-			glUniform1i(diffuse_Texture_sample_Loc, 0);
+			glUniform1i(diffuse_Texture_sample_Loc, 0);//kann man wohl mit active texture zusammen nach oben schiebn(aus der for-schleife heraus)
 		}
 
 		//position vertex hinschieben

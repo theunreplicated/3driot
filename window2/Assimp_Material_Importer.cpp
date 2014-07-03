@@ -48,6 +48,7 @@ image_stor Assimp_Material_Importer::process_Material(int material_key){
 	aiTextureType type = aiTextureType_DIFFUSE;//@TODO:textur-typ muss änderbar sein
 	//@TODO:mit mat->getTextureCount testen
 	unsigned int num_textures = material->GetTextureCount(type);
+	if (num_textures == 0){ image_stor is; is.operation_failed = true; return is; }
 	int texIndex = 0;
 	aiString path;  // filename
 	//http://www.lighthouse3d.com/cg-topics/code-samples/importing-3d-models-with-assimp/
