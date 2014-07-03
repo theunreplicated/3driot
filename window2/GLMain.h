@@ -30,7 +30,9 @@ public:
 	//Matrix m;
 	//int num_draw_elements = 0;
 	void add_to_buffer_and_add_to_draw_list(Mesh_RenderObject *obj, float* pass_matrix=0);
-	void setCameraandProjMatrix(glm::mat4 matrix);
+	void setCameraMatrix(glm::mat4 matrix);
+	void setCameraTransformMatrix(glm::mat4 matrix);
+	void setProjectionMatrix(glm::mat4 matrix);
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -51,7 +53,8 @@ private:
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
 	void fillBuffer(T_DRAW_STRUCTURE& pc);
 	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
-	glm::mat4 proj_camera_matrix;
+	glm::mat4 /*proj_camera_matrix,*/ camera_transform_matrix, camera_matrix, projection_matrix;
+
 	bool use_vp_matrix;
 
 };
@@ -62,39 +65,40 @@ using namespace OGL;
 /*Test functions-müssen entfernt werden-have tov be removed
 
 */
-GLuint CreateSimpleTexture2D()
-{
+//GLuint CreateSimpleTexture2D()
+//{
 	// Texture object handle
-	GLuint textureId;
+	//GLuint textureId;
 	//https://code.google.com/p/opengles-book-samples/source/browse/trunk/Windows/Chapter_9/Simple_Texture2D/Simple_Texture2D.c
 	// 2x2 Image, 3 bytes per pixel (R, G, B)
-	GLubyte pixels[4 * 3] =
+	/*GLubyte pixels[4 * 3] =
 	{
 		255, 0, 0, // Red
 		0, 255, 0, // Green
 		0, 0, 255, // Blue
 		255, 255, 0  // Yellow
 	};
-
+	*/
 	// Use tightly packed data
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	// Generate a texture object
-	glGenTextures(1, &textureId);
+	//glGenTextures(1, &textureId);
 
 	// Bind the texture object
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	//glBindTexture(GL_TEXTURE_2D, textureId);
 
 	// Load the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
 
 	// Set the filtering mode
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	return textureId;
+//	return textureId;
 
-}
+//}
 
 
 
@@ -130,11 +134,27 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 }*/
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setCameraandProjMatrix(glm::mat4 matrix){
-	proj_camera_matrix = matrix;
-	use_vp_matrix = true;
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setCameraTransformMatrix(glm::mat4 matrix){
+	//proj_camera_matrix = matrix;
+	//use_vp_matrix = true;
+	camera_transform_matrix = matrix;
 
 }
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setCameraMatrix(glm::mat4 matrix){
+	camera_matrix = matrix;
+	//use_vp_matrix = true;
+
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setProjectionMatrix(glm::mat4 matrix){
+	//camera_matrix = matrix;
+	projection_matrix = matrix;
+	//use_vp_matrix = true;
+
+}
+
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::bindAttribLocation(const char* attrib_name){
@@ -323,7 +343,8 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUC
 	//int *testvp = mesh_data->texture_data.test;
 	//int textvar = *testvp;
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0,/* mesh_data->texture_data.format*/GL_RGBA, GL_UNSIGNED_BYTE,/*mesh_data->texture_data.bits*/(void*)mesh_data->texture_data.texture_bytes);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh_data->texture_data.width, mesh_data->texture_data.height, 0,/* mesh_data->texture_data.format*/GL_RGBA, GL_UNSIGNED_BYTE,/*mesh_data->texture_data.bits*/(void*)mesh_data->texture_data.texture_bytes);
+	glTexImage2D(GL_TEXTURE_2D, 0, mesh_data->texture_data.format, mesh_data->texture_data.width, mesh_data->texture_data.height, 0, mesh_data->texture_data.format, GL_UNSIGNED_BYTE, mesh_data->texture_data.bits);
 	//mesh_data->texture_data.unload();//muss man nicht unbedingt machen
 	//@TODO:unload sollte klappen,keine access violation
 	/*
@@ -471,8 +492,11 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
 		glm::mat4 m = glm::make_mat4(pc.matrix);
-		glm::mat4 res = proj_camera_matrix*m;
+		
+		//glm::mat4 res = proj_camera_matrix*m;
+		glm::mat4 res = projection_matrix*camera_matrix*camera_transform_matrix;
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE,glm::value_ptr(res) );
+
 		if (pc.has_texture){
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, pc.Diffuse_Texture_IDs);

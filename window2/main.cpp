@@ -33,6 +33,8 @@ ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 glm::mat4 std_res = glm::mat4(1.0f);
+
+glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 
 
@@ -379,15 +381,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
 	float aspectRatio = float(re.width) / float(re.height);//@TODO:mit Rect
 
-	glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
+	//glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
+	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
 		glm::vec3(4, 3, 3),
 		glm::vec3(0, 0, 0),
 		glm::vec3(0, 1, 0)
 		);
-	glm::mat4 std_res = matt2*camera_mat;
-	glmain->setCameraandProjMatrix(std_res);
+	glm::mat4 std_res = projection_matrix*camera_mat;
+//	glmain->setCameraandProjMatrix(std_res);
+	glmain->setProjectionMatrix(projection_matrix);
+	glmain->setCameraMatrix(camera_mat);
 	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 
 	glm::mat4 dat = glm::mat4(1.0f);
@@ -401,19 +406,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	MessageLoop* ml = new MessageLoop();
 	
 	
-	
+	glm::mat4 proj_cam_matrix=projection_matrix*camera_mat;
 	
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	MSG Msg;
 	while (::GetMessage(&Msg, NULL, 0, 0) > 0){
-		//glm::mat4 transformmat = translatemat*scalemat*rotmat;
-		//glm::mat4 matt = matt2*camera_mat*model_mat*transformmat;
-//		for (int i = 0; i < glm->num_draw_elements; i++){
+		glm::mat4 transformmat = translatemat*scalemat*rotmat;
+		glmain->setCameraTransformMatrix(transformmat);
+		//glm::mat4 camera_matrix = camera_mat*transformmat;
+		//glm::mat4 matt = projection_matrix*camera_matrix*model_mat/**model_mat*transformmat*/;
+	//for (int i = 0; i < glm->num_draw_elements; i++){
 			//glm->draw_elements[i].matrix = glm::value_ptr(matt);
 		//}
 		//for (THREEDObject& d : glmain->draw_elements){
-		//	d.matrix = glm::value_ptr(matt);
+			//d.matrix = glm::value_ptr(matt);
 
 		//}
 		//glm->draw_elements[0].matrix = m.get_as_float16();
