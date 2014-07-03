@@ -130,6 +130,26 @@ void handle_add(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		}
 	}
 }
+
+void save_handle(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	if (lParam == (LPARAM)uicontrol->save_threed_objects->window_handle)
+	{
+		if (HIWORD(wParam) == BN_CLICKED){
+			THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
+			std::string data = tosz->serialize(glmain->draw_elements);
+			//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
+			//Thread*t = new Thread(threadFunc,NULL);
+			HMODULE hModule = GetModuleHandleW(NULL);
+			WCHAR path[MAX_PATH];
+			GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+			wn = new Win_Utils();
+			std::string paths = wn->getdirpath(path);
+			std::string dingens_ding_path = "\\";
+			std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
+			wn->saveToFile(finalpath.c_str(), data.c_str());
+		}
+	}
+}
 typedef void(*func_t)(HWND hWnd, WPARAM wParam, LPARAM lParam);
 std::vector<func_t>commanddata;
 void oncommand(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -143,18 +163,7 @@ void oncommand(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->save_threed_objects->window_handle))
 		{
 			//onMeshImportButton(hWnd,wParam,lParam);
-			THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
-			std::string data = tosz->serialize(glmain->draw_elements);
-			//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
-			//Thread*t = new Thread(threadFunc,NULL);
-			HMODULE hModule = GetModuleHandleW(NULL);
-			WCHAR path[MAX_PATH];
-			GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
-			wn = new Win_Utils();
-			std::string paths = wn->getdirpath(path);
-			std::string dingens_ding_path = "\\";
-			std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
-			wn->saveToFile(finalpath.c_str(), data.c_str());
+			
 		}
 	}
 	if (lParam == (LPARAM)uicontrol->open_file_btn->window_handle)
@@ -346,6 +355,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	uicontrol->open_file_btn->on(BTN_CLICK,handle_add);
 
 	commanddata.push_back(handle_add);
+	commanddata.push_back(save_handle);
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 
 	//EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(uicontrol->static_draw_field->window_handle), uicontrol->static_draw_field->window_handle);
