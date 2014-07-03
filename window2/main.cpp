@@ -56,92 +56,115 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	const char* message = "My First Window";
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
 }
-void oncommand(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->save_threed_objects->window_handle))
+void handle_add(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	if (lParam == (LPARAM)uicontrol->open_file_btn->window_handle)
 	{
-		//onMeshImportButton(hWnd,wParam,lParam);
-		THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
-		std::string data = tosz->serialize(glmain->draw_elements);
-		//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
-		//Thread*t = new Thread(threadFunc,NULL);
-		HMODULE hModule = GetModuleHandleW(NULL);
-		WCHAR path[MAX_PATH];
-		GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
-		wn = new Win_Utils();
-		std::string paths = wn->getdirpath(path);
-		std::string dingens_ding_path = "\\";
-		std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
-		wn->saveToFile(finalpath.c_str(), data.c_str());
-	}
-	if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->open_file_btn->window_handle)){
-		LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
+		if (HIWORD(wParam) == BN_CLICKED){
 
-		if (*dcc != *L""){///bei Abbruch==L""
-			//open
+			Windows::Dialogs::File_Dialog dccs;
+			LPWSTR dcc = dccs.OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 
-			//		std::cout << "wrote the file successfully!" << std::endl;
+			if (*dcc != *L""){///bei Abbruch==L""
+				//open
 
-			char buffer[MAX_PATH];
+				//		std::cout << "wrote the file successfully!" << std::endl;
 
-			// First arg is the pointer to destination char, second arg is
-			// the pointer to source wchar_t, last arg is the size of char buffer
-			//wcstom
-			//wcstombs_s(buffer, dcc, MAX_PATH);
+				char buffer[MAX_PATH];
 
-			size_t CharactersConverted = 0;
-			wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
+				// First arg is the pointer to destination char, second arg is
+				// the pointer to source wchar_t, last arg is the size of char buffer
+				//wcstom
+				//wcstombs_s(buffer, dcc, MAX_PATH);
 
-			/*std::wstring nnWString(MAX_PATH, 0);
-			nnWString.resize(MAX_PATH);
-			std::wstring ws = /*L"C:\\oo ga\\Dokument.obj"*//*dcc;
-			std::string s(ws.begin(), ws.end());
-			const char*dch = s.c_str();
-			*/
+				size_t CharactersConverted = 0;
+				wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
 
-			//std::setlocale(LC_ALL, "en_US.utf8");
-			// UTF-8 narrow multibyte encoding
-			//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
+				/*std::wstring nnWString(MAX_PATH, 0);
+				nnWString.resize(MAX_PATH);
+				std::wstring ws = /*L"C:\\oo ga\\Dokument.obj"*//*dcc;
+				std::string s(ws.begin(), ws.end());
+				const char*dch = s.c_str();
+				*/
 
-			Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
-			//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
-			//Mesh_RenderObject oo = aiimport->get_render_obj(0);
+				//std::setlocale(LC_ALL, "en_US.utf8");
+				// UTF-8 narrow multibyte encoding
+				//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
 
-			//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
-			using glm::mat4; using glm::scale; using glm::vec3;
-			//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
-			//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
+				Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
+				//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+				//Mesh_RenderObject oo = aiimport->get_render_obj(0);
 
-			//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
-			//mat4 mat = proj_matrix*scalematrix;
+				//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
+				using glm::mat4; using glm::scale; using glm::vec3;
+				//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
+				//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
+
+				//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
+				//mat4 mat = proj_matrix*scalematrix;
 
 
-			//mat4 model_matrix=glm::make_mat4(mmmm);
-			//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
-			//mat4 model_matrix = glm::mat4(1.0f);
-			//glm::mat4 View = glm::lookAt(
-			//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-			//	glm::vec3(0, 0, 0), // and looks at the origin
-			//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-			//	);
-			//glm::mat4 finalm = proj_matrix*View*model_matrix;
-			//glm::mat4 finalm = model_matrix;
-			//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
-			//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
-			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
-			//}
-			for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-				//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
-				glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+				//mat4 model_matrix=glm::make_mat4(mmmm);
+				//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
+				//mat4 model_matrix = glm::mat4(1.0f);
+				//glm::mat4 View = glm::lookAt(
+				//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+				//	glm::vec3(0, 0, 0), // and looks at the origin
+				//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+				//	);
+				//glm::mat4 finalm = proj_matrix*View*model_matrix;
+				//glm::mat4 finalm = model_matrix;
+				//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+				//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+				//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+				//}
+				for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+					//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+					glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+				}
+
+
+
+				//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
+				//int d2 = oo.indices[2]
 			}
-
-
-
-			//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
-			//int d2 = oo.indices[2]
 		}
+	}
+}
+typedef void(*func_t)(HWND hWnd, WPARAM wParam, LPARAM lParam);
+std::vector<func_t>commanddata;
+void oncommand(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	for (func_t& data : commanddata){
+		data(hWnd,wParam,lParam);
 
 
 	}
+	/*if (lParam == (LPARAM)uicontrol->save_threed_objects->window_handle)
+	{
+		if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->save_threed_objects->window_handle))
+		{
+			//onMeshImportButton(hWnd,wParam,lParam);
+			THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
+			std::string data = tosz->serialize(glmain->draw_elements);
+			//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
+			//Thread*t = new Thread(threadFunc,NULL);
+			HMODULE hModule = GetModuleHandleW(NULL);
+			WCHAR path[MAX_PATH];
+			GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+			wn = new Win_Utils();
+			std::string paths = wn->getdirpath(path);
+			std::string dingens_ding_path = "\\";
+			std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
+			wn->saveToFile(finalpath.c_str(), data.c_str());
+		}
+	}
+	if (lParam == (LPARAM)uicontrol->open_file_btn->window_handle)
+	{
+		if (CLICK_FUNC(hWnd, wParam, lParam, uicontrol->open_file_btn->window_handle)){
+			handle_add(hWnd, wParam, lParam);
+
+
+		}
+	}*/
 }
 void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
@@ -179,7 +202,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 		return 0;
 	
 	case WM_COMMAND:
-		oncommand(hWnd,wParam,lParam); break;
+		oncommand(hWnd,wParam,lParam);
+		
+
+		break;
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
@@ -242,8 +268,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW,WndProc);
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
-	aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
-	aw->addOnMessageInvoke(WM_COMMAND,oncommand);
+	//aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
+	//aw->addOnMessageInvoke(WM_COMMAND,oncommand);
 	//aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
 	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
 
@@ -251,6 +277,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true /*default=false*/};
+
 	//wbtn->on(BTN_CLICK,onclick);
 	
 	//erstelle controls am rechten Rand
@@ -316,7 +343,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);
+	uicontrol->open_file_btn->on(BTN_CLICK,handle_add);
 
+	commanddata.push_back(handle_add);
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 
 	//EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(uicontrol->static_draw_field->window_handle), uicontrol->static_draw_field->window_handle);
@@ -340,7 +369,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
 	float aspectRatio = float(re.width) / float(re.height);//@TODO:mit Rect
 
-	glm::mat4 matt2 = glm::perspective(45.0f, (1024.0f / 768.0f), 0.01f, 5000.0f);
+	glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
 		glm::vec3(4, 3, 3),
@@ -350,72 +379,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	glm::mat4 std_res = matt2*camera_mat;
 	glmain->setCameraandProjMatrix(std_res);
 	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
-	LPWSTR dcc = L"";
+
 	glm::mat4 dat = glm::mat4(1.0f);
-	if (*dcc!=*L""){///bei Abbruch==L""
-		//open
 
-//		std::cout << "wrote the file successfully!" << std::endl;
-
-		char buffer[MAX_PATH];
-
-		// First arg is the pointer to destination char, second arg is
-		// the pointer to source wchar_t, last arg is the size of char buffer
-		//wcstom
-		//wcstombs_s(buffer, dcc, MAX_PATH);
-		
-		size_t CharactersConverted = 0;
-		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
-
-		/*std::wstring nnWString(MAX_PATH, 0);
-		nnWString.resize(MAX_PATH);
-		std::wstring ws = /*L"C:\\oo ga\\Dokument.obj"*//*dcc;
-		std::string s(ws.begin(), ws.end());
-		const char*dch = s.c_str();
-		*/
-		
-		//std::setlocale(LC_ALL, "en_US.utf8");
-		// UTF-8 narrow multibyte encoding
-		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
-		
-		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
-		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
-		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
-	
-		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
-		using glm::mat4; using glm::scale; using glm::vec3;
-		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
-		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
-		
-		//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
-		//mat4 mat = proj_matrix*scalematrix;
-			
-			
-		//mat4 model_matrix=glm::make_mat4(mmmm);
-		//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
-		//mat4 model_matrix = glm::mat4(1.0f);
-		//glm::mat4 View = glm::lookAt(
-		//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-		//	glm::vec3(0, 0, 0), // and looks at the origin
-		//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-		//	);
-		//glm::mat4 finalm = proj_matrix*View*model_matrix;
-		//glm::mat4 finalm = model_matrix;
-		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
-		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
-			//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
-		//}
-		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
-			
-			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(dat));
-		}
-		
-		
-
-		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
-		//int d2 = oo.indices[2]
-	}
 	//Thread*t = new Thread(threadFunc, NULL);
 	
 	
