@@ -175,7 +175,7 @@ Image_Load_Result ImageLoader::load(const char* filename){
 		s << filename;
 		std::string str;
 		s>> str;
-		ret.file_path = str;
+		ret.file_path =filename;
 		
 		// Specify the texture specification
 	/*	glTexImage2D(GL_TEXTURE_2D, 				// Type of texture

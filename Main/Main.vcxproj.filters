@@ -33,6 +33,9 @@
     <ClCompile Include="ImageLoader_Copy.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="WinSocket2.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Physics_Input_Data.h">
@@ -48,6 +51,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ImageLoader_Copy.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="WinSocket2.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

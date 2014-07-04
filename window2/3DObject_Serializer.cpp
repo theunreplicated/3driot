@@ -72,6 +72,10 @@ string THREED_Object_Serializer::get_Statement(std::string name, unsigned int *d
 	ret += "]";
 	return ret;
 }
+string getFileName(string file_name){
+	return file_name.substr(file_name.find_last_of("\\") + 1);
+
+}
 string getFileExtensionName(string file_name){
 	
 	return file_name.substr(file_name.find_last_of(".") + 1);
@@ -127,7 +131,8 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	}//falls das überhaupt nötig ist
 	std::string sName(reinterpret_cast<char*>(tex_bits));*/
 	Win_Utils*wn = new Win_Utils();
-	string p2ath = obj->texture_data.file_path + "\\" + obj->texture_data.file_name;
+	string p2ath = /*obj->texture_data.file_path + "\\" +*/ obj->texture_data.file_name;
+	//string fn=getFileName(obj->texture_data.file_name);
 	HMODULE hModule = GetModuleHandleW(NULL);
 	WCHAR path[MAX_PATH];
 	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?

@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Physics_Input_Data.h"
+#include "../window2/Win_Utils.cpp"
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
@@ -114,7 +115,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #endif
 	//Window wird nun gezeigt,Fullscreen,ok
 
-	FileParser*ps = new FileParser("scene.shotgun");
+	Win_Utils*wn = new Win_Utils();
+	HMODULE hModule = GetModuleHandleW(NULL);
+	WCHAR path[MAX_PATH];
+	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+	std::string fpath = wn->getdirpath(path) +"\\"+ "scene.shotgun";
+	FileParser*ps = new FileParser(fpath);
 	std::vector<THREEDObject> obj=ps->parse();
 	glm::mat4 dummy_mat = glm::mat4();
 	for (THREEDObject& v : obj){

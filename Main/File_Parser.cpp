@@ -7,9 +7,11 @@
 #include <sstream>
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\mat4x4.hpp>
-
+#include "../window2/WinUtils.h"
 using std::ifstream; using std::string; using std::vector;
 FileParser::FileParser(std::string file_name){
+
+
 	img_loader = new ImageLoader();
 	ifstream VertexShaderStream(file_name, std::ios::in);
 
@@ -75,6 +77,11 @@ vector<THREEDObject> FileParser::parse(){
 	return vvvv;//aaaa!!!!
 }
 THREEDObject FileParser::handle_object(std::string dat){
+	Win_Utils*wn = new Win_Utils();
+	HMODULE hModule = GetModuleHandleW(NULL);
+	WCHAR path[MAX_PATH];
+	GetModuleFileNameW(hModule, path, MAX_PATH);
+	std::string pathx = wn->getdirpath(path);
 	vector<string>exp_commas = explode(',', dat);
 	THREEDObject obj;  int texture_id;
 	for (std::vector<string>::size_type i = 0; i != exp_commas.size(); i++)//http://stackoverflow.com/questions/409348/iteration-over-vector-in-c
@@ -233,7 +240,7 @@ THREEDObject FileParser::handle_object(std::string dat){
 				ss << texture_id;
 				string texture_id_s;
 				ss >> texture_id_s;
-				string filename = "texture" + texture_id_s + "." + tex;
+				string filename = pathx+"\\"+"texture" + texture_id_s + "." + tex;
 				image_stor res = img_loader->load(filename.c_str());//@TODO:Ändern,und zwar abhängig vom path von main shotgun!!AK-47,viel mehr kenn ich net
 				obj.texture_data.bits = res.bits;
 				//@TODO:devil id's mitkopieren,und zwar für das free() nach dem Laden

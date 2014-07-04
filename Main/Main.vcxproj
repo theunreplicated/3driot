@@ -42,7 +42,7 @@
     <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath);D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3</IncludePath>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;$(DXSDK_DIR)Include;$(IncludePath);D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -73,6 +73,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ILUT.lib;ILU.lib;DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -82,6 +84,7 @@
     <ClCompile Include="my_gfx_rect.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Physics_Input_Data.cpp" />
+    <ClCompile Include="WinSocket2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File_Parser.h" />
@@ -89,6 +92,7 @@
     <ClInclude Include="ImageLoader_Copy.h" />
     <ClInclude Include="my_gfx_rect.h" />
     <ClInclude Include="Physics_Input_Data.h" />
+    <ClInclude Include="WinSocket2.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ext\bullet\build_dir_cmake\src\BulletCollision\BulletCollision.vcxproj">
