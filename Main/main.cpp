@@ -32,19 +32,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 		return 0;
 
-	//case WM_CLOSE:
-		//PostQuitMessage(0);
-		//return 0;
-	//case WM_DESTROY:
-	//	PostQuitMessage(0); return 0;
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
 
 		case VK_ESCAPE:
-			//DestroyWindow(hWnd);
+
 			PostQuitMessage(0);
-			//return 0;
+			
 
 		}
 		return 0; break;
