@@ -15,7 +15,7 @@ namespace Windows{
 		winproc_promise_event wpe;
 		winproc_callback_function cbf;
 	};
-	enum CW_CLASS_TYPES {EDIT,BUTTON };
+	enum CW_CLASS_TYPES {EDIT,BUTTON };//@TODO:in ui_control_mgr verwenden
 
 	template <typename classNameType>
 	struct WindowNames{

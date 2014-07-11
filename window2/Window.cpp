@@ -58,7 +58,7 @@ namespace Windows{
 		m_ApplicationWindow->additional_winproc_data.push_back(wads);
 
 	}
-	WindowRect Window::Position_get(){//funzt in ApplicationWindow net,ich weiß aber warum
+	WindowRect Window::Position_get(){//funzt in ApplicationWindow net,ich weiß aber warum//@TODO:dabei anderes window parent als applicationwindow+evtl. subcalssing ermöglichen von messageloop für vllt. scrolling(functionx.com? )
 		RECT rCtlWin;                   // Koordinaten des Controls
 
 		POINT p0;

@@ -21,7 +21,7 @@ namespace Windows{
 
 		int text_length = GetWindowTextLength(*window_handle);
 
-		char*buffer = (char*)malloc(text_length);
+		char*buffer = (char*)malloc(text_length);//@TODO:müsste auch mit new gehen,testen
 
 		GetWindowText(*window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
 		return buffer;

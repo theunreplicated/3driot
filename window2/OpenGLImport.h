@@ -74,13 +74,13 @@ namespace OGL{
 	IMPORT_GL_DECLARE(ActiveTexture);
 	IMPORT_GL_DECLARE(Uniform1i);
 	//typedef SD_GL_DepthFuncProc
-	typedef void(__stdcall*SD_GL_DepthFuncProc)(GrGLenum func);
+	typedef void(__stdcall*SD_GL_DepthFuncProc)(GrGLenum func);//@TODOL:brauch man vllt. gar net,da wohl default auf GL_LESS,daher wohl auch nicht im skia defs'0>chromium drin
 	SD_GL_DepthFuncProc glDepthFunc;
 }
 
 namespace OGL{
 	GLenum GL_VERTEX_SHADER = 0x8B31;
-	GLenum GL_ARRAY_BUFFER = 0x8892;//TODO merge zu einem
+	GLenum GL_ARRAY_BUFFER = 0x8892;
 	GLenum GL_STATIC_DRAW = 0x88E4;
 	GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
 
@@ -91,7 +91,7 @@ namespace OGL{
 	GLenum GL_FALSE = 0;
 	GLenum GL_TRUE = 0;
 	GLenum GL_FLOAT = 0x1406;
-	const GLenum GL_TRIANGLES = 0x0004;
+	const GLenum GL_TRIANGLES = 0x0004;//TODO merge zu einem
 	GLenum GL_VERSION = 0x1F02;
 	GLenum GL_SCISSOR_TEST = 0x0C11;
 	GLenum GL_UNPACK_ALIGNMENT=0x0CF5;
