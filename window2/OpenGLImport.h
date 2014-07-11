@@ -12,7 +12,7 @@
 template <typename T_func_name, typename T_wglgetprocadr, typename T_getprocaddr>
 PROC __stdcall this_scope_gl_import(T_func_name name, T_wglgetprocadr wglgetadr, T_getprocaddr globalgetadr){
 	PROC __stdcall wglres = wglgetadr(name);
-	return (wglres ? wglres : (globalgetadr(name) ? globalgetadr(name) : false));
+	return (wglres ? wglres : (globalgetadr(name) ? globalgetadr(name) : throw std::runtime_error("cannot load dingens")));
 
 };
 
@@ -54,8 +54,8 @@ namespace OGL{
 	//struct Uniforms{
 	IMPORT_GL_DECLARE(UniformMatrix4fv);
 
-	IMPORT_GL_DECLARE(GenVertexArrays);
-	IMPORT_GL_DECLARE(BindVertexArray);
+	//IMPORT_GL_DECLARE(GenVertexArrays);
+	//IMPORT_GL_DECLARE(BindVertexArray);
 
 
 	IMPORT_GL_DECLARE(GenBuffers);
@@ -162,8 +162,8 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 
 	IMPORT_GL_FUNC(UniformMatrix4fv);
 
-	IMPORT_GL_FUNC(GenVertexArrays);
-	IMPORT_GL_FUNC(BindVertexArray);
+	//IMPORT_GL_FUNC(GenVertexArrays);
+	//IMPORT_GL_FUNC(BindVertexArray);
 
 	IMPORT_GL_FUNC(GenBuffers);
 	IMPORT_GL_FUNC(BindBuffer);

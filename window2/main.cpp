@@ -14,7 +14,7 @@
 #include "GLMain.h"
 #include "Assimp_Mesh_Importer.h"
 #include "Assimp_Utils_m_convert_16.h"
-#include <stringapiset.h>
+//#include <stringapiset.h>
 #include "Matrix.h"
 #include <CommCtrl.h>
 #include "3DObject_Serializer.h"
@@ -24,7 +24,10 @@
 #include "Thread.h"
 #include "WinUtils.h"
 #include "GLStructs.h"
+
+#ifdef USE_GLESV2
 #include "egl_display_binding.h"
+#endif
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 //HHOOK mouse_hook;
 //typedef void(EGL_Display_Binding::*EGLswapBuffersFunc)(void);
@@ -380,7 +383,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 	
 
-	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx);
+	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx,true);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	RECT pos = uicontrol->static_draw_field->Rect_get();

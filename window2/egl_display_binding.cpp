@@ -1,8 +1,13 @@
-/*#include "egl_display_binding.h"
+//#define USE_GLESV2
+#ifdef USE_GLESV2
+
+#include "egl_display_binding.h"
 
 const char* EGL_Display_Binding::GetLastEGLErrorString() {
 	EGLint error = eglGetError();//@src chromium
 	switch (error) {
+	case EGL_NOT_INITIALIZED:
+		return "EGL_NOT_INITIALIZED";
 	case EGL_SUCCESS:
 		return "EGL_SUCCESS";
 	case EGL_BAD_ACCESS:
@@ -54,7 +59,7 @@ EGL_Display_Binding::EGL_Display_Binding(EGLNativeDisplayType device_context, EG
 	if (mDisplay == EGL_NO_DISPLAY)
 	{//wird anscheinend nicht aufgerufen,ist auch klar
 		mDisplay = eglGetDisplay((EGLNativeDisplayType)EGL_DEFAULT_DISPLAY);
-		OutputDebugStringA("debug string");
+		OutputDebugStringA("no display");
 	}
 
 
@@ -64,6 +69,7 @@ EGL_Display_Binding::EGL_Display_Binding(EGLNativeDisplayType device_context, EG
 	{
 		MessageBox(NULL, "egl error init!", "Error!",
 			MB_ICONEXCLAMATION | MB_OK);
+		OutputDebugStringA(GetLastEGLErrorString());
 		// return false;
 	}
 
@@ -185,7 +191,7 @@ bool EGL_Display_Binding::createContext(){
 
 	const EGLint kContextAttributes[] = {
 		EGL_CONTEXT_CLIENT_VERSION, 2,/*2 steht für m_cleintversion*/
-		/*EGL_NONE
+		EGL_NONE
 	};//http://src.chromium.org/svn/trunk/src/ui/gl/gl_context_egl.cc
 	mContext = eglCreateContext(mDisplay, mConfig, NULL, kContextAttributes);
 	OutputDebugStringA(GetLastEGLErrorString());///egl_bad_config
@@ -208,4 +214,5 @@ bool EGL_Display_Binding::createContext(){
 	return true;
 
 
-};*/
+};
+#endif

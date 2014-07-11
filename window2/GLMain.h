@@ -19,7 +19,7 @@ class GLMain{
 
 public:
 
-	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass);
+	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass,bool use_legacy_system_opengl);
 	void render();
 	//void setNumDrawElements(int count);
 	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
@@ -54,7 +54,7 @@ private:
 	void fillBuffer(T_DRAW_STRUCTURE& pc);
 	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
 	glm::mat4 /*proj_camera_matrix,*/ camera_transform_matrix, camera_matrix, projection_matrix;
-
+	bool m_use_legacy_system_opengl;
 	bool use_vp_matrix;
 
 };
@@ -182,6 +182,8 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 	T_DRAW_STRUCTURE pp;
 	pp.dm = kElements;//@TODO:check ob indices im Mesh_RenderObject//@TODO:vllt.Auslagerung in extra Klasse
 	pp.vertices_totalsize = obj->size_vertices*sizeof(float);
+	//size_t khrzt = sizeof(float);
+	//size_t khkk = sizeof(obj->size_vertices);
 	pp.texcoords_totalsize = obj->num_tex_coords*sizeof(float);
 	pp.indices_totalsize = obj->num_indices*sizeof(unsigned int);
 	pp.draw_call_num_elements = obj->num_indices /*/ 3==eigentlich faces*3-aber nur für Dreiecke*/;/*@TODO:ändern*/
@@ -209,7 +211,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 
  
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
-GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass){
+GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass, bool use_legacy_system_opengl){
 
 
 	programId = glCreateProgram();
@@ -239,7 +241,7 @@ GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::G
 	draw_elements[0] = pp;
 	*/
 	
-		
+	m_use_legacy_system_opengl = use_legacy_system_opengl;
 	
 	//initGL();
 }
@@ -432,11 +434,11 @@ float g_vertices_rectangle_data[] = {
 	/*programId = */
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
-	OpenGL_Utils::LoadShaders("vertex.glsl", "fragment.glsl",programId);
+	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl,programId);
 	glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
 	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
-	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders
+	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders/
 	texcoord_position = bindAttribLocation("vertexUV");
 	loc_Matrix = glGetUniformLocation(programId,"MVP");
 	diffuse_Texture_sample_Loc = glGetUniformLocation(programId, "myTextureSampler");

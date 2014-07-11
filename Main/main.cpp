@@ -6,18 +6,24 @@
 #include "../window2/SysUtils_Load_Library.cpp"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
+//#define USE_GLESV2
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Physics_Input_Data.h"
 #include "../window2/Win_Utils.cpp"
+#ifdef USE_GLESV2
+#include "../window2/egl_display_binding.cpp"
+#endif
+
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
 	return dll_opengl->get_ProcAddress(name);
 }
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	switch (message)
 	{
@@ -26,22 +32,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 		return 0;
 
-	case WM_CLOSE:
-		PostQuitMessage(0);
-		return 0;
-	case WM_DESTROY:
-		return 0;
+	//case WM_CLOSE:
+		//PostQuitMessage(0);
+		//return 0;
+	//case WM_DESTROY:
+	//	PostQuitMessage(0); return 0;
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
 
 		case VK_ESCAPE:
+			//DestroyWindow(hWnd);
 			PostQuitMessage(0);
-			return 0;
+			//return 0;
 
 		}
-		return 0;
-
+		return 0; break;
+	
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 
@@ -119,7 +126,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	HMODULE hModule = GetModuleHandleW(NULL);
 	WCHAR path[MAX_PATH];
 	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
-	std::string fpath = wn->getdirpath(path) +"\\"+ "scene.shotgun";
+	std::string dir_path = wn->getdirpath(path);
+	std::string fpath = dir_path +"\\"+ "scene.shotgun";
 	FileParser*ps = new FileParser(fpath);
 	std::vector<THREEDObject> obj=ps->parse();
 	glm::mat4 dummy_mat = glm::mat4();
@@ -132,11 +140,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
 	float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
+#ifndef USE_GLESV2
 	dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 	OpenGLContext*ctx = new OpenGLContext(native_window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
-	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx);
+	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx,true);
+#else
+
+	EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(native_window_handle), native_window_handle);
+	g_display->createContext();
+	std::string path22 = dir_path + "\\" + "libGLESv2.dll";
+	dll_opengl = new SysUtils_Load_Library(path22.c_str());//@TODO:verwendet standard dll,nicht die ,die ich will,also plus path
+	OpenGLImport imp(getProcAddresswglintf, getProcAddresswglintf/*eigentlich egl*/);
+	GLMain<EGLswapBuffersFunc, EGL_Display_Binding, THREEDObject> *glmain = new GLMain<EGLswapBuffersFunc, EGL_Display_Binding, THREEDObject>(&EGL_Display_Binding::swapBuffers,g_display,false);
+#endif
+	
 	glm::mat4 matt2 = glm::perspective(45.0f, (current_resolution_w / current_resolution_h), 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 	glm::mat4 camera_mat = glm::lookAt(
@@ -198,5 +217,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		ml->Message_Pump();
 
 	}
-	(new Windows::MessageLoop())->GetMessage_Approach();
+	return ml->Message_Pump_End();
+	//return (new Windows::MessageLoop())->GetMessage_Approach();
 }

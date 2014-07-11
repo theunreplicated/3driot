@@ -11,7 +11,7 @@
 //vllt. eigene opengl klassen für buffer,program,...
 namespace OpenGL_Utils{
 	using namespace OGL;
-	void LoadShaders(const char * vertex_file_path, const char * fragment_file_path, GLuint ProgramID){
+	void LoadShaders(/*const char * vertex_file_path, const char * fragment_file_path,*/bool use_legacy_opengl_shaders, GLuint ProgramID){
 		//Quelle:irgendwo her,keina Ahnung mehr
 		//kann bei assimp dingens datei nicht öffnen
 		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -48,7 +48,9 @@ namespace OpenGL_Utils{
 
 		// Compile Vertex Shader
 		// printf("Compiling shader : %s\n", vertex_file_path);
-		char const * VertexSourcePointer = Resource::CommonLoad(IDR_MYVERTEXSHADER,VERTEX_SHADER_PATH);
+
+	
+		char const * VertexSourcePointer = (use_legacy_opengl_shaders ? Resource::CommonLoad(IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH) : Resource::CommonLoad(IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL));
 		glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 		glCompileShader(VertexShaderID);
 
@@ -62,7 +64,7 @@ namespace OpenGL_Utils{
 		// Compile Fragment Shader
 		// printf("Compiling shader : %s\n", fragment_file_path);
 		//char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-		char const * FragmentSourcePointer = Resource::CommonLoad(IDR_MYFRAGMENTSHADER,FRAGMENT_SHADER_PATH);
+		char const * FragmentSourcePointer = (use_legacy_opengl_shaders ? Resource::CommonLoad(IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH): Resource::CommonLoad(IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL));
 		glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 		glCompileShader(FragmentShaderID);
 

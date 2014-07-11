@@ -13,6 +13,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletDynamics", "Main\ext\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearMath", "Main\ext\bullet\build_dir_cmake\src\LinearMath\LinearMath.vcxproj", "{2D25DAE2-B457-4841-B455-A01D29F1904D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGLESv2", "ext\angleproject\projects\src\libGLESv2.vcxproj", "{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libEGL", "ext\angleproject\projects\src\libEGL.vcxproj", "{FBAEE4F6-562A-588F-01F9-72DCABB3B061}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commit_id", "ext\angleproject\projects\src\commit_id.vcxproj", "{3B7F5656-177F-52EE-26B3-D6A75368D0A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +67,30 @@ Global
 		{2D25DAE2-B457-4841-B455-A01D29F1904D}.Release|Win32.Build.0 = Release|Win32
 		{2D25DAE2-B457-4841-B455-A01D29F1904D}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{2D25DAE2-B457-4841-B455-A01D29F1904D}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.Debug|Win32.Build.0 = Debug|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.Release|Win32.ActiveCfg = Release|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.Release|Win32.Build.0 = Release|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{7FBD6F69-B9A4-69F1-A12B-8DACB3F8CD81}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.Debug|Win32.Build.0 = Debug|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.Release|Win32.ActiveCfg = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.Release|Win32.Build.0 = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{FBAEE4F6-562A-588F-01F9-72DCABB3B061}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.Debug|Win32.Build.0 = Debug|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.Release|Win32.ActiveCfg = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.Release|Win32.Build.0 = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{3B7F5656-177F-52EE-26B3-D6A75368D0A9}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
