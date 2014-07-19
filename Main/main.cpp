@@ -172,8 +172,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//}
 	
 	
-	Physics::Main*ph = new Physics::Main();
-	ph->createStaticPlaneShape();
+	//Physics::Main*ph = new Physics::Main();
+	//ph->createStaticPlaneShape();
 	//int num_vertices = glmain->draw_elements[0].vertices_totalsize / sizeof(float);
 	//btVector3 * v = new btVector3[num_vertices / 3];
 	//for (int i = 0; i < num_vertices/3; i++){
@@ -213,5 +213,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	}
 	return ml->Message_Pump_End();
-	//return (new Windows::MessageLoop())->GetMessage_Approach();
+	
 }

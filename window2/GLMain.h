@@ -11,7 +11,6 @@
 #include "Import_Object_Struct.h"
 #include <glm\mat4x4.hpp>
 //mat#include <glm/mat4x4.hpp>
-//TODO:GL fixen,ich sehe manchmal n Dreieck
 using std::vector;
 typedef Windows::WindowRect GLRect;
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
@@ -168,7 +167,7 @@ template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
 	glViewport(rect.x, rect.y, rect.width, rect.height);
 	glScissor(rect.x,rect.y,rect.width,rect.height);
-	glEnable(GL_SCISSOR_TEST);
+	glEnable(GL_SCISSOR_TEST);//@TODO:Check ob scissor_test oder glscissor,ich denke eher net
 
 }
 //@deprecated

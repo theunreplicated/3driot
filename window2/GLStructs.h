@@ -18,6 +18,7 @@ GLuint 	vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
 
 };
 enum draw_method{ kArrays, kElements,kInvisible };//konstant davor,falls Konflikte
+
 struct THREEDObject:RenderStructBase,Interals_do_not_touch{
 	PrimitiveType draw_primitive=PR_TRIANGLE;
 	draw_method dm;
