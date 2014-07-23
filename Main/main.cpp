@@ -6,7 +6,7 @@
 #include "../window2/SysUtils_Load_Library.cpp"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
-//#define USE_GLESV2
+#define USE_GLESV2
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,7 +16,7 @@
 #ifdef USE_GLESV2
 #include "../window2/egl_display_binding.cpp"
 #endif
-
+#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
@@ -55,9 +55,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	RECT window_rect;
 
 };
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int iCmdShow)
-{
+HWND create_window(HINSTANCE hInstance){
 	WNDCLASS wc;
 	LPCSTR className = "hey";
 	LPCSTR windowName = "hey";
@@ -66,7 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
+	wc.hInstance =/*NULL*/hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);//einfach IDC_* ändern
 	//	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -76,14 +74,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass(&wc);
 
 	//int sz=GetSystemMetrics(SM_CXSIZE);
-	HWND native_window_handle = CreateWindow(
+	return CreateWindow(
 		className, windowName,
 		NULL,
-		0,0, 200, 200,
+		0, 0, 500, 500,
 		NULL, NULL, hInstance, NULL);
+	
+
+}
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine, int iCmdShow)
+{
+	HWND native_window_handle = create_window(hInstance);
 
 	//http://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar
 	//CHromium source
+#ifndef SCHLECHTER_STIL_KEIN_FULLSCREEN
 	window_info saved_window_info_;
 	saved_window_info_.maximized = !!::IsZoomed(native_window_handle);
 	if (saved_window_info_.maximized)
@@ -111,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			SetWindowPos(native_window_handle, NULL, window_rect.x, window_rect.y,
 				window_rect.width, window_rect.height,
 				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
+#endif
 #ifndef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 	::ShowWindow(native_window_handle,SW_SHOW);
 #endif
@@ -129,9 +135,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	for (THREEDObject& v : obj){
 		
 		v.matrix = glm::value_ptr(dummy_mat);
-
 	}
-	
+
 
 	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
 	float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
@@ -142,7 +147,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx,true);
 #else
-
+	//@TODO:separate swapbuffers func ohne das mit den templates
+	
 	EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(native_window_handle), native_window_handle);
 	g_display->createContext();
 	std::string path22 = dir_path + "\\" + "libGLESv2.dll";

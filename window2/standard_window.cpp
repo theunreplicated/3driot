@@ -20,9 +20,9 @@ namespace Windows{
 	char * standard_window::Text_get(){
 
 		int text_length = GetWindowTextLength(*window_handle);
-
+		//@TODO:malloc mit exception wie bei new,falls Länge überschritten
 		char*buffer = (char*)malloc(text_length);//@TODO:müsste auch mit new gehen,testen
-
+		//http://programmersheaven.com/discussion/114501/what-s-the-real-size-of-char
 		GetWindowText(*window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
 		return buffer;
 	}
