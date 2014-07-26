@@ -19,6 +19,7 @@
 #endif
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
+#define SCHLECHTER_STIL_FRAMED_WINDOW
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -44,7 +45,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 		}
 		return 0; break;
-	
+	case WM_DESTROY:
+		PostQuitMessage(0); break;//Geht auch beim klick aufs x
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 
@@ -94,19 +96,24 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 #ifndef SCHLECHTER_STIL_KEIN_FULLSCREEN
 	window_info saved_window_info_;
 	saved_window_info_.maximized = !!::IsZoomed(native_window_handle);
-	if (saved_window_info_.maximized)
+	if (saved_window_info_.maximized){//brauch man vllt. net immer
 		::SendMessage(native_window_handle, WM_SYSCOMMAND, SC_RESTORE, 0);
+	}
 	saved_window_info_.style = GetWindowLongA(native_window_handle, GWL_STYLE);
 	saved_window_info_.ex_style = GetWindowLong(native_window_handle, GWL_EXSTYLE);
 		GetWindowRect(native_window_handle, &saved_window_info_.window_rect);
 
-
+#ifndef SCHLECHTER_STIL_FRAMED_WINDOW
 		SetWindowLong(native_window_handle, GWL_STYLE,
-			saved_window_info_.style & ~(WS_CAPTION | WS_THICKFRAME));
+			saved_window_info_.style & ~(WS_CAPTION | WS_THICKFRAME));//entfernt WS_CAPTION+ws_thickframe
 		SetWindowLong(native_window_handle, GWL_EXSTYLE,
 			saved_window_info_.ex_style & ~(WS_EX_DLGMODALFRAME |
-			WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
-
+			WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));//ist extended style
+		//wenn ich das hier auskommentiere,kommt ein frame raus
+#else
+		SetWindowLong(native_window_handle, GWL_STYLE,
+			saved_window_info_.style | WS_CAPTION | WS_THICKFRAME | WS_SYSMENU);
+#endif
 		// On expand, if we're given a window_rect, grow to it, otherwise do
 		// not resize.
 		
@@ -168,7 +175,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		glm::vec3(0, 1, 0)
 		);
 
-	glm::mat4 std_res = matt2*camera_mat;
+
 	//glmain->setCameraandProjMatrix(std_res);
 	glmain->draw_elements = obj;// glmain->draw_elements.push_back(myobj);
 	glmain->setCameraMatrix(camera_mat);
