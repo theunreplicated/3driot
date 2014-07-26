@@ -13,7 +13,9 @@ namespace Resource{
 		HMODULE handle = ::GetModuleHandle(NULL);
 		HRSRC rc = ::FindResource(handle, MAKEINTRESOURCE(name),
 			MAKEINTRESOURCE(type));
+		if (rc == NULL){ throw std::runtime_error("finding resource failed"); }
 		HGLOBAL rcData = ::LoadResource(handle, rc);
+		if (rcData == NULL){ throw std::runtime_error("getting resource data failed"); }
 		ResourceFileLoadReturnType rett;
 		rett.size = ::SizeofResource(handle, rc);
 		rett.data = static_cast<const char*>(::LockResource(rcData));

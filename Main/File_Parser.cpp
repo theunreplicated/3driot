@@ -84,6 +84,7 @@ THREEDObject FileParser::handle_object(std::string dat){
 	std::string pathx = wn->getdirpath(path);
 	vector<string>exp_commas = explode(',', dat);
 	THREEDObject obj;  int texture_id;
+	bool texture_id_gibts = false;//@TODO:könnte auch in for-Schleife kommen,Position unklar,nochmals checken
 	for (std::vector<string>::size_type i = 0; i != exp_commas.size(); i++)//http://stackoverflow.com/questions/409348/iteration-over-vector-in-c
 	{
 		//if (i % 2 == 0){
@@ -232,11 +233,13 @@ THREEDObject FileParser::handle_object(std::string dat){
 		if (st[0] == "texture_id"){
 			//texture_id = str.substr(0, str.size() - 1);
 			texture_id = atoi(str.c_str());
+			texture_id_gibts = true;
 		}
 		if (st[0] == "texture_file_extension"){
 			if (obj.has_texture){
 				string tex = str.substr(0, str.size() - 1);
 				std::stringstream ss;
+				if (!texture_id_gibts){ throw std::runtime_error("no occurence of texture_id in this part of the render-model description(aka threedobject),but a texture should exists due to the description of a texture file extension"); }
 				ss << texture_id;
 				string texture_id_s;
 				ss >> texture_id_s;

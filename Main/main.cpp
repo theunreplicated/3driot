@@ -6,7 +6,7 @@
 #include "../window2/SysUtils_Load_Library.cpp"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
-#define USE_GLESV2
+//#define USE_GLESV2
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,7 +16,7 @@
 #ifdef USE_GLESV2
 #include "../window2/egl_display_binding.cpp"
 #endif
-#define SCHLECHTER_STIL_KEIN_FULLSCREEN
+//#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
@@ -82,8 +82,9 @@ HWND create_window(HINSTANCE hInstance){
 	
 
 }
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int iCmdShow)
+//http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
 	HWND native_window_handle = create_window(hInstance);
 
@@ -123,6 +124,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #endif
 	//Window wird nun gezeigt,Fullscreen,ok
 
+
 	Win_Utils*wn = new Win_Utils();
 	HMODULE hModule = GetModuleHandleW(NULL);
 	WCHAR path[MAX_PATH];
@@ -137,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		v.matrix = glm::value_ptr(dummy_mat);
 	}
 
-
+	
 	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
 	float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
 #ifndef USE_GLESV2
@@ -148,9 +150,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers, ctx,true);
 #else
 	//@TODO:separate swapbuffers func ohne das mit den templates
-	
 	EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(native_window_handle), native_window_handle);
 	g_display->createContext();
+	
 	std::string path22 = dir_path + "\\" + "libGLESv2.dll";
 	dll_opengl = new SysUtils_Load_Library(path22.c_str());//@TODO:verwendet standard dll,nicht die ,die ich will,also plus path
 	OpenGLImport imp(getProcAddresswglintf, getProcAddresswglintf/*eigentlich egl*/);

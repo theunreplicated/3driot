@@ -268,6 +268,7 @@ void determine_smallest_v(float* in_out_smallestV, float current_value, int i){
 /*
 * @returns float[3] largest values,also 3d-Koordinaten,könnte theooretisch auch ne Vektor sein,ist es aber net
 */
+/*
 array<array<float,3>,2> getOverallMinMax(float*verts,int num_verts){
 	//zuerst max x
 	//float *largest_Values= new float[3];//x,y,z
@@ -291,7 +292,7 @@ array<array<float,3>,2> getOverallMinMax(float*verts,int num_verts){
 	ret[0] = largest_Values;
 	ret[1] = smallest_Values;
 	return ret;
-}
+}*/
 /*
 *sodass alle wohl noch im View Space sind,also NDC Range [-1;+1]
 */

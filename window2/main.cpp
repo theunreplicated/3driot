@@ -33,7 +33,7 @@
 //typedef void(EGL_Display_Binding::*EGLswapBuffersFunc)(void);
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
-Win_Utils*wn; Windows::Dialogs::File_Dialog *dc;
+Win_Utils*wn;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 glm::mat4 std_res = glm::mat4(1.0f);
 glm::vec3 camera_add_vector = glm::vec3(0,0,0);
@@ -288,8 +288,9 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 }*/
 
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int iCmdShow)
+//http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
 	using namespace Windows;
 	int width=1024, height=768;
@@ -391,7 +392,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	glmain->setViewPort({ pos.bottom, uicontrol->static_draw_field->Position_get().height, 0, 0 });
 	//using Windows::Dialogs::File_Dialog;
 	glmain->initGL();
-	/*Windows::Dialogs::File_Dialog*dc*/ dc= new Windows::Dialogs::File_Dialog();
+	/*Windows::Dialogs::File_Dialog*dc*/
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
 	
@@ -402,7 +403,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	glm::mat4 model_mat = glm::mat4(1.0f);
 
-	glm::mat4 std_res = projection_matrix*camera_mat;
+
 //	glmain->setCameraandProjMatrix(std_res);
 	glmain->setProjectionMatrix(projection_matrix);
 	glmain->setCameraMatrix(camera_mat);
