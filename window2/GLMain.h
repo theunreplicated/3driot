@@ -385,7 +385,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 	glBindBuffer(GL_ARRAY_BUFFER, pc.vertex_buffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
-	if (pc.indices != NULL){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
+	if (pc.indices != NULL/*nullptr*/){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc.indices_buffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, pc.indices_totalsize, pc.indices, GL_STATIC_DRAW);
 	}
