@@ -1,5 +1,4 @@
-//#define USE_GLESV2
-#ifdef USE_GLESV2
+
 
 #include "egl_display_binding.h"
 
@@ -52,7 +51,7 @@ EGL_Display_Binding::EGL_Display_Binding(EGLNativeDisplayType device_context, EG
 			MB_ICONEXCLAMATION | MB_OK);
 		//return false;
 	}
-
+	//@TODO:vieles hier ändern,dx11 möglich über egl param
 
 	mDisplay = eglGetDisplay(mNativeDisplay);
 
@@ -215,4 +214,3 @@ bool EGL_Display_Binding::createContext(){
 
 
 };
-#endif

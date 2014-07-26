@@ -6,7 +6,7 @@
 #include "../window2/SysUtils_Load_Library.h"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
-//#define USE_GLESV2
+#define USE_GLESV2
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
