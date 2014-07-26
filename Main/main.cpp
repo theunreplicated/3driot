@@ -30,7 +30,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	{
 
 	case WM_CREATE:
-
+		
 		return 0;
 
 	case WM_KEYDOWN:
@@ -203,7 +203,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	
 	Windows::MessageLoop* ml = new Windows::MessageLoop();
 	
-	while (ml->Message_Get()){
+	while (ml->Message_Get()){//@TODO:peekmessage
 		//glm::mat4 transformmat = scalemat*rotmat;
 		//glm::mat4 matt = matt2*camera_mat*model_mat;
 		//	for (int i = 0; i < glm->num_draw_elements; i++){
@@ -219,6 +219,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		//glm::mat4 mm = transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mm);
 		//THREEDObject dc=glm->draw_elements[1];
+		//Beo:bei den ersteren Draw Calls wird nix angezeigt//@TODO:fixen,wohl erst beim Zweiten?
 		glmain->render();//@TODO:in proc am Schluss//gehört eigentlich in main loop,da z.z nur statusch hier über der main loop
 		ml->Message_Pump();
 
