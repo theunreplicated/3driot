@@ -1,9 +1,9 @@
 #include <Windows.h>
-#include "../window2/MessageLoop.cpp"
+#include "../window2/MessageLoop.h"
 #include "my_gfx_rect.h"
 #include "File_Parser.h"
-#include "../window2/OpenGLContext.cpp"
-#include "../window2/SysUtils_Load_Library.cpp"
+#include "../window2/OpenGLContext.h"
+#include "../window2/SysUtils_Load_Library.h"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
 //#define USE_GLESV2
@@ -11,8 +11,9 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Physics_Input_Data.h"
-#include "../window2/Win_Utils.cpp"
+//#include "Physics_Input_Data.h"
+#include "../window2/WinUtils.h"
+
 #ifdef USE_GLESV2
 #include "../window2/egl_display_binding.cpp"
 #endif
@@ -199,7 +200,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 #ifdef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 	::ShowWindow(native_window_handle, SW_SHOW);
 #endif
+	
 	Windows::MessageLoop* ml = new Windows::MessageLoop();
+	
 	while (ml->Message_Get()){
 		//glm::mat4 transformmat = scalemat*rotmat;
 		//glm::mat4 matt = matt2*camera_mat*model_mat;
@@ -216,7 +219,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		//glm::mat4 mm = transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mm);
 		//THREEDObject dc=glm->draw_elements[1];
-		glmain->render();//@TODO:in proc am Schluss
+		glmain->render();//@TODO:in proc am Schluss//gehört eigentlich in main loop,da z.z nur statusch hier über der main loop
 		ml->Message_Pump();
 
 	}
