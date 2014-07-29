@@ -19,7 +19,7 @@
 #endif
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
-#define SCHLECHTER_STIL_FRAMED_WINDOW
+#define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 

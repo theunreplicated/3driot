@@ -140,16 +140,17 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	//string realpath = wn->getdirpath(path) + "\\"+d;
 	//wn->saveToFile(realpath.c_str(),sName.c_str());
 	std::string file_extension = getFileExtensionName(p2ath);
-	std::string n_copy_d = wn->getdirpath(path) + "\\" + "texture" + std::to_string(num_texture_file_ids)+"."+file_extension;
+	std::string n_copy_d = wn->getdirpath(path) + "\\" + "texture" + std::to_string(/*num_texture_file_ids*/obj->texture_data.global_texture_id) + "." + file_extension;
 	
-	::CopyFile(p2ath.c_str(),n_copy_d.c_str(), FALSE);
+	::CopyFile(p2ath.c_str(),n_copy_d.c_str(), FALSE);//wird mehrmals sinnlos ausgeführt//@TODO:nur 1x
 	//typedef std::basic_ofstream<unsigned char, std::char_traits<unsigned char> > uofstream;
 	//uofstream out;
 	//out.open(realpath, std::ios::out | std::ios::binary);
 	//uofstream.ope
 	//out.write(/*reinterpret_cast<char*>(*/obj->texture_data.bits/*)*/, obj->texture_data.width*obj->texture_data.height);
 	//out.close();
-	ret += split_char + "texture_id:" + std::to_string(num_texture_file_ids);
+
+	ret += split_char + "texture_id:" + std::to_string(/*num_texture_file_ids*/obj->texture_data.global_texture_id);
 	//ret += split_char + 
 	num_texture_file_ids++;
 	ret += split_char + "texture_file_extension:" + file_extension;

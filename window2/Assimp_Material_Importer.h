@@ -10,6 +10,7 @@ private:
 	const aiScene *m_scene;
 	ImageLoader * image_loader;
 	char* m_model_file_path;
+	static unsigned int texture_id;
 public:
 	std::string getdirpath(char* chr);//@TODO:doppeltees entfernen bei win_utils
 	std::vector<image_stor> loaded_image_files_data;

@@ -1,5 +1,6 @@
 #include "Assimp_Material_Importer.h"
-
+#include <Windows.h>
+unsigned int Assimp_Material_Importer::texture_id = 0;//sollte global sein
 Assimp_Material_Importer::Assimp_Material_Importer(const aiScene*scene,char*model_file_path){
 	m_scene = scene;
 	image_loader = new ImageLoader();//@TODO:gehört hier nicht hin
@@ -87,11 +88,17 @@ image_stor Assimp_Material_Importer::import_texture(const char* texture_file_pat
 		//is.unload = data.unload;
 		is.texture_name = texture_file_path;
 //		is.texture_bytes = data.texture_bytes;
+		is.global_texture_id = texture_id;
 
+		//unsigned int i1 = Assimp_Material_Importer::texture_id;
+	    texture_id++;
 		is.file_name = data.file_path;
 		is.file_path = getdirpath(m_model_file_path);
 		loaded_image_files_data.push_back(is);
 	}
+	//std::string hohohohhiihihhahatrololol = std::to_string(is.global_texture_id);
+	//OutputDebugStringA("here comes the winner");
+	//OutputDebugStringA(hohohohhiihihhahatrololol.c_str());
 	return is;
 
 }

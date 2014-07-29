@@ -15,9 +15,12 @@ struct Image_Load_Result{
 	//void unload(){ ilDeleteImages(1, &il_image_id); };
 	unsigned int il_image_id;
 	std::string file_path,file_name;
+	
 };
 struct image_stor :Image_Load_Result{
 	/*const char**/std::string texture_name;//@note:ganz böser Fehler,hatte vergessen dass Pointer ist,am besten ist dann immer string,trotz Performancenachteil
+	
 	bool operation_failed = false;
+	unsigned int global_texture_id;//Bugs vom VC_Compiler:schwerwiegend:zuerst first-chance exception access error;dannn noch alter name gespeichert
 };
 #endif
