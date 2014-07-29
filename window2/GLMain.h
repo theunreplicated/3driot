@@ -432,7 +432,7 @@ float g_vertices_rectangle_data[] = {
 	//draw_elements[0].matrix = m->get_as_float16();
 	
 	/*programId = */
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl,programId);
 	glUseProgram(programId);

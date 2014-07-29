@@ -17,6 +17,7 @@
 #ifdef USE_GLESV2
 #include "../window2/egl_display_binding.cpp"
 #endif
+#define TEST_MODE
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 #define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
@@ -95,7 +96,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//CHromium source
 #ifndef SCHLECHTER_STIL_KEIN_FULLSCREEN
 	window_info saved_window_info_;
-	saved_window_info_.maximized = !!::IsZoomed(native_window_handle);
+	saved_window_info_.maximized = !!::IsZoomed(native_window_handle);//ist es an dieser Stelle hier sicher nicht gezoomt
 	if (saved_window_info_.maximized){//brauch man vllt. net immer
 		::SendMessage(native_window_handle, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
@@ -140,6 +141,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	std::string dir_path = wn->getdirpath(path);
 	std::string fpath = dir_path +"\\"+ "scene.shotgun";
 	FileParser*ps = new FileParser(fpath);
+
 	std::vector<THREEDObject> obj=ps->parse();
 	glm::mat4 dummy_mat = glm::mat4();
 	for (THREEDObject& v : obj){
@@ -176,11 +178,60 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		);
 
 
-	//glmain->setCameraandProjMatrix(std_res);
-	glmain->draw_elements = obj;// glmain->draw_elements.push_back(myobj);
+
+	
+#ifndef TEST_MODE
+	glmain->draw_elements = obj;//draw elemente setzen
 	glmain->setCameraMatrix(camera_mat);
 	glmain->setProjectionMatrix(matt2);
 	glmain->setCameraTransformMatrix(model_mat);
+#else
+	std::vector<THREEDObject>objc;
+	THREEDObject oha;
+	oha.dm =kElements;
+	oha.draw_call_num_elements = 6;
+	oha.draw_primitive = PR_TRIANGLE;
+	oha.enable_matrix = false;
+	oha.matrix = glm::value_ptr(dummy_mat);
+	oha.has_indices = true;
+	oha.has_texture = true; oha.has_tex_coord = true;//zusammenfassung wäre nett
+	unsigned int indicessss[] = { 0, 1, 2, 0, 2, 3 };
+	oha.indices =new unsigned int[sizeof(indicessss)/sizeof(unsigned int)] ;
+	memcpy(oha.indices,indicessss,sizeof(indicessss));
+	float verticesesesesel[] = { -0.5f, 0.5f, 0.0f ,
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f
+	};
+	oha.vertices = new float[sizeof(verticesesesesel) / sizeof(float)];
+	memcpy(oha.vertices, verticesesesesel, sizeof(verticesesesesel));
+	float texcoords666[] = {
+		0.0f, 0.0f,
+		0.0f,0.0f,
+		0.0f,0.0f,
+		0.0f,0.0f
+	};
+	oha.tex_coords = new float[sizeof(texcoords666)/sizeof(float)];
+	memcpy(oha.tex_coords,texcoords666,sizeof(texcoords666));
+
+
+	oha.indices_totalsize=sizeof(verticesesesesel);
+	oha.texcoords_totalsize = sizeof(texcoords666);
+	oha.texture_data.width = 1;
+	oha.texture_data.height = 1;
+	oha.texture_data.format = GL_RGB;
+	unsigned char * texture_bits = new unsigned char[3];
+	texture_bits[0] = 255; texture_bits[1] = 0; texture_bits[2] = 0;
+	oha.texture_data.bits = texture_bits;
+
+	oha.vertices_totalsize = sizeof(verticesesesesel);
+	objc.push_back(oha);
+	glmain->draw_elements = objc;
+	glmain->setCameraMatrix(dummy_mat);
+	glmain->setProjectionMatrix(dummy_mat);
+	glmain->setCameraTransformMatrix(glm::scale(dummy_mat,glm::vec3(0.2,0.2,0.2)));
+
+#endif
 	//for (THREEDObject& d : glmain->draw_elements){
 	//	glm::mat4 matt = glm::mat4();
 		//d.matrix = glm::value_ptr(matt);
