@@ -19,8 +19,9 @@
 #endif
 //#define TEST_MODE
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
-//#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
-#define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
+#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
+//jo,ma wissens dass es kein guter Stil ist,is gud
+//#define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -163,7 +164,7 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 	EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(native_window_handle), native_window_handle);
 	g_display->createContext();
 	
-	std::string path22 = dir_path + "\\" + "libGLESv2.dll";
+	std::string path22 = dir_path + "\\" + "libGLESv2.dll";//dynamisches dll laden jedoch langsamer als mit __declspec(dllimport)
 	dll_opengl = new SysUtils_Load_Library(path22.c_str());//@TODO:verwendet standard dll,nicht die ,die ich will,also plus path
 	OpenGLImport imp(getProcAddresswglintf, getProcAddresswglintf/*eigentlich egl*/);
 	GLMain<EGLswapBuffersFunc, EGL_Display_Binding, THREEDObject> *glmain = new GLMain<EGLswapBuffersFunc, EGL_Display_Binding, THREEDObject>(&EGL_Display_Binding::swapBuffers,g_display,false);
