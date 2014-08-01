@@ -17,7 +17,7 @@
 #ifdef USE_GLESV2
 #include "../window2/egl_display_binding.cpp"
 #endif
-#define TEST_MODE
+//#define TEST_MODE
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 //#define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 #define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
@@ -87,7 +87,7 @@ HWND create_window(HINSTANCE hInstance){
 
 }
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
+inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
 	HWND native_window_handle = create_window(hInstance);
@@ -179,13 +179,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 
 
-	
+	glmain->setViewPort({current_resolution_w,current_resolution_h,0,0});//@TODO:vierpoer teste,das hier löschen
 #ifndef TEST_MODE
 	glmain->draw_elements = obj;//draw elemente setzen
 	glmain->setCameraMatrix(camera_mat);
 	glmain->setProjectionMatrix(matt2);
 	glmain->setCameraTransformMatrix(model_mat);
 #else
+	
 	std::vector<THREEDObject>objc;
 	THREEDObject oha;
 	oha.dm =kElements;
@@ -198,10 +199,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	unsigned int indicessss[] = { 0, 1, 2, 0, 2, 3 };
 	oha.indices =new unsigned int[sizeof(indicessss)/sizeof(unsigned int)] ;
 	memcpy(oha.indices,indicessss,sizeof(indicessss));
-	float verticesesesesel[] = { -0.5f, 0.5f, 0.0f ,
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.5f, 0.5f, 0.0f
+	float verticesesesesel[] = { -1.0f, 1.0f, 0.0f ,
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f
 	};
 	oha.vertices = new float[sizeof(verticesesesesel) / sizeof(float)];
 	memcpy(oha.vertices, verticesesesesel, sizeof(verticesesesesel));
@@ -229,7 +230,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	glmain->draw_elements = objc;
 	glmain->setCameraMatrix(dummy_mat);
 	glmain->setProjectionMatrix(dummy_mat);
-	glmain->setCameraTransformMatrix(glm::scale(dummy_mat,glm::vec3(0.2,0.2,0.2)));
+	//glm::vec3 scalessss=glm::vec3(0.2, 0.2, 0.2);
+	glm::vec3 scalessss = glm::vec3(1.0,1.0,1.0);
+	glmain->setCameraTransformMatrix(glm::scale(dummy_mat,scalessss));
 
 #endif
 	//for (THREEDObject& d : glmain->draw_elements){

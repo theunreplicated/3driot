@@ -8,7 +8,46 @@
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\mat4x4.hpp>
 #include "../window2/WinUtils.h"
+struct simple_Vector{
+	float *x, *y, *z;
+	bool operator==(simple_Vector * comp){
+	
+		return (*x == *(comp->x)) && (*y == *(comp->y)) && (*z == *(comp->z));
+	};
+};
 using std::ifstream; using std::string; using std::vector;
+THREEDObject optimize_THREEDOBJECT(THREEDObject obj){
+	int count = 0;
+	int num_vertices = (obj.vertices_totalsize / sizeof(float)) / 3;
+	bool * erase_represenation = new bool[num_vertices];
+	for (unsigned short i = 0; i < num_vertices; i++){
+		erase_represenation[i] = false;
+
+	}//have to be removed=erase_represenation !!unwcitchtuig eger
+	simple_Vector* rrr/*hat nichts zu bedeuten,wie immer,roobert der rrrroadster*/ = new simple_Vector[num_vertices];
+	for (unsigned int i = 0; i < num_vertices; i++){
+		rrr[i] = { &(obj.vertices[(i * 3)]), &(obj.vertices[(i * 3)+1]), &(obj.vertices[(i * 3)+2]) };
+
+	}
+
+	for (unsigned int i = 0; i < num_vertices; i++){
+		for (unsigned int j = i; j < num_vertices; j++){
+			if (rrr[i] == &rrr[j]){
+				if (erase_represenation[j] != false){
+					erase_represenation[j] = true;
+					continue;
+				}
+			}
+
+		}
+
+	}
+
+	
+	int dv = count;
+	return obj;
+}
+
 FileParser::FileParser(std::string file_name){
 
 
@@ -64,6 +103,7 @@ vector<THREEDObject> FileParser::parse(){
 		if (d!=""){
 			
 			THREEDObject data = handle_object(d);
+			data = optimize_THREEDOBJECT(data);
 			vvvv.push_back(data);
 
 
@@ -72,8 +112,9 @@ vector<THREEDObject> FileParser::parse(){
 
 
 	}//@TODO:kann aktuell nur mit einem Objekt umgehen
+	
+	
 
-	//vvvv.push_back();
 	return vvvv;//aaaa!!!!
 }
 THREEDObject FileParser::handle_object(std::string dat){
@@ -261,24 +302,15 @@ THREEDObject FileParser::handle_object(std::string dat){
 
 	}
 
-	/*for (unsigned int i = 0; i < file_contents.length(); i++){//http://stackoverflow.com/questions/14668326/iterate-through-string-char-by-char
-	char c = file_contents[i];
-	if (mode == "in_object;" && (c != '{'))
-	{
-	if (c == ':'){
+	//int dc = 5 / 0;
+	//Optimierung
+	//mehrmals vorhandene löschen
+
+	
 
 
-	}
-
-	}
-	if (mode == "begin" && c=='{'){
-	mode = "in_object;";
 
 
-	}
-
-
-	}*/
 
 	return obj;
 

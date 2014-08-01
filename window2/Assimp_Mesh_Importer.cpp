@@ -146,11 +146,15 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 	ret_mesh.vertices = new float[mesh->mNumVertices * 3];
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++){
 
-		ret_mesh.vertices[(i*3)] = mesh->mVertices[i].x;//TODO:get aiVector3d
+		ret_mesh.vertices[(i*3)] = mesh->mVertices[i].x;//TODO:get aiVector3d //ist das nötig
 		ret_mesh.vertices[(i * 3) + 1] = mesh->mVertices[i].y;
 		ret_mesh.vertices[(i * 3) + 2] = mesh->mVertices[i].z;
 		
 	}
+
+
+
+
 	ret_mesh.size_vertices = mesh->mNumVertices * 3;
 
 	if (mesh->HasFaces())

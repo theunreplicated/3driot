@@ -166,8 +166,8 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCT
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
 	glViewport(rect.x, rect.y, rect.width, rect.height);
-	glScissor(rect.x,rect.y,rect.width,rect.height);
-	glEnable(GL_SCISSOR_TEST);//@TODO:Check ob scissor_test oder glscissor,ich denke eher net
+	//glScissor(rect.x,rect.y,rect.width,rect.height);
+	//glEnable(GL_SCISSOR_TEST);//@TODO:Check ob scissor_test oder glscissor,ich denke eher net
 
 }
 //@deprecated
@@ -432,8 +432,13 @@ float g_vertices_rectangle_data[] = {
 	//draw_elements[0].matrix = m->get_as_float16();
 	
 	/*programId = */
-	//glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+	glDepthRangef(0.0, 1.0);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+
+	//@TODO:Problem depth test:anweisung konfigureiren wie hier:http://www.opengl.org/wiki/Depth_Buffer
 	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl,programId);
 	glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
@@ -477,7 +482,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 #endif
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+	glClearDepthf(1.0);
 
 	//Matrix matrix;
 	//matrix.translate(Vector3(0.4f));
@@ -486,9 +491,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(loc_Position);//@TODO:gucken ob hierhin oder in die For-SChleife,disalb emuss nach dem draw-call kommen
+	//int i = 0;
 	for (T_DRAW_STRUCTURE& pc : draw_elements)
 	{
-
+		//i++;
+		//if (i == 1){ 
+		//	continue; 
+		//}
+		
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
 		glm::mat4 m = glm::make_mat4(pc.matrix);
@@ -519,14 +529,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		glEnableVertexAttribArray(texcoord_position);//@TODO:gucken ob auch in if-Anweisung
 		if (pc.has_tex_coord){
 			glBindBuffer(GL_ARRAY_BUFFER, pc.texcoords_buffer);
-			glVertexAttribPointer(
-				texcoord_position,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-				2,                                // size : U+V => 2
-				GL_FLOAT,                         // type
-				GL_FALSE,                         // normalized?
-				0,                                // stride
-				(void*)0                          // array buffer offset
-				);
+			glVertexAttribPointer(texcoord_position,2,/* size : U+V => 2*/GL_FLOAT,GL_FALSE,0,(void*)0);
 
 		}
 

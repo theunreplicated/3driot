@@ -74,8 +74,16 @@ namespace OGL{
 	IMPORT_GL_DECLARE(ActiveTexture);
 	IMPORT_GL_DECLARE(Uniform1i);
 	//typedef SD_GL_DepthFuncProc
-	typedef void(__stdcall*SD_GL_DepthFuncProc)(GrGLenum func);//@TODOL:brauch man vllt. gar net,da wohl default auf GL_LESS,daher wohl auch nicht im skia defs'0>chromium drin
+	typedef void(GR_GL_FUNCTION_TYPE*SD_GL_DepthFuncProc)(GrGLenum func);//@TODOL:brauch man vllt. gar net,da wohl default auf GL_LESS,daher wohl auch nicht im skia defs'0>chromium drin
 	SD_GL_DepthFuncProc glDepthFunc;
+	typedef void(GR_GL_FUNCTION_TYPE*SD_GL_ClearDepthfProc)(GLclampf depth);
+	SD_GL_ClearDepthfProc glClearDepthf;
+	typedef void(GR_GL_FUNCTION_TYPE*SD_GL_DepthRangefProc)(GLclampf zNear, GLclampf zFar);
+	SD_GL_DepthRangefProc glDepthRangef;
+	IMPORT_GL_DECLARE(DepthMask);
+	
+	
+
 }
 
 namespace OGL{
@@ -83,13 +91,13 @@ namespace OGL{
 	GLenum GL_ARRAY_BUFFER = 0x8892;
 	GLenum GL_STATIC_DRAW = 0x88E4;
 	GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
-
+	
 	GLenum GL_FRAGMENT_SHADER = 0x8B30;//https://chromium.googlesource.com/angle/angle/+/master/include/GLES2/gl2.h
 	GLenum  GL_LINK_STATUS = 0x8B82;
 	GLenum GL_UNSIGNED_INT = 0x1405;
 	GLenum GL_UNSIGNED_SHORT = 0x1403;
 	GLenum GL_FALSE = 0;
-	GLenum GL_TRUE = 0;
+	GLenum GL_TRUE = 1;
 	GLenum GL_FLOAT = 0x1406;
 	const GLenum GL_TRIANGLES = 0x0004;//TODO merge zu einem
 	GLenum GL_VERSION = 0x1F02;
@@ -110,6 +118,7 @@ namespace OGL{
 	GLenum GL_COLOR_BUFFER_BIT=0x00004000;
 	GLenum GL_BGR = 0x80E0;
 	GLenum  GL_BGRA=0x80E1;
+	GLenum GL_LEQUAL=0x0203;
 }
 class OpenGLImport{
 
@@ -182,6 +191,10 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(Uniform1i);
 
 	IMPORT_GL(glDepthFunc,SD_GL_DepthFuncProc);
+	IMPORT_GL(glClearDepthf, SD_GL_ClearDepthfProc);
+	IMPORT_GL(glDepthRangef, SD_GL_DepthRangefProc);
+	IMPORT_GL_FUNC(DepthMask);
+
 	//if (import("glDrawElements")){ OutputDebugString("----"); }
 	//else{
 		//OutputDebugString("!!!");
