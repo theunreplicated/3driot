@@ -65,7 +65,7 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	HDC           hDC;
 	hDC = BeginPaint(hWnd, &ps);
 	{RECT rect;
-	rect.left = 40;
+	rect.left = 40;//gdi
 	rect.top = 10;
 	const char* message = "hi";
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
@@ -425,7 +425,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	MSG Msg;
-	while (::GetMessage(&Msg, NULL, 0, 0) > 0){
+	while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
 		glm::mat4 transformmat = translatemat*scalemat*rotmat;
 		glmain->setCameraTransformMatrix(transformmat);
 		//glm::mat4 camera_matrix = camera_mat*transformmat;
@@ -448,8 +448,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		//THREEDObject dc=glm->draw_elements[1];
 		glmain->render();//@TODO:in proc am Schluss
 		//ml->Message_Pump();
-		TranslateMessage(&Msg);
-		DispatchMessage(&Msg);
+		//TranslateMessage(&Msg);
+		//DispatchMessage(&Msg);
+		ml->Message_Pump();
 	}
 	
 	return Msg.wParam;

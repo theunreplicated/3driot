@@ -87,6 +87,7 @@ HWND create_window(HINSTANCE hInstance){
 	
 
 }
+
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
@@ -149,6 +150,7 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 		
 		v.matrix = glm::value_ptr(dummy_mat);
 	}
+
 
 	
 	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite

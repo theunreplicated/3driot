@@ -9,8 +9,8 @@ namespace Windows{
 	}
 
 	RECT  standard_window::Rect_get(){//vll.t entfernen//@deprecated
-		RECT rect;
-		GetWindowRect(*window_handle, &rect);
+		::RECT rect;
+		::GetWindowRect(*window_handle, &rect);
 		return rect;
 	}
 	
@@ -20,16 +20,15 @@ namespace Windows{
 	}
 	char * standard_window::Text_get(){
 
-		int text_length = GetWindowTextLength(*window_handle);
-		//@TODO:malloc mit exception wie bei new,falls Länge überschritten
-		char*buffer = (char*)malloc(text_length);//@TODO:müsste auch mit new gehen,testen
-		if (buffer == NULL){ throw std::runtime_error("probably out of memory-malloc returned NULL"); }
+		int text_length = ::GetWindowTextLengthA(*window_handle);
+
+		char*buffer = new char[text_length/sizeof(char)/*sizeif char müsste 1 sein,durch(fall(oder freier Fall??)) müsste so auch stimmen*/];
 		//http://programmersheaven.com/discussion/114501/what-s-the-real-size-of-char
-		GetWindowText(*window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
+		::GetWindowText(*window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
 		return buffer;
 	}
 	int standard_window::Text_set(LPCTSTR lpString){
-		return SetWindowText(*window_handle, lpString);
+		return ::SetWindowText(*window_handle, lpString);
 
 	}
 	

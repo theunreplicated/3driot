@@ -15,7 +15,6 @@ PROC __stdcall this_scope_gl_import(T_func_name name, T_wglgetprocadr wglgetadr,
 	return (wglres ? wglres : (globalgetadr(name) ? globalgetadr(name) : throw std::runtime_error("cannot load dingens")));
 
 };
-
 namespace OGL{
 
 	//GrGLCreateShaderProc __stdcall glCreateShader;
