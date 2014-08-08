@@ -54,6 +54,8 @@ namespace Windows{
 		case WM_CREATE:
 
 			return 0;
+	//	case WM_CONTEXTMENU:
+		//	break;
 
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -79,6 +81,7 @@ namespace Windows{
 			{
 
 			case VK_ESCAPE:
+				::MessageBoxA(NULL,"fd","fd",MB_OK);
 				PostQuitMessage(0);
 				return 0;
 
@@ -92,11 +95,10 @@ namespace Windows{
 
 
 
-	}
+	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
 	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc):standard_window(&native_window_handle,&native_window_handle){
 		WNDCLASS wc;
 		m_hInstance= hInstance;
-		// register window class
 		wc.style = CS_OWNDC;
 		if (proc != NULL){
 			wc.lpfnWndProc = proc;
@@ -104,6 +106,7 @@ namespace Windows{
 		else{
 			wc.lpfnWndProc = WndProc;
 		}
+		//(proc != NULL ? wc.lpfnWndProc = proc : wc.lpfnWndProc = WndProc);
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = hInstance;
@@ -113,7 +116,7 @@ namespace Windows{
 		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;//win-api.de
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = names.lpClassName;
-		RegisterClass(&wc);
+		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
 
 		native_window_handle = CreateWindow(
 			names.lpClassName, names.lpWindowName,

@@ -47,7 +47,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 		}
 		return 0; break;
-	case WM_DESTROY:
+	case WM_CLOSE:
 		PostQuitMessage(0); break;//Geht jetzt auch beim klick aufs x
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

@@ -20,7 +20,7 @@ namespace Windows{
 	template <typename classNameType>
 	struct WindowNames{
 		classNameType lpClassName;
-		LPCSTR  lpWindowName;
+		classNameType  lpWindowName;
 	
 	};
 	struct WindowRect{

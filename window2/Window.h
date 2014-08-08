@@ -12,8 +12,10 @@ namespace Windows{
 		//enum lpClassNames { BUTTON, EDIT };
 	public:
 		void ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam);
-		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL);
-		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle,HWND window_parent);//als extra parameter gehts net;-)
+		//Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL);
+		//template <typename T_wn_types>
+		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);//als extra parameter gehts net;-)
+		Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);
 		HWND window_handle;
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		WindowRect Position_get();

@@ -24,7 +24,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	edit_startpoint_h = 30;
 
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
-	objects_list = new Windows::Window({ "STATIC", "" }, { 350, 650, 610, 100 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE);
+	//objects_list = new Windows::Window({ "STATIC", "" }, { 350, 650, 610, 100 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE);
 	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE);
 	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
@@ -80,7 +80,7 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 }
 void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	int editwidth = 100, editheight = 20, edit_startpoint_w = m_width - editwidth - 30, edit_startpoint_h = 30, padding = editheight + 20, padding_w = 20;
-	new_row_add_button=new Windows::Window({ "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50 }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
+	new_row_add_button = new Windows::Window({ "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50 }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
 	//SetFocus(new_row_add_button->window_handle);
 	action_button = new Windows::Window({ "button", "Actionnnn" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50+padding }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
 	new_row_add_button->on(wpe, btn_add_row_cb);
