@@ -90,8 +90,8 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
 	int clicked_item_number = lpNMItem->iItem;
-	//::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);
-	if ((current_obj_selection != nullptr)&&(clicked_item_number!=0)){
+	//::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);//Diagramme auf Klick bei Varialben Zustands-Veränderung(alle oder ausgewähleter Bereich) wären ganz nett hier
+	if ((clicked_item_number!=0)&&(current_obj_selection!=nullptr/*@TODO:gucken ob das da hier und jetzt(oder auch später) entfernen*/)){
 		current_obj_selection = &startp_endp_list_objs[clicked_item_number - 1/*@TODO:-1 entferen,da ihc ja noch den Default-Text habe*/];
 		scalemat = scalemat_s[clicked_item_number - 1];
 		translatemat = translatemat_s[clicked_item_number - 1];
@@ -107,15 +107,12 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	if (*dcc != *L""){///bei Abbruch==L""
 		//open
 
-		//		std::cout << "wrote the file successfully!" << std::endl;
+
 
 		char buffer[MAX_PATH];
 
-		// First arg is the pointer to destination char, second arg is
-		// the pointer to source wchar_t, last arg is the size of char buffer
-		//wcstom
-		//wcstombs_s(buffer, dcc, MAX_PATH);
-
+		
+	
 		size_t CharactersConverted = 0;
 		wcstombs_s(&CharactersConverted, buffer, sizeof(buffer), dcc, _TRUNCATE);
 
@@ -155,7 +152,7 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 			startp_endp_list_objs.push_back({ startp, endp, startp_endp_list_objs.size() });
 
 			lv->items->add("Received complex command(contagious).mhhhh.");
-			current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size()-1];
+			current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size()-1];//muss gesetzt werden,da ansonseten fail bei click wg. nullptr check,und es macht auch Sinn so
 			scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
 			glmain->render();
 		}
