@@ -33,7 +33,7 @@ namespace Windows{
 
 
 				 else{
-					 called=true;
+					 called=true;//gleich bei jedem callback function des promise event(return true oder false)
 					 promise_true_fragezeichen = data.wpe.wpef_callback(hWnd, wParam, lParam, *data.wpe.wnd_ptr);
 
 

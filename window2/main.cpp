@@ -3,6 +3,7 @@
 #include "Window.h"
 #include <Windows.h>
 #include <stdio.h>
+#include <map>
 #include "ApplicationUI_Control_Mgr.h"
 #include "file_dialog.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -25,6 +26,7 @@
 #include "WinUtils.h"
 #include "GLStructs.h"
 #include <stdio.h>
+#include "APIs\OS\Win\UI_Controls\List_View.h"
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
 #endif
@@ -34,6 +36,7 @@
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn;
+List_View*lv;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 glm::mat4 std_res = glm::mat4(1.0f);
 glm::vec3 camera_add_vector = glm::vec3(0,0,0);
@@ -48,8 +51,8 @@ glm::mat4 get_camera(glm::vec3 add_pos_Vector=glm::vec3(0,0,0)){
 glm::mat4 camera_mat = get_camera();
 glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
-
-
+struct sp_endp_type{ int startp, endp; };
+vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -57,6 +60,16 @@ bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 	
 	
 }
+bool LISTVIEW_SELECT_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd){
+http://www.rohitab.com/discuss/topic/35738-c-win32-listview-clicking-an-item/
+	LPNMHDR pa=reinterpret_cast<LPNMHDR>(lParam);//@kommt hier wirklich reinterpret_cast hin anstatt c-style?
+//das hier ist ein Einzeiler,erinnert mich an Einzeller
+			//;//@TODO:vllt. gehts auch so mit dem lparam wie bei button
+
+
+	return (pa->hwndFrom == caller_wnd) && ((pa->code==NM_CLICK)||(pa->code==NM_RETURN));//aktuell nur doppelklick
+}
+
 
 //__declspec(dllimport)bool saveToFile(const char* fileName, const char * data);//,-) piraten-smilie-einäugig für harte Jungs(so hart wie Piraten)
 void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -69,6 +82,13 @@ void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	rect.top = 10;
 	const char* message = "hi";
 	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
+}
+void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
+
+	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
+	int clicked_item_number = lpNMItem->iItem;
+	::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);
+	
 }
 void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	Windows::Dialogs::File_Dialog dccs;
@@ -109,31 +129,23 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
 		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
 
-		//mat4 proj_matrix = glm::perspective(50.0f, aspectRatio, 0.1f, 50000.0f);
-		//mat4 mat = proj_matrix*scalematrix;
-
-
-		//mat4 model_matrix=glm::make_mat4(mmmm);
-		//mat4 model_matrix = glm::translate(glm::mat4(),glm::vec3(-0.5f,-0.5f,0.5f));
-		//mat4 model_matrix = glm::mat4(1.0f);
-		//glm::mat4 View = glm::lookAt(
-		//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-		//	glm::vec3(0, 0, 0), // and looks at the origin
-		//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-		//	);
 		//glm::mat4 finalm = proj_matrix*View*model_matrix;
 		//glm::mat4 finalm = model_matrix;
 		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
 		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
 		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
 		//}
-		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
-			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+		if (aiimport->stor_meshes_render.size() > 0){//also nur falls mehr als 0 draw-bare Element(draw-bare das Wort gibts ja gar net,wer hätte das gedacht)
+			int startp = glmain->draw_elements.size();
+			for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+				//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+				glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+			}
+			int endp = glmain->draw_elements.size();
+			startp_endp_list_objs.push_back({ startp, endp });
+
+			lv->items->add("Received complex command.mhhhh.");
 		}
-
-
-
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
@@ -261,8 +273,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
 	using namespace Windows;
-	int width=1024, height=768;
-	//!!!http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
+	int width=1024, height=768;//@TODO:bind struct proggen
+	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
+
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
@@ -275,6 +288,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true /*default=false*/};
+	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
 
 	//wbtn->on(BTN_CLICK,onclick);
 	
@@ -287,59 +301,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	InitCommonControls(); // Force the common controls DLL to be loaded.
 	HWND list;
 	//http://stackoverflow.com/questions/13979371/win32-api-listview-creation-c
-	// window is a handle to my window that is already created.
 	int lwidth = 200; int lheight = 200;
 	
-	Windows::Window*w = new Windows::Window( { WC_LISTVIEW,NULL}, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, aw,NULL);
+
+	Windows::Window*w = new Windows::Window({ WC_LISTVIEWW, NULL }, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, aw, NULL);
 	list = w->window_handle;
-	/*LVCOLUMN lvc;
-	//lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-	lvc.iSubItem = 0;
-	lvc.pszText = "Tdsdsadsitle";
-	lvc.cx = 50;
-	lvc.fmt = LVCFMT_LEFT;
-	ListView_InsertColumn(list, 0, &lvc);
-	http://stackoverflow.com/questions/11923925/disable-horizontal-scroll-bar-in-list-view @TODO:implement
-	//http://www.cplusplus.com/forum/windows/47702/
-	//http://stackoverflow.com/questions/3217362/adding-items-to-a-listview
-	*/
-	
-	//http://stackoverflow.com/questions/11923925/disable-horizontal-scroll-bar-in-list-view
-	LONG lStyle = GetWindowLong(list, GWL_STYLE);
-	lStyle |=WS_VSCROLL;
-	lStyle |= WS_HSCROLL;
-	SetWindowLong(list, GWL_STYLE, lStyle);
-	LVCOLUMN lvc;
-	
-	lvc.mask = LVCF_TEXT | LVCF_WIDTH;
-	lvc.cx = lwidth;
-	lvc.pszText = TEXT("Property");
-	ListView_InsertColumn(list, 0, &lvc);
+	w->on(LISTVIEW_SELECT,listview_handle_click);
+	lv = new List_View(w);
+	lv->columns->add("verkacktes Objeccckkt");
+	lv->items->add("Hallo,kann ich behilflich sein??");
 
-	//lvc.cx = 500;
-	//lvc.pszText = TEXT("Value");
-	//ListView_InsertColumn(list, 1, &lvc);
-
-	LVITEM lvi;
-
-	lvi.mask = LVIF_TEXT;
-	lvi.iItem = 0;
-	lvi.iSubItem = 0;
-	lvi.pszText = TEXT("File Name");
-	ListView_InsertItem(list, &lvi);
-	lvi.iItem = 1; 
-	lvi.pszText = TEXT("File Size");
-	ListView_InsertItem(list, &lvi);
-	for (int i = 2; i < 100; i++){
-		lvi.iItem = i;
-		ListView_InsertItem(list, &lvi);
-	}
-
-	
-
-	//ListView_SetItemText(list, 0, 1, TEXT("123425244525"));*/
-
-	
 	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
 	//uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
