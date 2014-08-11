@@ -53,6 +53,7 @@ glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
+sp_endp_type * current_obj_selection=nullptr;
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -62,12 +63,12 @@ bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 }
 bool LISTVIEW_SELECT_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd){
 http://www.rohitab.com/discuss/topic/35738-c-win32-listview-clicking-an-item/
-	LPNMHDR pa=reinterpret_cast<LPNMHDR>(lParam);//@kommt hier wirklich reinterpret_cast hin anstatt c-style?
-//das hier ist ein Einzeiler,erinnert mich an Einzeller
-			//;//@TODO:vllt. gehts auch so mit dem lparam wie bei button
+	LPNMHDR pa = reinterpret_cast<LPNMHDR>(lParam);//@kommt hier wirklich reinterpret_cast hin anstatt c-style?
+	//das hier ist ein Einzeiler,erinnert mich an Einzeller
+	//;//@TODO:vllt. gehts auch so mit dem lparam wie bei button
 
 
-	return (pa->hwndFrom == caller_wnd) && ((pa->code==NM_CLICK)||(pa->code==NM_RETURN));//aktuell nur doppelklick
+	return (pa->hwndFrom == caller_wnd) && ((pa->code == NM_CLICK) || (pa->code == NM_RETURN));
 }
 
 
@@ -87,9 +88,11 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
 	int clicked_item_number = lpNMItem->iItem;
-	::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);
-	
-}
+	//::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);
+	if (current_obj_selection != nullptr){
+		current_obj_selection = &startp_endp_list_objs[clicked_item_number - 1/*@TODO:-1 entferen,da ihc ja noch den Default-Text habe*/];
+	}
+	}
 void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	Windows::Dialogs::File_Dialog dccs;
 	LPWSTR dcc = dccs.OpenFileName(L"C:\\");
@@ -144,7 +147,7 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 			int endp = glmain->draw_elements.size();
 			startp_endp_list_objs.push_back({ startp, endp });
 
-			lv->items->add("Received complex command.mhhhh.");
+			lv->items->add("Received complex command(contagious).mhhhh.");
 		}
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
