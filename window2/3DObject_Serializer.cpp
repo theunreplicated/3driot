@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include "WinUtils.h"
+#include <glm\gtc\type_ptr.hpp>
 using std::string;
 
 string THREED_Object_Serializer::serialize(THREEDObject * obj, int num_objects){
@@ -106,7 +107,7 @@ string THREED_Object_Serializer::getoutput(THREEDObject * obj){
 	ret += split_char + get_Statement("enable_matrix",obj->enable_matrix);//@TODO:in GLMain auf das zurückgreifen
 	if (obj->enable_matrix){
 
-		ret += split_char + get_Statement("matrix", obj->matrix,sizeof(float)*16/*4*4matrix*/);
+		ret += split_char + get_Statement("matrix", glm::value_ptr(obj->matrix),sizeof(float)*16/*4*4matrix*/);
 	}
 	ret += split_char + get_Statement("has_indices", (obj->indices != NULL));
 	if (obj->indices != NULL){

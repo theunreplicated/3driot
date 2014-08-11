@@ -199,7 +199,11 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 		
 	//}
 	
-	(pass_matrix!=0 ? pp.matrix = pass_matrix:0);//@TODO:identtity matrix
+	if (pass_matrix != 0){
+		pp.matrix = glm::make_mat4(pass_matrix);
+
+	}
+//@TODO:identtity matrix
 	//(pass_matrix != 0) && (pp.matrix = pass_matrix);//@TODO:deees ändern,vllt. komment tauschen
 	//pp.vertices_num=obj->//@deprecated
 	
@@ -501,10 +505,10 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
-		glm::mat4 m = glm::make_mat4(pc.matrix);
+		glm::mat4 m = /*glm::make_mat4(*/pc.matrix/*)*/;
 		//@TODO:das mit dem camera_transformmatrix ist wohl nicht richtigso ,gehört wohl alles in den camera aka view matrix
 		//glm::mat4 res = proj_camera_matrix*m;
-		glm::mat4 res = projection_matrix*camera_matrix*camera_transform_matrix;
+		glm::mat4 res = projection_matrix*camera_matrix*/*camera_transform_matrix*/m;
 		glUniformMatrix4fv(loc_Matrix, 1, GL_FALSE,glm::value_ptr(res) );
 
 		if (pc.has_texture){

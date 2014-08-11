@@ -24,7 +24,7 @@ private:
 public:
 	List_View_Item(HWND*wh);
 	void add(LPSTR text);
-	//void remove(){};
+	void remove(int index);
 	
 
 };

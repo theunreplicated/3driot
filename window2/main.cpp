@@ -37,7 +37,9 @@ Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn;
 List_View*lv;
+HWND default_focus;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
+vector<glm::mat4>scalemat_s, rotmat_s, translatemat_s;
 glm::mat4 std_res = glm::mat4(1.0f);
 glm::vec3 camera_add_vector = glm::vec3(0,0,0);
 glm::mat4 get_camera(glm::vec3 add_pos_Vector=glm::vec3(0,0,0)){
@@ -51,7 +53,7 @@ glm::mat4 get_camera(glm::vec3 add_pos_Vector=glm::vec3(0,0,0)){
 glm::mat4 camera_mat = get_camera();
 glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
-struct sp_endp_type{ int startp, endp; };
+struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
 sp_endp_type * current_obj_selection=nullptr;
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
@@ -89,9 +91,14 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
 	int clicked_item_number = lpNMItem->iItem;
 	//::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);
-	if (current_obj_selection != nullptr){
+	if ((current_obj_selection != nullptr)&&(clicked_item_number!=0)){
 		current_obj_selection = &startp_endp_list_objs[clicked_item_number - 1/*@TODO:-1 entferen,da ihc ja noch den Default-Text habe*/];
+		scalemat = scalemat_s[clicked_item_number - 1];
+		translatemat = translatemat_s[clicked_item_number - 1];
+		rotmat = rotmat_s[clicked_item_number - 1];
 	}
+	::SetFocus(default_focus);
+	
 	}
 void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	Windows::Dialogs::File_Dialog dccs;
@@ -145,9 +152,12 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 				glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
 			}
 			int endp = glmain->draw_elements.size();
-			startp_endp_list_objs.push_back({ startp, endp });
+			startp_endp_list_objs.push_back({ startp, endp, startp_endp_list_objs.size() });
 
 			lv->items->add("Received complex command(contagious).mhhhh.");
+			current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size()-1];
+			scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
+			glmain->render();
 		}
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
@@ -174,36 +184,41 @@ void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 
 void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
-
+	//funktionsaufrufe gruppieren wäre bei vector nett,vor allem bei push_back,z.b. sowas[scalemat,translatemat].push_back(glm::mat4)
+	//Das hier mit dem Keydown handling mit matrizen usw. ist alles schlimmer Murks so wie ichs gecodet, habe,daher @TODO:viel besser machen
 	switch (wParam)
 	{
 	//case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
 	case /*VK_OEM_PLUS*/107:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(2.0f, 2.0f, 2.0f)); break;
 	case /*VK_OEM_MINUS*/109:scalemat/*or...*/ = glm::scale(scalemat, glm::vec3(0.5f, 0.5f, 0.5f)); break;
-	case VK_LEFT:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	case VK_RIGHT:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f,0.0f, 1.0f)); break;
-	case VK_DOWN:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 0.0f, 1.0f)); break;//todo:vllt.eigene matrizen
+	case VK_RIGHT:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	case VK_LEFT:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 1.0f, 0.0f)); break;
+	case VK_DOWN:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(0.0f,0.0f, 1.0f)); break;
+	case VK_UP:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(0.0f, 0.0f, 1.0f)); break;//todo:vllt.eigene matrizen
 	case VK_NUMPAD7:rotmat/*or...*/ = glm::rotate(rotmat, 15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD9:rotmat/*or...*/ = glm::rotate(rotmat, -15.0f, glm::vec3(1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD4:translatemat = glm::translate(translatemat, glm::vec3(-1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD6:translatemat = glm::translate(translatemat, glm::vec3(1.0f, 0.0f, 0.0f)); break;
 	case VK_NUMPAD2:translatemat = glm::translate(translatemat, glm::vec3(0.0f, -1.0f, 0.0f)); break;
 	case VK_NUMPAD8:translatemat = glm::translate(translatemat, glm::vec3(0.0f, 1.0f, 0.0f)); break;
-	//case VK_DELETE:{camera_add_vector += glm::vec3(1,0,0);
-		//			   glmain->setCameraMatrix(get_camera(camera_add_vector));
-	//}; break;
-
+	
 	default:
 		break;
 	}
+	scalemat_s[current_obj_selection->index] = scalemat;
+	rotmat_s[current_obj_selection->index] = rotmat;
+	translatemat_s[current_obj_selection->index] =translatemat;
 	glm::mat4 model_mat = translatemat*scalemat*rotmat;
-	for (THREEDObject& d : glmain->draw_elements){
-		
-			d.matrix = glm::value_ptr(model_mat);
+	//glmain->setCameraTransformMatrix(model_mat);
+	if (current_obj_selection != nullptr){
+
+		for (unsigned int i = current_obj_selection->startp; i < current_obj_selection->endp;i++){
+
+			glmain->draw_elements[i].matrix = /*glm::value_ptr(*/model_mat/*)*/;
 
 		}
-
+	}
+	glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	switch (message)
@@ -286,7 +301,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//aw->addOnMessageInvoke(WM_COMMAND,oncommand);
 	//aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
 	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
-
+	default_focus = ::GetFocus();
 	aw->addOnMessageInvoke(WM_KEYDOWN, keydown);
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 
@@ -362,8 +377,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	
 	//delete aiimport;
 
-		//(new MessageLoop())->GetMessage_Approach();
-	MessageLoop* ml = new MessageLoop();
+		
+	
 	
 	
 	glm::mat4 proj_cam_matrix=projection_matrix*camera_mat;
@@ -371,9 +386,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	MSG Msg;
-	while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
-		glm::mat4 transformmat = translatemat*scalemat*rotmat;
-		glmain->setCameraTransformMatrix(transformmat);
+	//while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
+	
+		//glmain->setCameraTransformMatrix(transformmat);
 		//glm::mat4 camera_matrix = camera_mat*transformmat;
 		//glm::mat4 matt = projection_matrix*camera_matrix*model_mat/**model_mat*transformmat*/;
 	//for (int i = 0; i < glm->num_draw_elements; i++){
@@ -392,12 +407,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		//glm::mat4 mm = transformmat;
 		//glm->draw_elements[0].matrix = glm::value_ptr(mm);
 		//THREEDObject dc=glm->draw_elements[1];
-		glmain->render();//@TODO:in proc am Schluss
+		//glmain->render();//@TODO:in proc am Schluss
 		//ml->Message_Pump();
 		//TranslateMessage(&Msg);
 		//DispatchMessage(&Msg);
-		ml->Message_Pump();
-	}
+		//ml->Message_Pump();
+	//}
 	
-	return Msg.wParam;
+	//return Msg.wParam;
+	return (new MessageLoop())->GetMessage_Approach();
 }

@@ -4,7 +4,7 @@
 #include <vector>
 #include "OpenGL_Data_Types.h"
 #include "WindowStructs.h"
-//#include <glm/mat4x4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "dingens_struct_base.h"
 
@@ -28,7 +28,7 @@ struct THREEDObject:RenderStructBase,Interals_do_not_touch{
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize, indices_totalsize,texcoords_totalsize;
-	float* matrix;
+	glm::mat4 matrix; 
 	bool enable_matrix = false;
 };
 

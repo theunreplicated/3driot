@@ -17,6 +17,10 @@ List_View_Item::List_View_Item(HWND*wh){
 	window_handle = wh; item.mask = LVIF_TEXT; item.iSubItem = 0;
 };
 void List_View_Item::add(LPSTR text){ item.pszText = text; item.iItem = index; ListView_InsertItem(*window_handle, &item); index++; };
+void List_View_Item::remove(int index){
+
+	ListView_DeleteItem(*window_handle,index);//@TODO:alles in array-Struktur machen,wo ich dann z.b. edit oder add machen kann
+}
 
 /*LVCOLUMN lvc;
 //lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
