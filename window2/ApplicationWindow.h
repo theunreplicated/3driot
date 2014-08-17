@@ -29,7 +29,7 @@ namespace Windows{
 	public:
 		HINSTANCE m_hInstance;
 		ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc=NULL);
-		HWND native_window_handle;
+		//HWND native_window_handle;
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void addOnMessageInvoke(UINT message, winproc_callback_function callbackf);
 		//void addOnMessagePumpEndInvoke(winproc_callback_function callbackf);

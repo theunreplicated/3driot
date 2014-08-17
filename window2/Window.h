@@ -7,7 +7,7 @@
 namespace Windows{
 	class Window:public standard_window{
 	private:
-		void makeAppearBetter();
+		
 		ApplicationWindow* m_ApplicationWindow;
 		//enum lpClassNames { BUTTON, EDIT };
 	public:
@@ -16,7 +16,7 @@ namespace Windows{
 		//template <typename T_wn_types>
 		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);//als extra parameter gehts net;-)
 		Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);
-		HWND window_handle;
+		
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		WindowRect Position_get();
 		/*

@@ -1,7 +1,8 @@
 
 #include "ApplicationWindow.h"
 #include <Windows.h>
-
+//#include <Uxtheme.h>
+//#pragma comment(lib, "uxtheme.lib")
 
 namespace Windows{
 	std::vector<winproc_callback_function_struct> ApplicationWindow::winproc_callback_function_data;
@@ -96,7 +97,7 @@ namespace Windows{
 
 
 	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
-	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc):standard_window(&native_window_handle,&native_window_handle){
+	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc)/*:standard_window(window_handle,window_handle)*/{
 		WNDCLASS wc;
 		m_hInstance= hInstance;
 		wc.style = CS_OWNDC;
@@ -118,12 +119,13 @@ namespace Windows{
 		wc.lpszClassName = names.lpClassName;
 		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
 
-		native_window_handle = CreateWindow(
+		window_handle = CreateWindow(
 			names.lpClassName, names.lpWindowName,
 			dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
 			NULL, NULL, hInstance, NULL);
-
+		//makeAppearBetter(); bringt wohl nichts bei solchen windows
+		//::SetWindowTheme(window_handle, L" ", L" "); // ADD THIS
 	}
 	void ApplicationWindow::addOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		winproc_callback_function_struct d = {message,callbackf};

@@ -5,11 +5,11 @@
 #include "WindowStructs.h"
 namespace Windows{
 	class standard_window{
-	private:
-		HWND *window_handle, *native_window_handle;
+	protected:
+		void makeAppearBetter();
 	public:
-		standard_window(HWND *wHandle, HWND *native_wHandle);
-		
+	
+		HWND window_handle;
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);
 		

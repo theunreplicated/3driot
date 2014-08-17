@@ -2,16 +2,9 @@
 #include <functional>
 #include <Windows.h>
 namespace Windows{
-	void Window::makeAppearBetter(){
-		NONCLIENTMETRICS ncm;//http://stackoverflow.com/questions/3323541/how-can-i-make-the-win32-api-window-more-modern-looking
-		ncm.cbSize = sizeof(NONCLIENTMETRICS);
-		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
-		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
-		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 
-	}
 	//template <typename T_wn_types>
-	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent) :standard_window(&window_handle, &window_parent){
+	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent)/* :standard_window(&window_handle, &window_parent)*/{
 
 		m_ApplicationWindow = aw;
 		window_handle = CreateWindowEx(dwExStyle,
@@ -20,7 +13,7 @@ namespace Windows{
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
-			(window_parent==NULL ? aw->native_window_handle:window_parent),
+			(window_parent==NULL ? aw->window_handle:window_parent),
 			NULL,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
@@ -28,7 +21,7 @@ namespace Windows{
 
 	}
 	//function param inheritance hätte ich hier gerne,und besserer Compiler-support dabei ohne das <LPCSTR> jedes mal zu schreiben
-	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent) :standard_window(&window_handle, &window_parent){
+	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent) /*:standard_window(&window_handle, &window_parent)*/{
 
 		m_ApplicationWindow = aw;
 		window_handle = CreateWindowExW(dwExStyle,
@@ -37,7 +30,7 @@ namespace Windows{
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
-			(window_parent == NULL ? aw->native_window_handle : window_parent),
+			(window_parent == NULL ? aw->window_handle : window_parent),
 			NULL,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
@@ -61,8 +54,9 @@ namespace Windows{
 
 	}
 	WindowRect Window::Position_get(){//funzt in ApplicationWindow net,ich weiß aber warum//@TODO:dabei anderes window parent als applicationwindow+evtl. subcalssing ermöglichen von messageloop für vllt. scrolling(functionx.com? )
+		//so könnte es auch gehen: http://stackoverflow.com/questions/18034975/how-do-i-find-position-of-a-win32-control-window-relative-to-its-parent-window
 		RECT rCtlWin;                   // Koordinaten des Controls
-
+		//@TODO:anderes parent als applicationwindow erlauben
 		POINT p0;
 
 		GetWindowRect(window_handle, &rCtlWin);  // Koordinaten relativ zum Parent Window und nicht zum
@@ -78,7 +72,7 @@ namespace Windows{
 		p0.x = 0;
 		p0.y = 0;                         // Ursprung der Dialog-Client area ...
 
-		ClientToScreen(m_ApplicationWindow->native_window_handle, &p0);    // ... in Screenkoordinaten wandeln (Dialog-Handle verwenden)
+		ClientToScreen(m_ApplicationWindow->window_handle, &p0);    // ... in Screenkoordinaten wandeln (Dialog-Handle verwenden)
 
 		// --> p0.x = Breite der linken Border in Pixel
 
