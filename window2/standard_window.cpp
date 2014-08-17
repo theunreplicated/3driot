@@ -7,7 +7,7 @@ namespace Windows{
 		//window_handle = wHandle;
 		//native_window_handle = native_wHandle;
 //	}
-	void standard_window::makeAppearBetter(){
+	void standard_window::makeAppearBetter(){//schlechter name
 		NONCLIENTMETRICS ncm;//http://stackoverflow.com/questions/3323541/how-can-i-make-the-win32-api-window-more-modern-looking
 		ncm.cbSize = sizeof(NONCLIENTMETRICS);
 		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
