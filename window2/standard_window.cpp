@@ -22,7 +22,9 @@ namespace Windows{
 
 		int text_length = ::GetWindowTextLengthA(*window_handle);
 
-		char*buffer = new char[text_length/sizeof(char)/*sizeif char müsste 1 sein,durch(fall(oder freier Fall??)) müsste so auch stimmen*/];
+		//char*buffer = new char[text_length*sizeof(char)/*sizeif char müsste 1 sein,durch(fall(oder freier Fall??)) müsste so auch stimmen*/];
+		char*buffer = static_cast<char*>(malloc(text_length));
+		if (!buffer){ throw std::runtime_error("Out of memoey-malloc failed"); }
 		//http://programmersheaven.com/discussion/114501/what-s-the-real-size-of-char
 		::GetWindowText(*window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
 		return buffer;

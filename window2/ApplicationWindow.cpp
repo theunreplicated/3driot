@@ -50,7 +50,7 @@ namespace Windows{
 		// return 0;
 		switch (message)
 		{
-
+		
 		case WM_CREATE:
 
 			return 0;
@@ -81,8 +81,8 @@ namespace Windows{
 			{
 
 			case VK_ESCAPE:
-				::MessageBoxA(NULL,"fd","fd",MB_OK);
-				PostQuitMessage(0);
+				//::MessageBoxA(NULL,"fd","fd",MB_OK);
+				//PostQuitMessage(0);
 				return 0;
 
 			}

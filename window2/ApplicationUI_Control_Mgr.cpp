@@ -15,6 +15,16 @@ Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
 Windows::Window* ApplicationUI_Control_Mgr::objects_list;
 Windows::Window* ApplicationUI_Control_Mgr::open_file_btn;
 Windows::Window* ApplicationUI_Control_Mgr::save_threed_objects;
+LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
+	//@TODO:bei lbuttondown koordinaten(natürlich relativ zu dem Feld) hier,dann von diesem Punkt den entsprechenden OpenglGL-Pixel ausrechen,diesen einen dann glreadpixel übergeben,dass die depth werte ausliest,und da ich es so machen will,dass über den depth wert die id-des objekts gespeicert wird(textur) könnte man das obj so wählen//@TODO:verbesssertes subclassing
+	switch (message){//@TODO:dann aufpassen,ob die kkoirdnaten gena
+		//@TODO:vllt .was anderes als lbtndown
+	case WM_LBUTTONDOWN:return MessageBoxA(NULL,"fdfd","fddfs",MB_OK);
+	default:
+		return DefWindowProc(hWnd,message,wParam,lParam);
+	}
+	//@TODO:org proc aufrufen
+}
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
 	m_width = width;
@@ -24,8 +34,10 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	edit_startpoint_h = 30;
 
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
+	SetWindowLongPtr(static_draw_field->window_handle,
+		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
 	//objects_list = new Windows::Window({ "STATIC", "" }, { 350, 650, 610, 100 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE);
-	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE);
+	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL);
 	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
 		//GWLP_WNDPROC, (LONG_PTR)WndProcedure);

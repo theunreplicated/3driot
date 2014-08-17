@@ -27,6 +27,7 @@
 #include "GLStructs.h"
 #include <stdio.h>
 #include "APIs\OS\Win\UI_Controls\List_View.h"
+#include "APIs\OS\Win\UI_Controls\Menu.h"
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
 #endif
@@ -99,11 +100,19 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 	::SetFocus(default_focus);
 	
+	/*LPNMLVCUSTOMDRAW lpnmCustomdraw;
+	NMCUSTOMDRAW nd;
+	nd.dwItemSpec = clicked_item_number;
+	//nd.lItemlParam=
+	
+	lpnmCustomdraw->nmcd = nd;
+	::SendMessage(hWnd, WM_NOTIFY, wParam, (LPARAM)lpnmCustomdraw);*/
 	}
+//UNprojection vllt. so :in jedes Depth_Fragment wird eine eindeutige ID geschrieben,mouse-picking erst als letzten Draw-Schritt,dann checken bei welcher ID=>Objekt hersausfinden
 void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	Windows::Dialogs::File_Dialog dccs;
 	LPWSTR dcc = dccs.OpenFileName(L"C:\\");
-
+	
 	if (*dcc != *L""){///bei Abbruch==L""
 		//open
 
@@ -159,7 +168,11 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
+	
+}
+void ui_close_window(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
+	::PostQuitMessage(0);
 }
 void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	::MessageBoxA(NULL,"fds","dfd",MB_ICONASTERISK);
@@ -200,7 +213,7 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	case VK_NUMPAD8:translatemat = glm::translate(translatemat, glm::vec3(0.0f, 1.0f, 0.0f)); break;
 	
 	default:
-		break;
+		return;
 	}
 	scalemat_s[current_obj_selection->index] = scalemat;
 	rotmat_s[current_obj_selection->index] = rotmat;
@@ -281,8 +294,12 @@ LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 
 	//return CallNextHookEx(mouse_hook, code, wParam, lParam);
 	return NULL;
-}*/
+	}*//*
+void dv(char dc[]){
+	size_t size = sizeof(dc);
 
+}char dc[] = { 'D', 'E', 'F', 'G', 'H', 'I' };
+dv(dc);*/
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
@@ -314,16 +331,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//aw->Position_set({1920,1080});
 	
 	InitCommonControls(); // Force the common controls DLL to be loaded.
-	HWND list;
+	Menu * m = new Menu(aw);
+	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
+	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
+	for (int i = 0; i < 75; i++){
+		p1->add_Menu_Item(new Menu_Item("Schließen", ui_close_window));
+	}
+m->showMenu();
+
+
+
 	//http://stackoverflow.com/questions/13979371/win32-api-listview-creation-c
 	int lwidth = 200; int lheight = 200;
 	
 
 	Windows::Window*w = new Windows::Window({ WC_LISTVIEWW, NULL }, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, aw, NULL);
-	list = w->window_handle;
 	w->on(LISTVIEW_SELECT,listview_handle_click);
 	lv = new List_View(w);
-	lv->columns->add("verkacktes Objeccckkt");
+	//lv->columns->add("verkacktes Objeccckkt");
+	lv->columns->add("---");
 	lv->items->add("Hallo,kann ich behilflich sein??");
 
 	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);

@@ -193,7 +193,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 	pp.tex_coords = obj->tex_coords;
 	pp.texture_data = obj->texture_data;
 	pp.has_texture =obj->has_texture;
-	
+	pp.enable_matrix = true;//einfach auf true setzen@TODO:so nicht
 	//if (pass_matrix == 0){
 		//pass_matrix = new float[16];
 		
