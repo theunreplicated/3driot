@@ -1,6 +1,5 @@
 #include "ApplicationUI_Control_Mgr.h"
-
-
+#include "APIs\OS\Win\UI_Controls\CheckBox.h"
 int ApplicationUI_Control_Mgr::m_width;
 int ApplicationUI_Control_Mgr::m_height;
 int ApplicationUI_Control_Mgr::editheight;
@@ -15,15 +14,29 @@ Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
 Windows::Window* ApplicationUI_Control_Mgr::objects_list;
 Windows::Window* ApplicationUI_Control_Mgr::open_file_btn;
 Windows::Window* ApplicationUI_Control_Mgr::save_threed_objects;
+
+ui_mouse_pos_callback_type ui_mouse_pos_callback;
+//updatewindow?
 LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	//@TODO:bei lbuttondown koordinaten(natürlich relativ zu dem Feld) hier,dann von diesem Punkt den entsprechenden OpenglGL-Pixel ausrechen,diesen einen dann glreadpixel übergeben,dass die depth werte ausliest,und da ich es so machen will,dass über den depth wert die id-des objekts gespeicert wird(textur) könnte man das obj so wählen//@TODO:verbesssertes subclassing
 	switch (message){//@TODO:dann aufpassen,ob die kkoirdnaten gena
 		//@TODO:vllt .was anderes als lbtndown
-	case WM_LBUTTONDOWN:return MessageBoxA(NULL,"fdfd","fddfs",MB_OK);
+	case WM_LBUTTONDOWN:{
+		DWORD mousepos=::GetMessagePos();
+		POINTS p = MAKEPOINTS(mousepos);
+		
+		LPPOINT pr= new tagPOINT; pr->x = p.x; pr->y = p.y;//die end-position sind nicht so genau,ist aber jetzt zuerst mal egal,und zwar so die angebegenen daten -5
+		::ScreenToClient(hWnd,pr);
+		std::string mouse_pos = std::to_string((*pr).x) + "-" + std::to_string((*pr).y); ui_mouse_pos_callback(pr->x,pr->y);
+		return true/*MessageBoxA(NULL, mouse_pos.c_str(), "fddfs", MB_OK);*/; }
+		break;
 	default:
 		return DefWindowProc(hWnd,message,wParam,lParam);
 	}
 	//@TODO:org proc aufrufen
+}
+void oncheck(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	::MessageBoxA(NULL,"dd","ddd",MB_OK);
 }
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
@@ -32,11 +45,16 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	editheight = 20;
 	padding = editheight + 20;
 	edit_startpoint_h = 30;
-
+	//@das wäre am besten einheitliche variablenname für gleiche typen übers ganze projekt(auch beachtung von member)
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
 	SetWindowLongPtr(static_draw_field->window_handle,
 		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
-	//objects_list = new Windows::Window({ "STATIC", "" }, { 350, 650, 610, 100 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE);
+	CheckBox*cb = new CheckBox("text", {20,20,710,150},ApplicationWindow);
+	cb->check();
+
+	
+	//::SetFocus(wnd);
+	//cb->window->on({ cb->EVENT_IS_CHECKED, WM_COMMAND, true },oncheck);
 	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL);
 	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
@@ -44,6 +62,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	//Windows::Window *btn = new Windows::Window({ "BUTTON", "hi" }, { 300, 500, 0, 0 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE,f->window_handle);
 	
 }
+void ApplicationUI_Control_Mgr::set_mouse_pos_callback(ui_mouse_pos_callback_type uim){ ui_mouse_pos_callback = uim; }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
 	//addEditControls();

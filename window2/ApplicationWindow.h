@@ -19,7 +19,10 @@ namespace Windows{
 		std::vector<winproc_addittional_callbackf_input_data_extended>window_handles;
 		UINT message;//on invoke
 	};
-	
+	struct wndclass_style_data{
+		HBRUSH background_brush;
+
+	};
 
 	
 	class ApplicationWindow:public standard_window{
@@ -28,7 +31,7 @@ namespace Windows{
 		
 	public:
 		HINSTANCE m_hInstance;
-		ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc=NULL);
+		ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc = WndProc, wndclass_style_data additonal_style_data= {reinterpret_cast<HBRUSH>(COLOR_WINDOW)});
 		//HWND native_window_handle;
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void addOnMessageInvoke(UINT message, winproc_callback_function callbackf);

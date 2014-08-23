@@ -32,6 +32,8 @@ public:
 	void setCameraMatrix(glm::mat4 matrix);
 	void setCameraTransformMatrix(glm::mat4 matrix);
 	void setProjectionMatrix(glm::mat4 matrix);
+	template <typename T_Gl_typ>
+	T_Gl_typ * get_pixels_at_position(int pos_x, int pos_y, GLenum format,GLenum type, int width = 1, int height = 1);/*@TODO:template für typ*/
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
@@ -48,7 +50,7 @@ private:
 	//void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
-	GLuint loc_Position;
+	GLuint loc_Position, ID_framebuffer;
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
 	void fillBuffer(T_DRAW_STRUCTURE& pc);
 	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
@@ -312,6 +314,38 @@ float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 	(abstaende[1] < smallest_value_x_y) ? smallest_value_x_y = abstaende[1] : 0;
 	return desired_range/smallest_value_x_y;
 }
+char * getErrorType(GLenum errorno){
+	switch (errno)
+	{
+	case GL_NO_ERROR:return "no error";
+	case GL_INVALID_ENUM:return "invalid enum";
+	case GL_INVALID_VALUE: return "invalid value";
+	case GL_INVALID_OPERATION:return "invalid operation";
+	case GL_OUT_OF_MEMORY:return "out of memory";
+	default:
+		return "unknown error";
+	}
+
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+template <typename T_Gl_typ>
+T_Gl_typ  * GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::get_pixels_at_position(int pos_x, int pos_y, GLenum format, GLenum type, int width, int height){
+	//bei jedem swapbuffers wird der Inhalt des aktuellen buffers geleert,daher greift glreadpixels auf nichts zu ,Lösung:vorher abspeichern
+	//@TODO: http://lektiondestages.blogspot.de/2013/01/reading-opengl-backbuffer-to-system.html
+	//http://stackoverflow.com/questions/6789655/glreadpixels-fails-to-fill-bytebuffer
+	//http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
+	//http://www.swiftless.com/tutorials/opengl/framebuffer.html
+	//http://www.songho.ca/opengl/gl_pbo.html
+	//http://books.google.de/books?id=odgdAAAAQBAJ&pg=PA429&lpg=PA429&dq=opengl+framebuffer+glreadpixels&source=bl&ots=waKxG_dWK9&sig=K0NtcYoDSojX3HtEcnHR9ep_Eck&hl=de&sa=X&ei=0rj3U9-EJ8vaaJjkgfAL&ved=0CC0Q6AEwAjgK#v=onepage&q=opengl%20framebuffer%20glreadpixels&f=false
+	//http://en.wikibooks.org/wiki/OpenGL_Programming/Object_selection
+	//http://www.opengl.org/wiki/Framebuffer_Object_Examples#glReadPixels
+	//PBO wurden erst in GLES 3.0 hinzugefügt !!!!!,aber bin nichts ischer ob das gebrauch twird
+//http://stackoverflow.com/questions/18782351/opengl-es2-0-glreadpixels-read-data-from-renderbuffer-through-framebuffer
+	const GLenum component = 4;
+	T_Gl_typ * pixels = new T_Gl_typ[4 * width*height];
+	glReadPixels(pos_x, pos_y, width, height, format, format, pixels); char*err = getErrorType(glGetError());
+	return pixels;
+}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::loadTexture(T_DRAW_STRUCTURE*mesh_data){
 	GLuint textureID;
@@ -401,6 +435,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
 	}
 
 }
+
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::initGL(){
 	GLuint VertexArrayID;
@@ -436,7 +471,7 @@ float g_vertices_rectangle_data[] = {
 	//draw_elements[0].matrix = m->get_as_float16();
 	
 	/*programId = */
-	glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_LEQUAL);//@TODO:gucken ob ich das vllt. doch besser nicht auskommentiere
 	glDepthMask(GL_TRUE);
 	glDepthRangef(0.0, 1.0);
 	glEnable(GL_CULL_FACE);
@@ -472,6 +507,7 @@ float g_vertices_rectangle_data[] = {
 
 }
 
+
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::render(){
 	
@@ -479,6 +515,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
 	//@note normalerweise vorher gluseprogram,ein program müsste im moment reichen,da kein Wechsel,auch net brnötig
 	//Hinweis:programID wird nicht geändert(opengl global), da zur Zeit keine Shaderwechsel=>Programwechsel stattfinden(typischerweise:Shader werden vorher schon vorbereitet,dann nur noch angewandt,gab mal ne Präsentation dazu von valva0>modern opengl-ständige shader-wechsel statt z.b . dauernde ifs in shadern)
+	
 #ifndef UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 #else
@@ -555,12 +592,13 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 	glDisableVertexAttribArray(loc_Position);
 	glDisableVertexAttribArray(texcoord_position);
-
+	
 	swapBuffers();
 
 };
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::swapBuffers(){
+	
 	(swap_buffers_func_class->*swapBuffersFunc)();
 
 }

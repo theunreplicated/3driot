@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
+#include "APIs\OS\Win\UI_Controls\TrackBar.h"
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
 #endif
@@ -230,10 +231,23 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 	glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
 }
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	switch (message)
 	{
+	case WM_COMMAND:
+	{
+		BOOL checked = IsDlgButtonChecked(hWnd, 1);
+		if (checked) {
+			CheckDlgButton(hWnd, 1, BST_UNCHECKED);
 
+		}
+		else {
+			CheckDlgButton(hWnd, 1, BST_CHECKED);
+
+		}
+		break;
+	}
 	case WM_CREATE:
 
 		return 0;
@@ -272,6 +286,14 @@ DWORD WINAPI threadFunc(LPVOID lpParam){
 	fs.close();
 	return 0;
 }
+void on_opengl_click_moue_pos(int x, int y){
+
+	auto *p=glmain->get_pixels_at_position<GLfloat>(x, y, GL_DEPTH_COMPONENT,GL_RED);
+	auto d1 = p[0];
+	auto d2 = p[1];
+	auto d3 = p[2];
+	auto d4 = p[3];
+}
 SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 SysUtils_Load_Library *dll_glesv2 = new SysUtils_Load_Library("libGLESv2.dll");
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
@@ -309,10 +331,29 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
-	//new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
-	//SetWindowLongPtr(w2,
-		//GWLP_WNDPROC, (LONG_PTR)WndProc);
+	//ApplicationWindow*aw2 = new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
+	//
+/*	MSG  msg;
+	WNDCLASS wc = { 0 };
+	wc.lpszClassName = TEXT("Check Box");
+	wc.hInstance = hInstance;
+	wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+	wc.lpfnWndProc = WndProc;
+	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	char *title = TEXT("Check Box");
 
+	RegisterClass(&wc);
+	HWND wnd2 = CreateWindow(wc.lpszClassName, title,
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+		150, 150, 830, 350, 0, 0, hInstance, 0);
+		
+	HWND wnd = CreateWindowA(TEXT("button"), TEXT("Show Title"),
+		WS_VISIBLE | WS_CHILD | BS_CHECKBOX,
+		710, 150, 200, 200,
+		wnd2, (HMENU)1, NULL, NULL);
+	CheckDlgButton(wnd2, 1, BST_CHECKED);
+	*/
+	//HWND hCtrl0_0 = CreateWindowEx(0, WC_BUTTON, ("Check"), WS_VISIBLE | WS_CHILD | WS_TABSTOP | BS_AUTOCHECKBOX, 125, 111, 149, 37, aw->window_handle, (HMENU)0, hInstance, 0);
 	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
 	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
 	//aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
@@ -322,8 +363,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	default_focus = ::GetFocus();
 	aw->addOnMessageInvoke(WM_KEYDOWN, keydown);
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
-
-	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true /*default=false*/};
+	TrackBar* tb = new TrackBar("hallo", { 200, 200, 610, 370 }, aw, { 4, 6 }, {4,5});
+	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
 
 	//wbtn->on(BTN_CLICK,onclick);
@@ -362,6 +403,7 @@ m->showMenu();
 	//uicontrol->addButtons(BTN_CLICK);
 	uicontrol->open_file_btn->on(BTN_CLICK, action_dialog_onclick);
 	uicontrol->save_threed_objects->on(BTN_CLICK, action_save_state);
+	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
@@ -373,19 +415,19 @@ m->showMenu();
 	
 
 	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx,true);
-	//glm->setViewPort(uicontrol->static_draw_field->Position_get()/*wohl so nicht richtig*/);
+	//glm->setViewPort(uicontrol->static_draw_field->Position_get());//wohl so nicht richtig
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
-	RECT pos = uicontrol->static_draw_field->Rect_get();
+	RECT pos = uicontrol->static_draw_field->ClientRect_get();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
 	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
-	glmain->setViewPort({ pos.bottom, uicontrol->static_draw_field->Position_get().height, 0, 0 });
+	glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
 	//using Windows::Dialogs::File_Dialog;
 	glmain->initGL();
-	/*Windows::Dialogs::File_Dialog*dc*/
+	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
 	
-	Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
-	float aspectRatio = float(re.width) / float(re.height);//@TODO:mit Rect
+	//Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
+	float aspectRatio = float(/*re.width*/pos.right) / float(/*re.height*/pos.bottom);//@TODO:mit Rect
 
 	//glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
@@ -412,8 +454,9 @@ m->showMenu();
 	
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
-	MSG Msg;
-	//while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
+	//MSG Msg;
+	//
+	//*///while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
 	
 		//glmain->setCameraTransformMatrix(transformmat);
 		//glm::mat4 camera_matrix = camera_mat*transformmat;

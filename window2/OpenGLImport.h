@@ -80,9 +80,10 @@ namespace OGL{
 	typedef void(GR_GL_FUNCTION_TYPE*SD_GL_DepthRangefProc)(GLclampf zNear, GLclampf zFar);
 	SD_GL_DepthRangefProc glDepthRangef;
 	IMPORT_GL_DECLARE(DepthMask);
-	
-	
-
+	IMPORT_GL_DECLARE(ReadPixels);
+	IMPORT_GL_DECLARE(GetError);
+	IMPORT_GL_DECLARE(BindFramebuffer);
+	IMPORT_GL_DECLARE(GenFramebuffers);
 }
 
 namespace OGL{
@@ -116,8 +117,25 @@ namespace OGL{
 	GLenum GL_DEPTH_BUFFER_BIT=0x00000100;
 	GLenum GL_COLOR_BUFFER_BIT=0x00004000;
 	GLenum GL_BGR = 0x80E0;
-	GLenum  GL_BGRA=0x80E1;
+	GLenum GL_BGRA=0x80E1;
 	GLenum GL_LEQUAL=0x0203;
+	GLenum GL_DEPTH_COMPONENT=0x1902;
+	GLenum GL_DEPTH_COMPONENT16 = 0x81A5;
+	GLenum GL_BYTE =0x1400;
+	GLenum GL_RED_BITS=0x0D52;
+	GLenum GL_GREEN_BITS=0x0D53;
+	GLenum GL_BLUE_BITS=0x0D54;
+	GLenum GL_STENCIL_INDEX8=0x8D48;
+	GLenum GL_RGBA4=0x8056;
+	GLenum GL_RED = 0x1903;//nicht in gles 2.0
+
+	//errors
+	const GLenum GL_NO_ERROR = 0;
+	const GLenum GL_INVALID_ENUM=0x0500;
+	const GLenum GL_INVALID_VALUE=0x0501;
+	const GLenum GL_INVALID_OPERATION=0x0502;
+	const GLenum GL_OUT_OF_MEMORY = 0x0505;
+	const GLenum GL_FRAMEBUFFER = 0x8D40;
 }
 class OpenGLImport{
 
@@ -193,7 +211,11 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL(glClearDepthf, SD_GL_ClearDepthfProc);
 	IMPORT_GL(glDepthRangef, SD_GL_DepthRangefProc);
 	IMPORT_GL_FUNC(DepthMask);
+	IMPORT_GL_FUNC(ReadPixels);
+	IMPORT_GL_FUNC(GetError);
 
+	IMPORT_GL_FUNC(BindFramebuffer);
+	IMPORT_GL_FUNC(GenFramebuffers);
 	//if (import("glDrawElements")){ OutputDebugString("----"); }
 	//else{
 		//OutputDebugString("!!!");

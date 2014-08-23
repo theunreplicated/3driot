@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 //using std::vector;
+typedef void(*ui_mouse_pos_callback_type)(int, int);
 struct TripleEditWindow{
 	Windows::Window* x,* y,* z;
 
@@ -22,6 +23,7 @@ public:
 	static Windows::Window* objects_list;
 	static Windows::Window* open_file_btn;
 	static Windows::Window*save_threed_objects;
+	void set_mouse_pos_callback(ui_mouse_pos_callback_type uim);
 	//static void add_objects_list_child_btn(Windows::Window );
 private:
 	

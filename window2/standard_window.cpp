@@ -14,6 +14,11 @@ namespace Windows{
 		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
 		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 
+	}//@TODO:get clientrect
+	RECT standard_window::ClientRect_get(){
+		RECT rect;
+		::GetClientRect(window_handle, &rect);
+		return rect;
 	}
 	RECT  standard_window::Rect_get(){//vll.t entfernen//@deprecated
 		::RECT rect;

@@ -14,8 +14,8 @@ namespace Windows{
 		void ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam);
 		//Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL);
 		//template <typename T_wn_types>
-		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);//als extra parameter gehts net;-)
-		Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL);
+		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL,HMENU menu_id=NULL);//als extra parameter gehts net;-)
+		Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, HWND window_parent = NULL, HMENU menu_id=NULL);
 		
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		WindowRect Position_get();

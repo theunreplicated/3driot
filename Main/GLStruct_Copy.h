@@ -1,5 +1,6 @@
 #ifndef INC_GL_STRUCT_COPY_H
 #define INC_GL_STRUCT_COPY_H
+#include <glm/mat4x4.hpp>
 //#include "../window2/ImageLoader.h"
 struct Interals_do_not_touch{
 	unsigned int vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
@@ -24,7 +25,7 @@ struct THREEDObject :RenderStructBase, Interals_do_not_touch{
 	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize, indices_totalsize, texcoords_totalsize;
-	float* matrix;
+	glm::mat4 matrix;
 	bool enable_matrix = false;
 };
 #endif

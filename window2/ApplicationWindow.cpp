@@ -51,7 +51,15 @@ namespace Windows{
 		// return 0;
 		switch (message)
 		{
-		
+		case WM_COMMAND:{
+			if (::IsDlgButtonChecked(hWnd, 1)) {
+				CheckDlgButton(hWnd, 1, BST_UNCHECKED);
+
+			}
+			else {
+				CheckDlgButton(hWnd, 1, BST_CHECKED);
+
+			}}; break;
 		case WM_CREATE:
 
 			return 0;
@@ -97,24 +105,19 @@ namespace Windows{
 
 
 	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
-	ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle,WNDPROC proc)/*:standard_window(window_handle,window_handle)*/{
+	 ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc,wndclass_style_data additonal_style_data)/*:standard_window(window_handle,window_handle)*/{
 		WNDCLASS wc;
 		m_hInstance= hInstance;
 		wc.style = CS_OWNDC;
-		if (proc != NULL){
-			wc.lpfnWndProc = proc;
-		}
-		else{
-			wc.lpfnWndProc = WndProc;
-		}
-		//(proc != NULL ? wc.lpfnWndProc = proc : wc.lpfnWndProc = WndProc);
+		wc.lpfnWndProc = proc;
+
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = hInstance;
 		wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);//einfach IDC_* ändern
 	//	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;//win-api.de
+		wc.hbrBackground =additonal_style_data.background_brush;//win-api.de
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = names.lpClassName;
 		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
@@ -125,7 +128,7 @@ namespace Windows{
 			rect.x, rect.y, rect.width, rect.height,
 			NULL, NULL, hInstance, NULL);
 		//makeAppearBetter(); bringt wohl nichts bei solchen windows
-		//::SetWindowTheme(window_handle, L" ", L" "); // ADD THIS
+		//::SetWindowTheme(window_handle, L" ", L" ");
 	}
 	void ApplicationWindow::addOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		winproc_callback_function_struct d = {message,callbackf};

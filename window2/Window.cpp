@@ -4,24 +4,24 @@
 namespace Windows{
 
 	//template <typename T_wn_types>
-	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent)/* :standard_window(&window_handle, &window_parent)*/{
+	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent,HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
 
 		m_ApplicationWindow = aw;
-		window_handle = CreateWindowEx(dwExStyle,
+		window_handle = CreateWindowExA(dwExStyle,
 			names.lpClassName,
 			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
 			(window_parent==NULL ? aw->window_handle:window_parent),
-			NULL,
+			menu_id,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
 		makeAppearBetter();
 
 	}
 	//function param inheritance hätte ich hier gerne,und besserer Compiler-support dabei ohne das <LPCSTR> jedes mal zu schreiben
-	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent) /*:standard_window(&window_handle, &window_parent)*/{
+	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent, HMENU menu_id) /*:standard_window(&window_handle, &window_parent)*/{
 
 		m_ApplicationWindow = aw;
 		window_handle = CreateWindowExW(dwExStyle,
@@ -31,7 +31,7 @@ namespace Windows{
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
 			(window_parent == NULL ? aw->window_handle : window_parent),
-			NULL,
+			menu_id,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
 		makeAppearBetter();

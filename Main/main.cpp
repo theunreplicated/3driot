@@ -4,9 +4,10 @@
 #include "File_Parser.h"
 #include "../window2/OpenGLContext.h"
 #include "../window2/SysUtils_Load_Library.h"
+#include "../window2/ApplicationWindow.cpp"
 #define HIDE_IMG_STRUCT_FROM_MAIN
 #define UNSCHOENER_STIL_BACKGROUND_COLOR_BLACK
-#define USE_GLESV2
+//#define USE_GLESV2
 #include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,7 +22,7 @@
 //#define SCHLECHTER_STIL_KEIN_FULLSCREEN
 #define SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 //jo,ma wissens dass es kein guter Stil ist,is gud
-//#define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
+#define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
 SysUtils_Load_Library *dll_opengl;
 PROC __stdcall getProcAddresswglintf(LPCSTR name){
 
@@ -60,40 +61,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 	RECT window_rect;
 
 };
-HWND create_window(HINSTANCE hInstance){
-	WNDCLASS wc;
-	LPCSTR className = "hey";
-	LPCSTR windowName = "hey";
-	// register window class
-	wc.style = CS_OWNDC;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance =/*NULL*/hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);//einfach IDC_* ändern
-	//	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);//win-api.de
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = className;
-	RegisterClass(&wc);
-
-	//int sz=GetSystemMetrics(SM_CXSIZE);
-	return CreateWindow(
-		className, windowName,
-		NULL,
-		0, 0, 500, 500,
-		NULL, NULL, hInstance, NULL);
-	
-
-}
 
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
-	HWND native_window_handle = create_window(hInstance);
-
+	Windows::ApplicationWindow*aw = new Windows::ApplicationWindow(hInstance, { "hey", "" }, { 500, 500 }, NULL, WndProc, { (HBRUSH)GetStockObject(BLACK_BRUSH) });
+	HWND native_window_handle = aw->window_handle;
 	//http://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar
 	//CHromium source
 #ifndef SCHLECHTER_STIL_KEIN_FULLSCREEN
@@ -102,10 +76,10 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 	if (saved_window_info_.maximized){//brauch man vllt. net immer
 		::SendMessage(native_window_handle, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
-	saved_window_info_.style = GetWindowLongA(native_window_handle, GWL_STYLE);
+	saved_window_info_.style = GetWindowLong(native_window_handle, GWL_STYLE);
 	saved_window_info_.ex_style = GetWindowLong(native_window_handle, GWL_EXSTYLE);
 		GetWindowRect(native_window_handle, &saved_window_info_.window_rect);
-
+		
 #ifndef SCHLECHTER_STIL_FRAMED_WINDOW
 		SetWindowLong(native_window_handle, GWL_STYLE,
 			saved_window_info_.style & ~(WS_CAPTION | WS_THICKFRAME));//entfernt WS_CAPTION+ws_thickframe
@@ -123,7 +97,7 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 			MONITORINFO monitor_info;
 			monitor_info.cbSize = sizeof(monitor_info);
 			GetMonitorInfo(MonitorFromWindow(native_window_handle, MONITOR_DEFAULTTONEAREST),
-				&monitor_info);
+				&monitor_info);//sucht wohl den richtigen Monitor aus,mit dem die APp am meisten(Schnittmenge) zu tun hat
 			
 			My_GFX_Rect window_rect(monitor_info.rcMonitor);
 			SetWindowPos(native_window_handle, NULL, window_rect.x, window_rect.y,
@@ -148,13 +122,16 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 	glm::mat4 dummy_mat = glm::mat4();
 	for (THREEDObject& v : obj){
 		
-		v.matrix = glm::value_ptr(dummy_mat);
+		v.matrix = dummy_mat;
 	}
 
 
-	
-	float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
-	float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
+	RECT current_window_rect;
+	::GetClientRect(native_window_handle, &current_window_rect);
+	//float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
+	//float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
+	float current_resolution_w = current_window_rect.right;//@TODO:width und height von window
+	float current_resolution_h = current_window_rect.bottom;
 #ifndef USE_GLESV2
 	dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");

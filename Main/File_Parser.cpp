@@ -194,7 +194,7 @@ THREEDObject FileParser::handle_object(std::string dat){
 		if (st[0] == "has_indices"){
 			obj.has_indices = (str == "1" ? true : false);
 
-		}
+		}//@TODO:matrix auslesen
 		if (st[0] == "indices_totalsize"){
 			obj.indices_totalsize = atoi(str.c_str());
 
