@@ -29,6 +29,7 @@
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
+#pragma comment(lib,"Shell32.lib")
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
 #endif
@@ -110,6 +111,51 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	::SendMessage(hWnd, WM_NOTIFY, wParam, (LPARAM)lpnmCustomdraw);*/
 	}
 //UNprojection vllt. so :in jedes Depth_Fragment wird eine eindeutige ID geschrieben,mouse-picking erst als letzten Draw-Schritt,dann checken bei welcher ID=>Objekt hersausfinden
+
+void assimp_import_file(const char* path){
+	
+	
+	try{
+	Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(path);
+
+
+	//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
+	//Mesh_RenderObject oo = aiimport->get_render_obj(0);
+
+	//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
+	using glm::mat4; using glm::scale; using glm::vec3;
+	//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
+	//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
+
+	//glm::mat4 finalm = proj_matrix*View*model_matrix;
+	//glm::mat4 finalm = model_matrix;
+	//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
+	//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
+	//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
+	//}
+	if (aiimport->stor_meshes_render.size() > 0){//also nur falls mehr als 0 draw-bare Element(draw-bare das Wort gibts ja gar net,wer hätte das gedacht)
+		int startp = glmain->draw_elements.size();
+		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+		}
+		int endp = glmain->draw_elements.size();
+		startp_endp_list_objs.push_back({ startp, endp, startp_endp_list_objs.size() });
+
+		lv->items->add("Received complex command(contagious).mhhhh.");
+		current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size() - 1];//muss gesetzt werden,da ansonseten fail bei click wg. nullptr check,und es macht auch Sinn so
+		scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
+		glmain->render();
+	}
+
+	}
+	catch (const std::runtime_error& error)
+	{
+		::MessageBox(NULL, TEXT(error.what()), TEXT("Importing Meshes failed"), MB_OK);
+	}
+
+}
+
 void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	Windows::Dialogs::File_Dialog dccs;
 	LPWSTR dcc = dccs.OpenFileName(L"C:\\");
@@ -137,35 +183,7 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		// UTF-8 narrow multibyte encoding
 		//const wchar_t* wstr = L"z\u00df\u6c34\U0001d10b"; // or L"zß水𝄋"
 
-		Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(buffer);
-		//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
-		//Mesh_RenderObject oo = aiimport->get_render_obj(0);
-
-		//float* mmmm = Assimp_Utils::convert_aiMatrix_to_float16(aiimport->ScaleAsset());
-		using glm::mat4; using glm::scale; using glm::vec3;
-		//mat4 scalematrix = scale(mat4(1.0f), vec3(0.5f));
-		//float aspectRatio = uicontrol->static_draw_field->Position_get().width / uicontrol->static_draw_field->Position_get().height;
-
-		//glm::mat4 finalm = proj_matrix*View*model_matrix;
-		//glm::mat4 finalm = model_matrix;
-		//glm->setNumDrawElements(aiimport->stor_meshes_render.size());
-		//for (int i = 0; i < aiimport->stor_meshes_render.size(); i++){
-		//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
-		//}
-		if (aiimport->stor_meshes_render.size() > 0){//also nur falls mehr als 0 draw-bare Element(draw-bare das Wort gibts ja gar net,wer hätte das gedacht)
-			int startp = glmain->draw_elements.size();
-			for (Mesh_RenderObject d : aiimport->stor_meshes_render){
-				//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
-				glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
-			}
-			int endp = glmain->draw_elements.size();
-			startp_endp_list_objs.push_back({ startp, endp, startp_endp_list_objs.size() });
-
-			lv->items->add("Received complex command(contagious).mhhhh.");
-			current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size()-1];//muss gesetzt werden,da ansonseten fail bei click wg. nullptr check,und es macht auch Sinn so
-			scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
-			glmain->render();
-		}
+		assimp_import_file(buffer);
 		//OutputDebugStringA(aiimport->stor_meshes_render[0]->node_name);
 		//int d2 = oo.indices[2]
 	}
@@ -176,14 +194,14 @@ void ui_close_window(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	::PostQuitMessage(0);
 }
 void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	::MessageBoxA(NULL,"fds","dfd",MB_ICONASTERISK);
+	//::MessageBoxA(NULL,"fds","dfd",MB_ICONASTERISK);
 	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
 	std::string data = tosz->serialize(glmain->draw_elements);
 	//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
 	//Thread*t = new Thread(threadFunc,NULL);
 	HMODULE hModule = GetModuleHandleW(NULL);
 	WCHAR path[MAX_PATH];
-	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
+	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da wohl nicht assimp den include path auf desktop setzt ,sondern wohl der file dialog irgendwie?
 	wn = new Win_Utils();
 	std::string paths = wn->getdirpath(path);
 	std::string dingens_ding_path = "\\";
@@ -194,9 +212,15 @@ void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 
 
+	
 void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	//funktionsaufrufe gruppieren wäre bei vector nett,vor allem bei push_back,z.b. sowas[scalemat,translatemat].push_back(glm::mat4)
 	//Das hier mit dem Keydown handling mit matrizen usw. ist alles schlimmer Murks so wie ichs gecodet, habe,daher @TODO:viel besser machen
+	if (current_obj_selection != nullptr){
+		scalemat = scalemat_s[current_obj_selection->index];
+		rotmat = rotmat_s[current_obj_selection->index];
+		translatemat = translatemat_s[current_obj_selection->index];
+	
 	switch (wParam)
 	{
 	//case VK_LEFT:transformmat/*or...*/ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)); break;
@@ -230,6 +254,7 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		}
 	}
 	glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
+	}
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
@@ -304,6 +329,41 @@ PROC __stdcall getProcEGLESProcAddress(LPCSTR name){
 	return dll_glesv2->get_ProcAddress(name);
 	
 }
+
+void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	glmain->render();
+}
+
+void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
+//TEXT wenn möglich verwenden http://www.cplusplus.com/forum/articles/16820/
+	//::MessageBox(NULL,TEXT("text"),TEXT("text2"),MB_COMPOSITE);//@TODO:point herausbekommen,und genau dort hin schieben(aber nur falls innerhalb opengl window(cleint,context??-da kommt man leicht durcheinander bei den Begriffen))@TODO:exra abstraktionsschichten dafür
+	HDROP file_drop = reinterpret_cast<HDROP>(wParam);
+	char file_path[MAX_PATH]; auto file_path_size = sizeof(file_path);
+	UINT num_dropped_elements = ::DragQueryFile(file_drop, 0xFFFFFFFF, NULL, NULL);//auch ordner landen da
+	//danach inspiiert,aber alles selbst geschrieben(kann man da stolz drauf sein??eher nein) http://forums.mydigitallife.info/threads/42527-C-Implementing-Drag-amp-Drop-with-Windows-API
+	//http://winapi.freetechsecrets.com/win32/WIN32Using_the_DragDrop_Feature.htm
+	for (unsigned int i = 0; i < num_dropped_elements; i++){
+		
+		::DragQueryFile(file_drop, i, file_path, file_path_size);
+		DWORD attrib = ::GetFileAttributes(file_path);
+		if (((attrib != FILE_ATTRIBUTE_REPARSE_POINT)&& (attrib != FILE_ATTRIBUTE_DIRECTORY)))
+		{	//symbolic links(Verknüpfungen )könne nicht erkannt werden,hab auch keine ahnung wie ich das so richtig hinkriegen soll,vllt. jre source bei filemode.symlink
+			//@TODO:nachricht bei ordner
+			
+				assimp_import_file(file_path);
+		
+
+
+		
+				
+
+
+
+		}
+
+	}
+
+}
 /*
 LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
 {
@@ -360,8 +420,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//aw->addOnMessageInvoke(WM_COMMAND,oncommand);
 	//aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
 	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
-	default_focus = ::GetFocus();
+	default_focus = ::GetFocus();//@TODO:vllt. was anderes machen als gelicht den Fokus umzukehren,ich denke ,dass KOnzept mit dem Fokus kann ja wohl nicht so sinnlo sein
 	aw->addOnMessageInvoke(WM_KEYDOWN, keydown);
+	::DragAcceptFiles(aw->window_handle,true);
+	aw->addOnMessageInvoke(WM_DROPFILES, ondropfiles);
+
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 	TrackBar* tb = new TrackBar("hallo", { 200, 200, 610, 370 }, aw, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
@@ -420,8 +483,8 @@ m->showMenu();
 	RECT pos = uicontrol->static_draw_field->ClientRect_get();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
 	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
 	glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
-	//using Windows::Dialogs::File_Dialog;
-	glmain->initGL();
+	//using Windows::Dialogs::File_Dialog;//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
+	glmain->initGL();//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
@@ -439,19 +502,25 @@ m->showMenu();
 	glmain->setCameraMatrix(camera_mat);
 	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 
-	glm::mat4 dat = glm::mat4(1.0f);
+	
 
 	//Thread*t = new Thread(threadFunc, NULL);
 	
 	
 	//delete aiimport;
 
-		
+	//glm::mat4 proj_cam_matrix=projection_matrix*camera_mat;
 	
-	
-	
-	glm::mat4 proj_cam_matrix=projection_matrix*camera_mat;
-	
+
+	//http://stackoverflow.com/questions/466354/how-can-i-tell-if-a-window-has-focus-win32-api
+	//aw->addOnMessageInvoke(WM_ACTIVATE, winapi_suitable_glmain_render);
+	//aw->addOnMessageInvoke(WM_SETFOCUS, winapi_suitable_glmain_render);
+	//aw->addOnMessageInvoke(WM_ERASEBKGND, winapi_suitable_glmain_render);WM_CTLCOLORBTN
+	aw->addOnMessageInvoke(WM_PRINTCLIENT, winapi_suitable_glmain_render);//baruch man vllt. nicht//geht immer noch nicht bei drag drop
+	aw->addOnMessageInvoke(WM_PAINT, winapi_suitable_glmain_render);//WM_PAINT scheint wohl zu reichen http://www.cplusplus.com/forum/windows/98867/
+	//aw->addOnMessageInvoke(WM_SHOWWINDOW, winapi_suitable_glmain_render);
+	//glmain->render();
+
 //	glm::mat4 matt = glm::mat4();
 	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
 	//MSG Msg;
@@ -485,5 +554,6 @@ m->showMenu();
 	//}
 	
 	//return Msg.wParam;
+
 	return (new MessageLoop())->GetMessage_Approach();
 }

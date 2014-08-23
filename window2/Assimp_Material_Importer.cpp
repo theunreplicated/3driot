@@ -62,9 +62,20 @@ image_stor Assimp_Material_Importer::process_Material(int material_key){
 		texFound = material->GetTexture(type, texIndex, &path);
 	}
 	std::string real_texture_path = getdirpath(m_model_file_path);
-	std::string assimp_path = std::string(path.C_Str());
-	std::string real_texture_path_final = real_texture_path +"\\"+ assimp_path;
-	return import_texture(path.C_Str());//anstatt real_texture_path.c_str()
+	const char*assimp_path_c = path.C_Str();
+	std::string assimp_path = std::string(assimp_path_c); std::string real_texture_path_final;
+	//if (assimp_path.length() >= 2){
+	if (assimp_path_c[1] == ':'){//@TODO:richtiger check o path relativ ist,das hier geht nur auf den laufwerksbuchstaben
+		//also nicht anhaengen
+		real_texture_path_final = assimp_path;//sinnlos hier mit den casts
+	}
+	else{
+		real_texture_path_final = real_texture_path + "\\" + assimp_path;
+
+	}
+	
+	
+	return import_texture(real_texture_path_final.c_str());//anstatt real_texture_path.c_str()
 
 }
 image_stor Assimp_Material_Importer::import_texture(const char* texture_file_path){

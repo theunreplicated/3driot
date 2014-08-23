@@ -5,6 +5,7 @@
 #include <d3dx9math.h>
 #include "Assimp_Utils.h"
 #pragma comment(lib, "D3dx9.lib")
+
 using std::string;
 Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 	//Assimp::Importer importer; //ändert irgendwie import path
@@ -23,8 +24,8 @@ Assimp_Mesh_Importer::Assimp_Mesh_Importer(const char * file_path){
 		| aiProcess_OptimizeMeshes);
 
 	if (!scene)
-	{
-		throw new std::runtime_error("cannot import scene");
+	{//witzigerweise akzeptiert assimp einige dlls,wie z.b. easyhook32.dll
+		throw std::runtime_error("cannot import scene");
 	}
 	else{
 		material_importer = new Assimp_Material_Importer(scene, const_cast<char *>(file_path));
