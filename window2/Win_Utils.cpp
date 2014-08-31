@@ -32,7 +32,7 @@ std::string Win_Utils::getdirpath(WCHAR *chr){
 }
 WCHAR *Win_Utils::getExePath(){
 	HMODULE hModule = GetModuleHandleW(NULL);
-	WCHAR path[MAX_PATH];
+	WCHAR  *path= new WCHAR[MAX_PATH];
 	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
 	return path;
 }

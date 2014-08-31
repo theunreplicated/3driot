@@ -1,6 +1,6 @@
 #ifndef GL_MAIN_H
 #define GL_MAIN_H
-#include "OpenGLImport.h"
+//#include "OpenGLImport.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -32,17 +32,23 @@ public:
 	void setCameraMatrix(glm::mat4 matrix);
 	void setCameraTransformMatrix(glm::mat4 matrix);
 	void setProjectionMatrix(glm::mat4 matrix);
+	void set_framebuffer_to_position(bool to_offscreen_position=true);
 	template <typename T_Gl_typ>
 	T_Gl_typ * get_pixels_at_position(int pos_x, int pos_y, GLenum format,GLenum type, int width = 1, int height = 1);/*@TODO:template für typ*/
+	void TEST_create_dummy_texture();
+	void TEST_restore_dummy_texture();
 private:
 	//T_swapBuffersFuncType swapBuffers;
 	//void(*swapBuffers)();
 	void swapBuffers();
-	GLuint programId;
+	std::vector<T_DRAW_STRUCTURE> TEST_orig_draw_elements_for_restoring;
+	GLuint programId; GLsizei width, height;
 	//GLuint * vertex_buffer,*indices_buffer,*texcoords_buffer;
 	//GLuint * Diffuse_Texture_IDs;
 	//std::vector<GLuint> vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
-
+	void create_and_bind_framebuffer();
+	void create_color_renderbuffer();
+	void create_depth_renderbuffer();
 	GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
@@ -50,7 +56,7 @@ private:
 	//void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
 	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
-	GLuint loc_Position, ID_framebuffer;
+	GLuint loc_Position, ID_framebuffer, colorRenderbuffer, depthRenderbuffer;
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;
 	void fillBuffer(T_DRAW_STRUCTURE& pc);
 	GLuint loadTexture(T_DRAW_STRUCTURE*mesh_data);
@@ -168,6 +174,7 @@ GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCT
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
 	glViewport(rect.x, rect.y, rect.width, rect.height);
+	width = rect.width; height = rect.height;
 	//glScissor(rect.x,rect.y,rect.width,rect.height);
 	//glEnable(GL_SCISSOR_TEST);//@TODO:Check ob scissor_test oder glscissor,ich denke eher net
 
@@ -217,7 +224,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTUR
  
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass, bool use_legacy_system_opengl){
-
+//	programId = glCreateProgram555();
 
 	programId = glCreateProgram();
 
@@ -314,6 +321,38 @@ float getScaleFactor(array<array<float, 3>, 2> min_max, float desired_range){
 	(abstaende[1] < smallest_value_x_y) ? smallest_value_x_y = abstaende[1] : 0;
 	return desired_range/smallest_value_x_y;
 }
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::set_framebuffer_to_position(bool to_offscreen_position){
+	glBindFramebuffer(GL_FRAMEBUFFER, to_offscreen_position? ID_framebuffer:0);
+
+}
+
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE> 
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::create_and_bind_framebuffer(){
+	//GLuint framebuffer;
+	glGenFramebuffers(1, &ID_framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, ID_framebuffer);
+
+
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::create_color_renderbuffer(){
+	glGenRenderbuffers(1, &colorRenderbuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);//kann sein,dass rgba besser ist
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+
+}
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::create_depth_renderbuffer(){
+	glGenRenderbuffers(1, &depthRenderbuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+
+
+}
 char * getErrorType(GLenum errorno){
 	switch (errno)
 	{
@@ -341,9 +380,10 @@ T_Gl_typ  * GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_
 	//http://www.opengl.org/wiki/Framebuffer_Object_Examples#glReadPixels
 	//PBO wurden erst in GLES 3.0 hinzugefügt !!!!!,aber bin nichts ischer ob das gebrauch twird
 //http://stackoverflow.com/questions/18782351/opengl-es2-0-glreadpixels-read-data-from-renderbuffer-through-framebuffer
+	//https://developer.apple.com/library/ios/documentation/3ddrawing/conceptual/opengles_programmingguide/WorkingwithEAGLContexts/WorkingwithEAGLContexts.html
 	const GLenum component = 4;
 	T_Gl_typ * pixels = new T_Gl_typ[4 * width*height];
-	glReadPixels(pos_x, pos_y, width, height, format, format, pixels); char*err = getErrorType(glGetError());
+	glReadPixels(pos_x, pos_y, width, height, format, type, pixels); char*err = getErrorType(glGetError());
 	return pixels;
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
@@ -402,9 +442,32 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 }
 
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::TEST_restore_dummy_texture(){
+
+	draw_elements = TEST_orig_draw_elements_for_restoring;
+}
+
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::TEST_create_dummy_texture(){
+	unsigned char * texture_bits = new unsigned char[3];
+	int texture_bits_2_id = 0;
+	texture_bits[0] = 255; texture_bits[1] =0; texture_bits[2] =texture_bits_2_id;// texture_bits[3] = 1;
+	T_DRAW_STRUCTURE ppp;
+	ppp.texture_data.bits = texture_bits; ppp.texture_data.format = GL_RGB; ppp.texture_data.width = 1; ppp.texture_data.height = 1;
+	TEST_orig_draw_elements_for_restoring = draw_elements;
+	for (T_DRAW_STRUCTURE& pc : draw_elements)
+	{
+	
+		pc.Diffuse_Texture_IDs = loadTexture(&ppp);
+		
+		texture_bits[2]= ++texture_bits_2_id;
+	}
+}
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference,T_DRAW_STRUCTURE>::fillBuffer(T_DRAW_STRUCTURE& pc){
-
+	
 	glGenBuffers(1, &pc.vertex_buffer);
 	if (pc.indices != NULL){
 		glGenBuffers(1, &pc.indices_buffer);
@@ -504,7 +567,15 @@ float g_vertices_rectangle_data[] = {
 	}
 
 	
-
+	create_and_bind_framebuffer();
+	create_color_renderbuffer();
+	create_depth_renderbuffer();
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		::MessageBox(NULL,"dsa","fd",MB_OK);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
 }
 
 

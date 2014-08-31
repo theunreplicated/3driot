@@ -29,7 +29,7 @@
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
-#pragma comment(lib,"Shell32.lib")
+//#pragma comment(lib,"Shell32.lib")
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
 #endif
@@ -58,7 +58,7 @@ glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
-sp_endp_type * current_obj_selection=nullptr;
+sp_endp_type * current_obj_selection=nullptr;//@TODO:header controls winapi
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -312,8 +312,15 @@ DWORD WINAPI threadFunc(LPVOID lpParam){
 	return 0;
 }
 void on_opengl_click_moue_pos(int x, int y){
-
-	auto *p=glmain->get_pixels_at_position<GLfloat>(x, y, GL_DEPTH_COMPONENT,GL_RED);
+	//glmain->set_framebuffer_to_position(true);
+	glmain->TEST_create_dummy_texture();
+	glmain->render();
+	auto *p = glmain->get_pixels_at_position<GLfloat>(x, y, GL_RGBA, GL_FLOAT);
+/*	glmain->set_framebuffer_to_position(false);
+	glmain->TEST_restore_dummy_texture();
+	glmain->render();
+	*/
+	
 	auto d1 = p[0];
 	auto d2 = p[1];
 	auto d3 = p[2];
@@ -518,6 +525,7 @@ m->showMenu();
 	//aw->addOnMessageInvoke(WM_ERASEBKGND, winapi_suitable_glmain_render);WM_CTLCOLORBTN
 	aw->addOnMessageInvoke(WM_PRINTCLIENT, winapi_suitable_glmain_render);//baruch man vllt. nicht//geht immer noch nicht bei drag drop
 	aw->addOnMessageInvoke(WM_PAINT, winapi_suitable_glmain_render);//WM_PAINT scheint wohl zu reichen http://www.cplusplus.com/forum/windows/98867/
+	//es kann sein,dass ein WM_PAINT auf das opengl feld reicht,da controls gesubcalssed msg könnte hier net ankommen
 	//aw->addOnMessageInvoke(WM_SHOWWINDOW, winapi_suitable_glmain_render);
 	//glmain->render();
 

@@ -1,5 +1,5 @@
 #include "Physics_Input_Data.h"
-/*namespace Physics{
+namespace Physics{
 	Main::Main(){
 		btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 
@@ -19,7 +19,7 @@
 	void Main::createStaticPlaneShape(){
 		btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);//nahe zu unendlich an einer Seite (hier vohl x ,trotz y spezifiziert)
 		btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));/*btMotionState auch x,y,z, -Drehung; wenn hier y 0 dann res=2,da bie bullet die koord. die Mitte von dem Objekt ist*/
-		/*btRigidBody::btRigidBodyConstructionInfo
+		btRigidBody::btRigidBodyConstructionInfo
 			groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 		btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 		dynamicsWorld->addRigidBody(groundRigidBody);
@@ -39,14 +39,14 @@
 		/*if (!is_vehicle){
 
 		*/
-/*
+
 		//btDefaultMotionState* fallMotionState =
 		//	new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-	/*	btDefaultMotionState* fallMotionState = new btDefaultMotionState(mesh_transform);
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(mesh_transform);
 		
 		btVector3 fallInertia(0,0,0);
 		fallShape->calculateLocalInertia(inp.mass, fallInertia);/*bei fallinteria o,0,0 brauch mans wohl nicht ungebdingt(vllt. falsche aussage),aber besser mit,da Widerstand http://stackoverflow.com/questions/16322080/what-does-having-an-inertia-tensor-of-zero-do-in-bullet*/
-		/*btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(inp.mass, fallMotionState, fallShape, fallInertia);
+		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(inp.mass, fallMotionState, fallShape, fallInertia);
 		btRigidBody*fallRigidBody = new btRigidBody(fallRigidBodyCI);
 		//vrb.RigidBody = fallRigidBody;
 		/*}
@@ -58,7 +58,7 @@
 		ph_vehicle->add(fallShape,mesh_transform);
 		fallRigidBody = ph_vehicle->m_pBody;
 		}*/
-		/*fallRigidBodies.push_back(fallRigidBody);
+		fallRigidBodies.push_back(fallRigidBody);
 		dynamicsWorld->addRigidBody(fallRigidBody);
 
 
@@ -103,19 +103,19 @@
 		//mesh->setPremadeAabb(aabbMin,aabbMax);
 		//btTriangleIndexVertexArray*fst=NULL;
 		//return new T(m_indexVertexArrays,true,aabbMin,aabbMax);
-		//return new T(mesh, true);
+		return new T(mesh, true);
 		//int dc = 5;
 		//return &dc;
 
-/*	}
-	void Main::simulate_ActionHandler(float frequency/*z.b. 1/60.0f*//*){
-	/*	dynamicsWorld->stepSimulation(frequency, 10);
+	}
+	void Main::simulate_ActionHandler(float frequency/*z.b. 1/60.0f*/){
+	dynamicsWorld->stepSimulation(frequency, 10);
 
 
 	}
-	btTransform Main::simulate_AfterActionHandler_getTransform(int Mesh_uid){/*http://www.c-plusplus.de/forum/286796-full*/
+	btTransform Main::simulate_AfterActionHandler_getTransform(int Mesh_uid){//http://www.c-plusplus.de/forum/286796-full*/
 
-		/*btTransform trans; btRigidBody*fallRigidBody = fallRigidBodies[Mesh_uid];
+		btTransform trans; btRigidBody*fallRigidBody = fallRigidBodies[Mesh_uid];//uid muss 0 sein
 		//LOG("simulate[");
 		//LOG(Mesh_uid);
 		//LOG(trans.getOrigin().getY()); LOG("]");
@@ -125,4 +125,4 @@
 		//myTransform rettrf = { retpos, retquat };
 		return trans;
 	}
-}*/
+}

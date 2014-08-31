@@ -6,7 +6,7 @@
 //vllt. eigene opengl klassen für buffer,program,...
 namespace OpenGL_Utils{
 	using namespace OGL;
-	GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
+	/*GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
 		//Quelle:irgendwo her,keina Ahnung mehr
 		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 		GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -80,6 +80,7 @@ namespace OpenGL_Utils{
 		glDeleteShader(FragmentShaderID);
 
 		return ProgramID;
-	}
+	}*/
+
 
 };

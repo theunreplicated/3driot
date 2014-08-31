@@ -1,6 +1,7 @@
 #ifndef INC_Open_GL_IMPORT//_H
 #define INC_Open_GL_IMPORT//_H
 #include "ext\skia\GrGLFunctions.h"
+#include <Windows.h>
 #include "OpenGL_Data_Types.h"
 #include <iostream>
 //die Makros hier können nur in dieser Klasse verwendet werden
@@ -56,7 +57,7 @@ namespace OGL{
 	//IMPORT_GL_DECLARE(GenVertexArrays);
 	//IMPORT_GL_DECLARE(BindVertexArray);
 
-
+	
 	IMPORT_GL_DECLARE(GenBuffers);
 	IMPORT_GL_DECLARE(BindBuffer);
 	IMPORT_GL_DECLARE(BufferData);
@@ -84,6 +85,11 @@ namespace OGL{
 	IMPORT_GL_DECLARE(GetError);
 	IMPORT_GL_DECLARE(BindFramebuffer);
 	IMPORT_GL_DECLARE(GenFramebuffers);
+	IMPORT_GL_DECLARE(GenRenderbuffers);
+	IMPORT_GL_DECLARE(BindRenderbuffer);
+	IMPORT_GL_DECLARE(RenderbufferStorage);
+	IMPORT_GL_DECLARE(FramebufferRenderbuffer);
+	IMPORT_GL_DECLARE(CheckFramebufferStatus);
 }
 
 namespace OGL{
@@ -135,7 +141,14 @@ namespace OGL{
 	const GLenum GL_INVALID_VALUE=0x0501;
 	const GLenum GL_INVALID_OPERATION=0x0502;
 	const GLenum GL_OUT_OF_MEMORY = 0x0505;
+
 	const GLenum GL_FRAMEBUFFER = 0x8D40;
+	const GLenum GL_RENDERBUFFER=0x8D41;
+	const GLenum GL_COLOR_ATTACHMENT0=0x8CE0;
+	const GLenum GL_DEPTH_ATTACHMENT=0x8D00;
+	const GLenum GL_RGBA8=0x8058;//@TODO:code damit entferene,da vermutlich nicht teil von gles 2.0
+	const GLenum GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
+
 }
 class OpenGLImport{
 
@@ -143,6 +156,7 @@ public:
 	template <typename T_ogl_import_func, typename T_getprocaddress_ogl_so>
 	OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so importGLES11withExceptions);
 };
+
 template <typename T_ogl_import_func, typename T_getprocaddress_ogl_so>
 OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so importGLES11withExceptions){
 	using namespace OGL;
@@ -207,7 +221,7 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 	IMPORT_GL_FUNC(ActiveTexture);
 	IMPORT_GL_FUNC(Uniform1i);
 
-	IMPORT_GL(glDepthFunc,SD_GL_DepthFuncProc);
+	IMPORT_GL(glDepthFunc, SD_GL_DepthFuncProc);
 	IMPORT_GL(glClearDepthf, SD_GL_ClearDepthfProc);
 	IMPORT_GL(glDepthRangef, SD_GL_DepthRangefProc);
 	IMPORT_GL_FUNC(DepthMask);
@@ -216,10 +230,16 @@ OpenGLImport::OpenGLImport(T_ogl_import_func import, T_getprocaddress_ogl_so imp
 
 	IMPORT_GL_FUNC(BindFramebuffer);
 	IMPORT_GL_FUNC(GenFramebuffers);
+	IMPORT_GL_FUNC(GenRenderbuffers);
+	IMPORT_GL_FUNC(BindRenderbuffer);
+	IMPORT_GL_FUNC(RenderbufferStorage);
+	IMPORT_GL_FUNC(FramebufferRenderbuffer);
+	IMPORT_GL_FUNC(CheckFramebufferStatus);
+	//@TODO:in module machen,dann falss import fail->einzelen module nicht verfügbar
 	//if (import("glDrawElements")){ OutputDebugString("----"); }
 	//else{
-		//OutputDebugString("!!!");
-		//OutputDebugString(GetLastError()); 
+	//OutputDebugString("!!!");
+	//OutputDebugString(GetLastError()); 
 	//}
 	//glClearColor5 = reinterpret_cast<GrGLClearColorProc>(import("glClearColor"));
 	//Hinweis=einige 
