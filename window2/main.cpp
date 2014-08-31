@@ -312,19 +312,21 @@ DWORD WINAPI threadFunc(LPVOID lpParam){
 	return 0;
 }
 void on_opengl_click_moue_pos(int x, int y){
-	//glmain->set_framebuffer_to_position(true);
+	glmain->set_framebuffer_to_position(true);
 	glmain->TEST_create_dummy_texture();
-	glmain->render();
-	auto *p = glmain->get_pixels_at_position<GLfloat>(x, y, GL_RGBA, GL_FLOAT);
-/*	glmain->set_framebuffer_to_position(false);
+	glmain->render(false);
+	auto *p = glmain->get_pixels_at_position<GLubyte>(x, y, GL_RGBA, GL_UNSIGNED_BYTE);
+	
+	glmain->set_framebuffer_to_position(false);
 	glmain->TEST_restore_dummy_texture();
-	glmain->render();
-	*/
+	//glmain->render();//render istwohl net nötig
+	
 	
 	auto d1 = p[0];
 	auto d2 = p[1];
-	auto d3 = p[2];
-	auto d4 = p[3];
+	auto d3 = p[2];//@TODO:gucken warum falsche werte,z.b. 255
+	auto d4 = p[3]; 
+	OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
 }
 SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 SysUtils_Load_Library *dll_glesv2 = new SysUtils_Load_Library("libGLESv2.dll");

@@ -19,7 +19,7 @@ class GLMain{
 public:
 
 	GLMain(/*void(*swapBuffersFunc)(),*/T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference *swapBuffersFuncClass,bool use_legacy_system_opengl);
-	void render();
+	void render(bool swap_the_Buffers=true);
 	//void setNumDrawElements(int count);
 	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
 	void initGL();
@@ -580,7 +580,7 @@ float g_vertices_rectangle_data[] = {
 
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::render(){
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::render(bool swap_the_Buffers){
 	
 	//glCreateShader(GL_VERTEX_SHADER);
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
@@ -663,8 +663,9 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 	glDisableVertexAttribArray(loc_Position);
 	glDisableVertexAttribArray(texcoord_position);
-	
-	swapBuffers();
+	if (swap_the_Buffers){
+		swapBuffers();
+	}
 
 };
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>

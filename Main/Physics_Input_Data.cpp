@@ -60,7 +60,7 @@ namespace Physics{
 		}*/
 		fallRigidBodies.push_back(fallRigidBody);
 		dynamicsWorld->addRigidBody(fallRigidBody);
-
+		//@TODO:fallRigidBody->setUserPointer((void*)i) http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-a-physics-library/
 
 	}
 
