@@ -1,6 +1,6 @@
 #include <Windows.h>
 #include "../window2/MessageLoop.h"
-#include "my_gfx_rect.h"
+
 #include "File_Parser.h"
 #include "../window2/OpenGLContext.h"
 //#include "../window2/SysUtils_Load_Library.h"

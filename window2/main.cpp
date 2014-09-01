@@ -29,6 +29,7 @@
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
+#include "../gyp_workspace2/App_Initialize_Components.h"
 //#pragma comment(lib,"Shell32.lib")
 #ifdef USE_GLESV2
 #include "egl_display_binding.h"
@@ -324,7 +325,7 @@ void on_opengl_click_moue_pos(int x, int y){
 	
 	auto d1 = p[0];
 	auto d2 = p[1];
-	auto d3 = p[2];//@TODO:gucken warum falsche werte,z.b. 255
+	auto d3 = p[2];//@TODO:falsche werte,z.b. 255,weil er den hintergrund erwischt
 	auto d4 = p[3]; 
 	OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
 }
@@ -435,7 +436,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	aw->addOnMessageInvoke(WM_DROPFILES, ondropfiles);
 
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
-	TrackBar* tb = new TrackBar("hallo", { 200, 200, 610, 370 }, aw, { 4, 6 }, {4,5});
+	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, aw, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
 

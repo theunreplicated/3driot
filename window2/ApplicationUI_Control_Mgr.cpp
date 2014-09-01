@@ -1,5 +1,8 @@
 #include "ApplicationUI_Control_Mgr.h"
 #include "APIs\OS\Win\UI_Controls\CheckBox.h"
+#include "APIs\OS\Win\UI_Controls\ComboBox.h"
+#include "APIs\OS\Win\UI_Controls\TreeView.h"
+#include <CommCtrl.h>
 int ApplicationUI_Control_Mgr::m_width;
 int ApplicationUI_Control_Mgr::m_height;
 int ApplicationUI_Control_Mgr::editheight;
@@ -49,9 +52,23 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
 	SetWindowLongPtr(static_draw_field->window_handle,
 		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
+
+
 	CheckBox*cb = new CheckBox("text", {20,20,710,150},ApplicationWindow);
 	cb->check();
 
+
+	Windows::Window* combox = new Windows::Window({ WC_COMBOBOX, "" }, { 200, 200, 750, 300 }, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,ApplicationWindow);
+	HWND hWndComboBox = combox->window_handle;
+	Combo_Box*cb1 = new Combo_Box(&hWndComboBox);
+	cb1->items->add("hallo");
+	cb1->items->add("hallo2");
+
+	Windows::Window* treev = new Windows::Window({ WC_TREEVIEW, "" }, { 200, 200, 750, 500 }, WS_VISIBLE | TVS_EDITLABELS | WS_CHILD | WS_GROUP | WS_TABSTOP | WS_BORDER | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_HASLINES | TVS_SHOWSELALWAYS | TVS_INFOTIP, ApplicationWindow);
+	Tree_View*tv = new Tree_View(treev->window_handle);
+	auto curent_x_factor/*;-)*/ = tv->items->add("anti-aliasing-techniken");
+	auto mlaa=	curent_x_factor->add("morphological-alising");
+	mlaa->add("MLAA"); mlaa->add("SMAA(Subpixel )"); curent_x_factor->add("Multisampling"); curent_x_factor->add("FXAA");
 	
 	//::SetFocus(wnd);
 	//cb->window->on({ cb->EVENT_IS_CHECKED, WM_COMMAND, true },oncheck);
