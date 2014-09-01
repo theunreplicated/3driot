@@ -21,10 +21,15 @@ Windows::Window* ApplicationUI_Control_Mgr::save_threed_objects;
 ui_mouse_pos_callback_type ui_mouse_pos_callback;
 //updatewindow?
 LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
+
 	//@TODO:bei lbuttondown koordinaten(natürlich relativ zu dem Feld) hier,dann von diesem Punkt den entsprechenden OpenglGL-Pixel ausrechen,diesen einen dann glreadpixel übergeben,dass die depth werte ausliest,und da ich es so machen will,dass über den depth wert die id-des objekts gespeicert wird(textur) könnte man das obj so wählen//@TODO:verbesssertes subclassing
 	switch (message){//@TODO:dann aufpassen,ob die kkoirdnaten gena
 		//@TODO:vllt .was anderes als lbtndown
+	/*case WM_KEYDOWN:
+		MessageBox(NULL,"fds","fds",MB_OK);
+		break;*/
 	case WM_LBUTTONDOWN:{
+		//::SetFocus(hWnd);@TODO:setfocus auf das,dann wohl tastatureingaben darauf lenken,aber vemutlich global gewollt,also das andere verhindern vom fokus bekommen
 		DWORD mousepos=::GetMessagePos();
 		POINTS p = MAKEPOINTS(mousepos);
 		
@@ -38,9 +43,7 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	}
 	//@TODO:org proc aufrufen
 }
-void oncheck(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	::MessageBoxA(NULL,"dd","ddd",MB_OK);
-}
+
 ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
 	ApplicationWindow = aw;
 	m_width = width;
@@ -69,7 +72,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	auto curent_x_factor/*;-)*/ = tv->items->add("anti-aliasing-techniken");
 	auto mlaa=	curent_x_factor->add("morphological-alising");
 	mlaa->add("MLAA"); mlaa->add("SMAA(Subpixel )"); curent_x_factor->add("Multisampling"); curent_x_factor->add("FXAA");
-	
+
 	//::SetFocus(wnd);
 	//cb->window->on({ cb->EVENT_IS_CHECKED, WM_COMMAND, true },oncheck);
 	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL);

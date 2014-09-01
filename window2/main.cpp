@@ -45,17 +45,7 @@ HWND default_focus;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 vector<glm::mat4>scalemat_s, rotmat_s, translatemat_s;
 glm::mat4 std_res = glm::mat4(1.0f);
-glm::vec3 camera_add_vector = glm::vec3(0,0,0);
-glm::mat4 get_camera(glm::vec3 add_pos_Vector=glm::vec3(0,0,0)){
-	return glm::lookAt(
-		glm::vec3(4, 3, 3)+add_pos_Vector,
-		glm::vec3(0, 0, 0) + add_pos_Vector,
-		glm::vec3(0, 1, 0)
-		);
-}
 
-glm::mat4 camera_mat = get_camera();
-glm::mat4 projection_matrix;
 GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
@@ -112,7 +102,7 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	::SendMessage(hWnd, WM_NOTIFY, wParam, (LPARAM)lpnmCustomdraw);*/
 	}
 //UNprojection vllt. so :in jedes Depth_Fragment wird eine eindeutige ID geschrieben,mouse-picking erst als letzten Draw-Schritt,dann checken bei welcher ID=>Objekt hersausfinden
-
+//@TODO:focus fix bei listview
 void assimp_import_file(const char* path){
 	
 	
@@ -163,9 +153,6 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	
 	if (*dcc != *L""){///bei Abbruch==L""
 		//open
-
-
-
 		char buffer[MAX_PATH];
 
 		
@@ -199,16 +186,13 @@ void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
 	std::string data = tosz->serialize(glmain->draw_elements);
 	//ShellExecute(NULL,"open","cmd.exe","fsutil file createnew test.txt 52428800",NULL,SW_SHOWDEFAULT);
-	//Thread*t = new Thread(threadFunc,NULL);
-	HMODULE hModule = GetModuleHandleW(NULL);
-	WCHAR path[MAX_PATH];
-	GetModuleFileNameW(hModule, path, MAX_PATH);//path von exe//da wohl nicht assimp den include path auf desktop setzt ,sondern wohl der file dialog irgendwie?
+
 	wn = new Win_Utils();
-	std::string paths = wn->getdirpath(path);
+	std::string paths = wn->getdirpath(wn->getExePath());
 	std::string dingens_ding_path = "\\";
 	std::string finalpath = paths + dingens_ding_path + "scene.shotgun";
 	wn->saveToFile(finalpath.c_str(), data.c_str());
-
+	delete wn;
 }
 
 
@@ -328,16 +312,6 @@ void on_opengl_click_moue_pos(int x, int y){
 	auto d3 = p[2];//@TODO:falsche werte,z.b. 255,weil er den hintergrund erwischt
 	auto d4 = p[3]; 
 	OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
-}
-SysUtils_Load_Library *dll_opengl = new SysUtils_Load_Library("opengl32.dll");
-SysUtils_Load_Library *dll_glesv2 = new SysUtils_Load_Library("libGLESv2.dll");
-PROC __stdcall getProcAddresswglintf(LPCSTR name){
-
-	return dll_opengl->get_ProcAddress(name);
-}
-PROC __stdcall getProcEGLESProcAddress(LPCSTR name){
-	return dll_glesv2->get_ProcAddress(name);
-	
 }
 
 void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -479,15 +453,20 @@ m->showMenu();
 	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
-	sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
+
+
+	/*sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
 
 	//EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(uicontrol->static_draw_field->window_handle), uicontrol->static_draw_field->window_handle);
 	//g_display->createContext();
 	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
 	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
-	
+	glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx,true);
+	*/
 
-	/*GLMain<swapBuffersFunc, OpenGLContext> **/glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx,true);
+	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle);
+
+
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get());//wohl so nicht richtig
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	RECT pos = uicontrol->static_draw_field->ClientRect_get();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
@@ -500,7 +479,7 @@ m->showMenu();
 	
 	
 	//Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
-	float aspectRatio = float(/*re.width*/pos.right) / float(/*re.height*/pos.bottom);//@TODO:mit Rect
+	/*float aspectRatio = float(/*re.width*//*pos.right) / float(/*re.height*//*pos.bottom);//@TODO:mit Rect
 
 	//glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
 	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
@@ -512,7 +491,8 @@ m->showMenu();
 	glmain->setCameraMatrix(camera_mat);
 	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 
-	
+	*/
+	Application::set_std_camera_projection_matrices(glmain,pos.right,pos.bottom);
 
 	//Thread*t = new Thread(threadFunc, NULL);
 	
