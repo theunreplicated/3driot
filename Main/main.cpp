@@ -56,17 +56,17 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 	}
 
 
-	RECT current_window_rect=aw->ClientRect_get();
+	Windows::WindowRect current_window_rect=aw->ClientRect_get();
 	//@TODO:
 	//float current_resolution_w = ::GetSystemMetrics(SM_CXSCREEN);//window breite
 	//float current_resolution_h = ::GetSystemMetrics(SM_CYSCREEN);
-	float current_resolution_w = current_window_rect.right;//@TODO:x und y koord auch auslesen
-	float current_resolution_h = current_window_rect.bottom;
+	float current_resolution_w = current_window_rect.width;//@TODO:x und y koord auch auslesen
+	float current_resolution_h = current_window_rect.height;
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject> *glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(native_window_handle);
 	
 
-
-	glmain->setViewPort({current_resolution_w,current_resolution_h,0,0});//@TODO:vierpoer teste,das hier löschen
+	
+	glmain->setViewPort(current_window_rect);//@TODO:vierpoer teste,das hier löschen
 #ifndef TEST_MODE
 	//@TODO:das hier entfernen
 	std::vector<THREEDObject> obj_c;//nicht objective-c

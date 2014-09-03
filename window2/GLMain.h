@@ -351,7 +351,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
 
-
+	//kann sein,dass nicht nötig
 }
 char * getErrorType(GLenum errorno){
 	switch (errno)

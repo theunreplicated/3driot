@@ -14,8 +14,14 @@ namespace Windows{
 		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
 		::SendMessage(window_handle, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 
-	}//@TODO:get clientrect
-	RECT standard_window::ClientRect_get(){
+	}
+	WindowRect standard_window::ClientRect_get(){
+		RECT rect = ClientRect_get_();
+		int width = std::abs(rect.right - rect.left);
+		int height = std::abs(rect.bottom - rect.top);
+		return{width,height,rect.left,rect.top};
+	}
+	RECT standard_window::ClientRect_get_(){
 		RECT rect;
 		::GetClientRect(window_handle, &rect);
 		return rect;
@@ -27,9 +33,11 @@ namespace Windows{
 	}
 	
 	int standard_window::Position_set(WindowRect rect, bool repaint){
-		return ::MoveWindow(window_handle, rect.x, rect.y, rect.width, rect.height, repaint);
-
-	}
+		//return ::MoveWindow(window_handle, rect.x, rect.y, rect.width, rect.height, repaint);//@TODO:preprocessor function für teilweise argumentliste,wo kommas ausgespuckt werden
+		return ::SetWindowPos(window_handle, NULL, rect.x, rect.y, rect.width, rect.height, SWP_NOZORDER | (bool)repaint * SWP_NOREDRAW);
+		//http://blogs.msdn.com/b/oldnewthing/archive/2009/03/23/9500125.aspx
+		//@TODO:anpassen an den Chrome fullscreen code
+	}//@TODO: setwindoepos function
 	char * standard_window::Text_get(){
 
 		int text_length = ::GetWindowTextLengthA(window_handle);

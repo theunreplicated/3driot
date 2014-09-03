@@ -390,13 +390,16 @@ m->showMenu();
 	//commanddata.push_back(save_handle);
 
 	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle);
-
-
+	WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
+	glmain->setViewPort(rect);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get());//wohl so nicht richtig
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
-	RECT pos = uicontrol->static_draw_field->ClientRect_get();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
+	//RECT pos = uicontrol->static_draw_field->ClientRect_get_();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
+	//
 	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
-	glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
+
+	//glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
+	
 	//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
 	glmain->initGL();//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	//Windows::Dialogs::File_Dialog*dc
@@ -417,7 +420,7 @@ m->showMenu();
 	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
 
 	*/
-	Application::set_std_camera_projection_matrices(glmain,pos.right,pos.bottom);
+	Application::set_std_camera_projection_matrices(glmain,rect.width,rect.height);
 
 	//Thread*t = new Thread(threadFunc, NULL);
 	
