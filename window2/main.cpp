@@ -30,13 +30,9 @@
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
 #include "../gyp_workspace2/App_Initialize_Components.h"
-//#pragma comment(lib,"Shell32.lib")
-#ifdef USE_GLESV2
-#include "egl_display_binding.h"
-#endif
+
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-//HHOOK mouse_hook;
-//typedef void(EGL_Display_Binding::*EGLswapBuffersFunc)(void);
+
 Windows::ApplicationWindow* aw;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn;
@@ -138,7 +134,7 @@ void assimp_import_file(const char* path){
 		scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
 		glmain->render();
 	}
-
+	//delete aiimport
 	}
 	catch (const std::runtime_error& error)
 	{
@@ -242,52 +238,7 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
-	switch (message)
-	{
-	case WM_COMMAND:
-	{
-		BOOL checked = IsDlgButtonChecked(hWnd, 1);
-		if (checked) {
-			CheckDlgButton(hWnd, 1, BST_UNCHECKED);
-
-		}
-		else {
-			CheckDlgButton(hWnd, 1, BST_CHECKED);
-
-		}
-		break;
-	}
-	case WM_CREATE:
-
-		return 0;
-	
-	//case WM_COMMAND:
-		//oncommand(hWnd,wParam,lParam);
-		
-
-		break;
-	case WM_CLOSE:
-		PostQuitMessage(0);
-		return 0;
-	case WM_DESTROY:
-		return 0;
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-
-		case VK_ESCAPE:
-			PostQuitMessage(0);
-			return 0;
-		default:keydown(hWnd,wParam,lParam); break;
-		}
-		return 0;
-
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-
-	}
-};
+/*
 DWORD WINAPI threadFunc(LPVOID lpParam){
 	std::ofstream fs;
 	fs.open("file.shotgun", std::ios::out | std::ios::trunc);//binary
@@ -295,12 +246,17 @@ DWORD WINAPI threadFunc(LPVOID lpParam){
 	fs << "hey";
 	fs.close();
 	return 0;
-}
-void on_opengl_click_moue_pos(int x, int y){
+}*/
+void on_opengl_click_moue_pos(int x, int y,int width,int height){
+
+	//::MessageBox(NULL,(std::to_string(x)+"-"+std::to_string(y)).c_str(),"dfsfds",MB_OK);
+	////http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
+	//@TODO: steht da hinten,noch so ein TODO,dass so dumm do derumm steht,wie überall;-)
 	glmain->set_framebuffer_to_position(true);
 	glmain->TEST_create_dummy_texture();
 	glmain->render(false);
-	auto *p = glmain->get_pixels_at_position<GLubyte>(x, y, GL_RGBA, GL_UNSIGNED_BYTE);
+	int y_pos_lower_left = height - y-1;
+	auto *p = glmain->get_pixels_at_position<GLubyte>(x, y_pos_lower_left, GL_RGBA, GL_UNSIGNED_BYTE);
 	
 	glmain->set_framebuffer_to_position(false);
 	glmain->TEST_restore_dummy_texture();
@@ -337,35 +293,12 @@ void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
 				assimp_import_file(file_path);
 		
 
-
-		
-				
-
-
-
 		}
 
 	}
 
 }
-/*
-LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam)
-{
-	POINT p;
-	if (wParam == WM_LBUTTONDOWN)
-	{
-		//new Windows::Window({ "button", "Click" }, { 175, 30, 30, 50 + 50 }, WS_CHILD | WS_VISIBLE,aw);
-		GetCursorPos(&p);
-	}
 
-	//return CallNextHookEx(mouse_hook, code, wParam, lParam);
-	return NULL;
-	}*//*
-void dv(char dc[]){
-	size_t size = sizeof(dc);
-
-}char dc[] = { 'D', 'E', 'F', 'G', 'H', 'I' };
-dv(dc);*/
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
@@ -377,6 +310,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
 	//ApplicationWindow*aw2 = new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
 	//
+	//@TODO: WM_KILLFOCUS
 /*	MSG  msg;
 	WNDCLASS wc = { 0 };
 	wc.lpszClassName = TEXT("Check Box");
@@ -410,6 +344,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	aw->addOnMessageInvoke(WM_DROPFILES, ondropfiles);
 
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
+	InitCommonControls();
 	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, aw, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
@@ -422,7 +357,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	//aw->Position_set({1920,1080});
 	
-	InitCommonControls(); // Force the common controls DLL to be loaded.
+	
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
@@ -440,8 +375,8 @@ m->showMenu();
 	Windows::Window*w = new Windows::Window({ WC_LISTVIEWW, NULL }, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, aw, NULL);
 	w->on(LISTVIEW_SELECT,listview_handle_click);
 	lv = new List_View(w);
-	//lv->columns->add("verkacktes Objeccckkt");
-	lv->columns->add("---");
+	lv->columns->add("verkacktes Objeccckkt");
+
 	lv->items->add("Hallo,kann ich behilflich sein??");
 
 	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
@@ -454,16 +389,6 @@ m->showMenu();
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
 
-
-	/*sd_wgl_getProcAddress gl_layer_getProcAddress = dll_opengl->import<sd_wgl_getProcAddress>("wglGetProcAddress");
-
-	//EGL_Display_Binding *g_display = new EGL_Display_Binding(::GetDC(uicontrol->static_draw_field->window_handle), uicontrol->static_draw_field->window_handle);
-	//g_display->createContext();
-	OpenGLContext*ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, dll_opengl);
-	OpenGLImport imp(gl_layer_getProcAddress, getProcAddresswglintf);
-	glmain = new GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>(&OpenGLContext::SwapBuffers,ctx,true);
-	*/
-
 	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle);
 
 
@@ -472,7 +397,7 @@ m->showMenu();
 	RECT pos = uicontrol->static_draw_field->ClientRect_get();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
 	//@TODO.  uicontrol->static_draw_field->Position_get().height checken,dennursprüngl. rect.height
 	glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
-	//using Windows::Dialogs::File_Dialog;//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
+	//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
 	glmain->initGL();//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
@@ -510,41 +435,7 @@ m->showMenu();
 	aw->addOnMessageInvoke(WM_PAINT, winapi_suitable_glmain_render);//WM_PAINT scheint wohl zu reichen http://www.cplusplus.com/forum/windows/98867/
 	//es kann sein,dass ein WM_PAINT auf das opengl feld reicht,da controls gesubcalssed msg könnte hier net ankommen
 	//aw->addOnMessageInvoke(WM_SHOWWINDOW, winapi_suitable_glmain_render);
-	//glmain->render();
-
-//	glm::mat4 matt = glm::mat4();
-	//m.rotate(Quaternion(0.0f, 0.0f, 1.0f, 45));
-	//MSG Msg;
-	//
-	//*///while (/*::GetMessage(&Msg, NULL, 0, 0) > 0*/ml->Message_Get()/*kann zu Problemen führen*/){
 	
-		//glmain->setCameraTransformMatrix(transformmat);
-		//glm::mat4 camera_matrix = camera_mat*transformmat;
-		//glm::mat4 matt = projection_matrix*camera_matrix*model_mat/**model_mat*transformmat*/;
-	//for (int i = 0; i < glm->num_draw_elements; i++){
-			//glm->draw_elements[i].matrix = glm::value_ptr(matt);
-		//}
-		//for (THREEDObject& d : glmain->draw_elements){
-			//d.matrix = glm::value_ptr(matt);
-
-		//}
-		//glm->draw_elements[0].matrix = m.get_as_float16();
-		//glm->draw_elements[0].matrix = glm::value_ptr(matt);
-		//glm::mat4 mc = glm::mat4(1.0f)*transformmat;
-		//glm->draw_elements[0].matrix = glm::value_ptr(mc);
-		//float * mat = glm->draw_elements[0].matrix;
-		//glm::mat4 m = glm::make_mat4(mat);
-		//glm::mat4 mm = transformmat;
-		//glm->draw_elements[0].matrix = glm::value_ptr(mm);
-		//THREEDObject dc=glm->draw_elements[1];
-		//glmain->render();//@TODO:in proc am Schluss
-		//ml->Message_Pump();
-		//TranslateMessage(&Msg);
-		//DispatchMessage(&Msg);
-		//ml->Message_Pump();
-	//}
-	
-	//return Msg.wParam;
 
 	return (new MessageLoop())->GetMessage_Approach();
 }

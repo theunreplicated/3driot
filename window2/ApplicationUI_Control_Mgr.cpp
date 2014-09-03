@@ -30,12 +30,20 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		break;*/
 	case WM_LBUTTONDOWN:{
 		//::SetFocus(hWnd);@TODO:setfocus auf das,dann wohl tastatureingaben darauf lenken,aber vemutlich global gewollt,also das andere verhindern vom fokus bekommen
+		RECT rect;
+		GetClientRect(hWnd,&rect);
 		DWORD mousepos=::GetMessagePos();
 		POINTS p = MAKEPOINTS(mousepos);
-		
+		//http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
+		//@TODO:gucken->da,warhscheinlich falsche koordinaten
 		LPPOINT pr= new tagPOINT; pr->x = p.x; pr->y = p.y;//die end-position sind nicht so genau,ist aber jetzt zuerst mal egal,und zwar so die angebegenen daten -5
 		::ScreenToClient(hWnd,pr);
-		std::string mouse_pos = std::to_string((*pr).x) + "-" + std::to_string((*pr).y); ui_mouse_pos_callback(pr->x,pr->y);
+		//http://www.cplusplus.com/forum/windows/102524/
+		int width = std::abs(rect.right - rect.left);
+		int height = std::abs(rect.bottom - rect.top);//betrag ist denk ich sicherer,macht aber glaub ich keinen Sinn //@TODO:in dem anderen Code die woth richtig berechnen
+		ui_mouse_pos_callback(pr->x, pr->y,width,height);
+		//std::string mouse_pos = std::to_string((*pr).x) + "-" + std::to_string((*pr).y); 
+		
 		return true/*MessageBoxA(NULL, mouse_pos.c_str(), "fddfs", MB_OK);*/; }
 		break;
 	default:

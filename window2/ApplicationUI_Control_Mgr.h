@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 //using std::vector;
-typedef void(*ui_mouse_pos_callback_type)(int, int);
+typedef void(*ui_mouse_pos_callback_type)(int, int,int,int);
 struct TripleEditWindow{
 	Windows::Window* x,* y,* z;
 
