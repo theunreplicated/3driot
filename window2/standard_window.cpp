@@ -36,15 +36,16 @@ namespace Windows{
 		//return ::MoveWindow(window_handle, rect.x, rect.y, rect.width, rect.height, repaint);//@TODO:preprocessor function für teilweise argumentliste,wo kommas ausgespuckt werden
 		return ::SetWindowPos(window_handle, NULL, rect.x, rect.y, rect.width, rect.height, SWP_NOZORDER | (bool)repaint * SWP_NOREDRAW);
 		//http://blogs.msdn.com/b/oldnewthing/archive/2009/03/23/9500125.aspx
-		//@TODO:anpassen an den Chrome fullscreen code
+		//@TODO:anpassen an den Chrome fullscreen code//@TODO:my_gfx_rect überflüssig machen
 	}//@TODO: setwindoepos function
 	char * standard_window::Text_get(){
 
 		int text_length = ::GetWindowTextLengthA(window_handle);
-
-		//char*buffer = new char[text_length*sizeof(char)/*sizeif char müsste 1 sein,durch(fall(oder freier Fall??)) müsste so auch stimmen*/];
-		char*buffer = static_cast<char*>(malloc(text_length));
-		if (!buffer){ throw std::runtime_error("Out of memoey-malloc failed"); }
+		//@TODO:im Auge behalten ob mit dem new hier anstelle von dem malloc Probleme auftauchen
+		//+1(nicht so) wegen \0 vermutlich
+		char*buffer = new char[text_length+1/*--invalider-kommentar-sizeif char müsste 1 sein,durch(fall(oder freier Fall??)) müsste so auch stimmen*/];
+		//char*buffer = static_cast<char*>(malloc(text_length));
+		//if (!buffer){ throw std::runtime_error("Out of memoey-malloc failed"); }
 		//http://programmersheaven.com/discussion/114501/what-s-the-real-size-of-char
 		::GetWindowText(window_handle, buffer, text_length + 1);/*warum +1?ist von win-api.de,nach  msdn wird es sowieso niemals größer als text_length*/
 		return buffer;

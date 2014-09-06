@@ -32,15 +32,13 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 {
 	Windows::ApplicationWindow*aw = new Windows::ApplicationWindow(hInstance, { "hey", "" }, { 500, 500 }, NULL, Application::Basic_WndProc, { (HBRUSH)GetStockObject(BLACK_BRUSH) });
 	HWND native_window_handle = aw->window_handle;
-	//http://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar
-	//CHromium source
 	Application::fullscreen(native_window_handle);
 #ifndef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 	::ShowWindow(native_window_handle,SW_SHOW);
 #endif
 	//Window wird nun gezeigt,Fullscreen,ok
 
-
+	
 	Win_Utils*wn = new Win_Utils();
 		//path von exe//da assimp wohl den include path auf desktop setzt irgendwie?
 	WCHAR *path55 = wn->getExePath();

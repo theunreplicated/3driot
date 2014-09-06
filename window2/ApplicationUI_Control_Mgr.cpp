@@ -29,7 +29,7 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		MessageBox(NULL,"fds","fds",MB_OK);
 		break;*/
 	case WM_LBUTTONDOWN:{
-		//::SetFocus(hWnd);@TODO:setfocus auf das,dann wohl tastatureingaben darauf lenken,aber vemutlich global gewollt,also das andere verhindern vom fokus bekommen
+		//::SetFocus(hWnd);//@TODO:setfocus auf das,dann wohl tastatureingaben darauf lenken,aber vemutlich global gewollt,also das andere verhindern vom fokus bekommen
 		RECT rect;
 		GetClientRect(hWnd,&rect);
 		DWORD mousepos=::GetMessagePos();
@@ -47,7 +47,7 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		return true/*MessageBoxA(NULL, mouse_pos.c_str(), "fddfs", MB_OK);*/; }
 		break;
 	default:
-		return DefWindowProc(hWnd,message,wParam,lParam);
+		return DefWindowProc(hWnd,message,wParam,lParam);//@TODO:defwindowproc ersetzen
 	}
 	//@TODO:org proc aufrufen
 }
@@ -135,7 +135,7 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 	}
 	iteration_count = 0;
 
-	//static_draw_field->DeviceContext_release(hDC);
+	static_draw_field->DeviceContext_release(hDC);
 }
 void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	int editwidth = 100, editheight = 20, edit_startpoint_w = m_width - editwidth - 30, edit_startpoint_h = 30, padding = editheight + 20, padding_w = 20;

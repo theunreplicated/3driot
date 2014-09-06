@@ -570,7 +570,7 @@ float g_vertices_rectangle_data[] = {
 	create_and_bind_framebuffer();
 	create_color_renderbuffer();
 	create_depth_renderbuffer();
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		::MessageBox(NULL,"dsa","fd",MB_OK);
 	}

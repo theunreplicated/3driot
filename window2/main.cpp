@@ -33,7 +33,7 @@
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-Windows::ApplicationWindow* aw;
+Windows::ApplicationWindow* aw; Windows::Window*ws;
 ApplicationUI_Control_Mgr*uicontrol;
 Win_Utils*wn;
 List_View*lv;
@@ -46,6 +46,63 @@ GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
 sp_endp_type * current_obj_selection=nullptr;//@TODO:header controls winapi
+/*
+void copy_to_other(){
+	HDC hPrinterDC = ws->DeviceContext_get();
+	int cWidthPels = GetDeviceCaps(hPrinterDC, HORZRES);
+
+	int cHeightPels = GetDeviceCaps(hPrinterDC, VERTRES);
+	
+	//BitBlt(hPrinterDC, 0, 0, cWidthPels, cHeightPels, uicontrol->static_draw_field->DeviceContext_get(), 0, 0, SRCCOPY);
+	RECT r = uicontrol->static_draw_field->Rect_get();
+	Windows::WindowRect wr = uicontrol->static_draw_field->Position_get();
+	int start_x = r.left, start_y = r.top, end_x = r.right, end_y = r.bottom;
+	//BitBlt(ws->DeviceContext_get(), 0, 0, end_x, end_y, GetWindowDC(aw->window_handle), start_x, start_y, SRCCOPY);
+	//BitBlt(ws->DeviceContext_get(), 0, 0, 500, 500, GetWindowDC(aw->window_handle), 0,0, SRCCOPY);
+	HDC hdc = hPrinterDC;
+	RECT rt;
+	GetClientRect(ws->window_handle, &rt);
+	//HDC myHdc = CreateCompatibleDC(hdc);
+	HDC myHdc = uicontrol->static_draw_field->DeviceContext_get();
+	//HBITMAP bitmap = CreateCompatibleBitmap(hdc, 300, 300);
+	//auto oldBitmap = SelectObject(myHdc, bitmap);
+	//char*szHello = "dfdfs";
+	//DrawText(myHdc, szHello, strlen(szHello), &rt, DT_CENTER);
+	//BitBlt(hdc, 0, 0, rt.right - rt.left, rt.bottom - rt.top, myHdc, 0, 0, SRCCOPY);
+
+	//::SelectObject(myHdc, oldBitmap);
+	
+	int nScreenWidth = 300, nScreenHeight = 300;
+	BITMAPINFO bmi = { 0 };
+	bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
+	bmi.bmiHeader.biWidth = nScreenWidth;
+	bmi.bmiHeader.biHeight = nScreenHeight;
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+	bmi.bmiHeader.biCompression = BI_RGB;
+
+	// Allocate a buffer to receive the pixel data.
+	RGBQUAD *pPixels = new RGBQUAD[nScreenWidth * nScreenHeight];
+	
+	// Call GetDIBits to copy the bits from the device dependent bitmap
+	// into the buffer allocated above, using the pixel format you
+	// chose in the BITMAPINFO.//http://stackoverflow.com/questions/2659932/how-to-read-the-screen-pixels
+	HDC hCaptureDC = myHdc;
+	HBITMAP hCaptureBitmap = CreateCompatibleBitmap(GetDC(0),nScreenWidth,nScreenHeight);
+	::GetDIBits(hCaptureDC,
+		hCaptureBitmap,
+		0,  // starting scanline
+		nScreenHeight,  // scanlines to copy
+		pPixels,  // buffer for your copy of the pixels
+		&bmi,  // format you want the data in
+		DIB_RGB_COLORS);  // actual pixels, not palette references
+	HDC targetDC = ws->DeviceContext_get();
+	HBITMAP hTargetBitmap = CreateCompatibleBitmap(GetDC(0), nScreenWidth, nScreenHeight);
+
+	SetDIBits(targetDC,hTargetBitmap, 0,nScreenHeight,pPixels, (BITMAPINFO*)&bmi, DIB_RGB_COLORS);
+	ws->DeviceContext_release(targetDC);
+	uicontrol->static_draw_field->DeviceContext_release(hCaptureDC);
+}*///geht nicht
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -99,6 +156,51 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 //UNprojection vllt. so :in jedes Depth_Fragment wird eine eindeutige ID geschrieben,mouse-picking erst als letzten Draw-Schritt,dann checken bei welcher ID=>Objekt hersausfinden
 //@TODO:focus fix bei listview
+/*
+void WriteOpenGLPixelsToHBITMAP(HBITMAP dstHBITMAP, HDC dstDC, SIZE dims)
+{
+
+	BITMAPINFO bitmapInfo;
+	{
+		::memset(&bitmapInfo, 0, sizeof(BITMAPINFO));
+		bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bitmapInfo.bmiHeader.biPlanes = 1;
+		bitmapInfo.bmiHeader.biBitCount = 32;
+		bitmapInfo.bmiHeader.biCompression = BI_RGB;
+		bitmapInfo.bmiHeader.biWidth = dims.cx;
+		bitmapInfo.bmiHeader.biHeight = dims.cy;
+		bitmapInfo.bmiHeader.biSizeImage = dims.cx * dims.cy * 4; // Size 4, assuming RGBA from OpenGL
+	}
+
+	void    *bmBits = NULL;
+	HDC     memDC = ::CreateCompatibleDC(dstDC);
+	HBITMAP memBM = ::CreateDIBSection(NULL, &bitmapInfo, DIB_RGB_COLORS, &bmBits, NULL, 0);
+
+
+	/*::glReadPixels(0,
+	0,
+	dims.cx,
+	dims.cy,
+	GL_RGB,
+	GL_UNSIGNED_BYTE,
+	bmBits);*/
+	/*glmain->set_framebuffer_to_position(true);
+	glmain->render(false);
+	bmBits = glmain->get_pixels_at_position<GLubyte>(0, 0, GL_BGR, GL_UNSIGNED_BYTE, dims.cx, dims.cy);
+	glmain->set_framebuffer_to_position(false);
+	HGDIOBJ prevBitmap = ::SelectObject(memDC, memBM);
+	HGDIOBJ obj = ::SelectObject(dstDC, dstHBITMAP);
+
+	// Remember that OpenGL origin is at bottom, left, but bitmaps are top, left
+	if (false == BitBlt(dstDC, 0 /*left*///, dims.cy /*top*/, dims.cx, dims.cy, memDC, 0, 0, SRCCOPY))
+	/*{
+		assert(false && "Failed to write pixels to HBitmap from OpenGL glReadPixels");
+	}//quelle:internet
+
+	::SelectObject(memDC, prevBitmap);
+	::DeleteObject(memBM);
+	::DeleteDC(memDC);
+}*/
 void assimp_import_file(const char* path){
 	
 	
@@ -132,7 +234,12 @@ void assimp_import_file(const char* path){
 		lv->items->add("Received complex command(contagious).mhhhh.");
 		current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size() - 1];//muss gesetzt werden,da ansonseten fail bei click wg. nullptr check,und es macht auch Sinn so
 		scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
-		glmain->render();
+		glmain->render(); 
+		
+		//SIZE sz; sz.cx = 300; sz.cy = 300; //HDC ddc = ws->DeviceContext_get();
+		//HBITMAP bitmap = CreateCompatibleBitmap(ddc,300,300);
+		//WriteOpenGLPixelsToHBITMAP(bitmap,ddc,sz);
+		//ws->DeviceContext_release(ddc);
 	}
 	//delete aiimport
 	}
@@ -177,6 +284,395 @@ void ui_close_window(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	::PostQuitMessage(0);
 }
+/*
+void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	PRINTDLG pd = { 0 };
+	pd.lStructSize = sizeof(pd);
+	pd.Flags = PD_RETURNDC;
+	pd.hwndOwner = aw->window_handle;
+
+	// Retrieve the printer DC
+	if (!PrintDlg(&pd))
+	{
+		//TRACE("PrintDlg canceled");
+		return;
+	}
+
+	DOCINFO di;
+	memset(&di, 0, sizeof(DOCINFO));
+	di.cbSize = sizeof(DOCINFO);
+	di.lpszDocName = _T("Scribble Printout");
+	di.lpszOutput = (LPTSTR)NULL;
+	di.lpszDatatype = (LPTSTR)NULL;
+	di.fwType = 0;
+	StartDoc(pd.hDC,&di);
+	StartPage(pd.hDC);
+	ctx->Enable_to_DeviceContext(pd.hDC);//fehler bei druckertreibern,hängt sioch so auf,dass ichs nocht mehr mitmdem taskmgr beenden kann
+	glmain->render();
+	ctx->gl_layer_MakeCurrent(NULL,NULL);
+	//ctx->Enable_to_DeviceContext(uicontrol->static_draw_field->DeviceContext_get());
+
+
+	::EndPage(pd.hDC);
+	::EndDoc(pd.hDC);
+
+}*/
+//void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	/*Windows::WindowRect rect = aw->ClientRect_get();
+	int Width = rect.width; int Height = rect.height;
+	HWND m_View555 = aw->window_handle;
+	WCXXClientDC dcView(&m_View555);
+	WCXXCDC dccView;
+	dccView.m_pData->hDC = dcView.m_pData->hDC;
+	//dccView.m_pData->m_vGDIObjects=dcView.m_pData->m_vGDIObjects;
+	dccView.m_pData->hWnd = dcView.m_pData->hWnd;
+	WCXXMEMDC MemDC(&dccView);
+	WCXXBitmap bmView;
+	bmView.CreateCompatibleBitmap(&dccView, Width, Height);
+	MemDC.SelectObject(&bmView);
+	MemDC.BitBlt(0, 0, Width, Height, &dccView, 0, 0, SRCCOPY);
+
+	// Bring up a dialog to choose the printer
+	PRINTDLG pd = { 0 };
+	pd.lStructSize = sizeof(pd);
+	pd.Flags = PD_RETURNDC;
+	pd.hwndOwner = aw->window_handle;
+
+	// Retrieve the printer DC
+	if (!PrintDlg(&pd))
+	{
+		//TRACE("PrintDlg canceled");
+		return;
+	}
+
+	// Zero and then initialize the members of a DOCINFO structure.
+	DOCINFO di;
+	memset(&di, 0, sizeof(DOCINFO));
+	di.cbSize = sizeof(DOCINFO);
+	di.lpszDocName = _T("Scribble Printout");
+	di.lpszOutput = (LPTSTR)NULL;
+	di.lpszDatatype = (LPTSTR)NULL;
+	di.fwType = 0;
+
+	// Begin a print job by calling the StartDoc function.
+	if (SP_ERROR == StartDoc(pd.hDC, &di))
+		throw std::runtime_error(_T("Failed to start print job"));
+
+	// Inform the driver that the application is about to begin sending data.
+	if (0 > StartPage(pd.hDC))
+		throw std::runtime_error(_T("StartPage failed"));
+
+	BITMAPINFOHEADER bi = { 0 };
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biHeight = Height;
+	bi.biWidth = Width;
+	bi.biPlanes = 1;
+	bi.biBitCount = 24;
+	bi.biCompression = BI_RGB;
+
+	// Note: BITMAPINFO and BITMAPINFOHEADER are the same for 24 bit bitmaps
+	// Get the size of the image data
+	MemDC.GetDIBits(&bmView, 0, Height, NULL, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS);
+
+	// Retrieve the image data
+	std::vector<byte> vBits(bi.biSizeImage, 0);	// a vector to hold the byte array
+	byte* pByteArray = &vBits.front();
+	MemDC.GetDIBits(&bmView, 0, Height, pByteArray, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS);
+
+	// Determine the scaling factors required to print the bitmap and retain its original proportions.
+	float fLogPelsX1 = (float)GetDeviceCaps(dccView.m_pData->hDC, LOGPIXELSX);
+	float fLogPelsY1 = (float)GetDeviceCaps(dccView.m_pData->hDC, LOGPIXELSY);
+	float fLogPelsX2 = (float)GetDeviceCaps(pd.hDC, LOGPIXELSX);
+	float fLogPelsY2 = (float)GetDeviceCaps(pd.hDC, LOGPIXELSY);
+	float fScaleX = WINXX_MAX(fLogPelsX1, fLogPelsX2) / WINXX_MIN(fLogPelsX1, fLogPelsX2);
+	float fScaleY = WINXX_MAX(fLogPelsY1, fLogPelsY2) / WINXX_MIN(fLogPelsY1, fLogPelsY2);
+
+	// Compute the coordinates of the upper left corner of the centered bitmap.
+	int cWidthPels = GetDeviceCaps(pd.hDC, HORZRES);
+	int xLeft = ((cWidthPels / 2) - ((int)(((float)Width) * fScaleX)) / 2);
+	int cHeightPels = GetDeviceCaps(pd.hDC, VERTRES);
+	int yTop = ((cHeightPels / 2) - ((int)(((float)Height) * fScaleY)) / 2);
+
+	// Use StretchDIBits to scale the bitmap and maintain its original proportions
+	if (GDI_ERROR == (UINT)StretchDIBits(pd.hDC, xLeft, yTop, (int)((float)Width * fScaleX),
+		(int)((float)Height * fScaleY), 0, 0, Width, Height, pByteArray, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS, SRCCOPY))
+	{
+		throw std::runtime_error("Failed to resize image for printing");
+	}
+
+	// Inform the driver that the page is finished.
+	if (0 > EndPage(pd.hDC))
+		throw std::runtime_error("EndPage failed");
+	//throw CWinException(_T("EndPage failed"));
+
+	// Inform the driver that document has ended.
+	if (0 > EndDoc(pd.hDC))
+		throw std::runtime_error("EndDoc failed");
+*/
+
+	// Extract the bitmap from the View window
+	/*auto view_window = aw;
+	
+	int Width = view_window->ClientRect_get().width; int Height = view_window->ClientRect_get().width;
+	HDC ViewDC = view_window->DeviceContext_get();
+	HDC MemDC = CreateCompatibleDC(ViewDC);
+	HBITMAP pBitmap = ::CreateCompatibleBitmap(ViewDC, Width, Height);//attach
+	::SelectObject(ViewDC, pBitmap);
+	//MemDC.CreateCompatibleBitmap(m_View.GetDC(), Width, Height);
+
+	BitBlt(MemDC, 0, 0, Width, Height, ViewDC, 0, 0, SRCCOPY);
+
+
+
+
+	//HBITMAP hbmView = MemDC.DetachBitmap();
+	//detach bitmap beginn
+
+	//CBitmap* pBitmap = new CBitmap;
+	//pBitmap->CreateBitmap(1, 1, 1, 1, 0);
+	HBITMAP h9Bitmap = ::CreateBitmap(1, 1, 1, 1, 0);
+	//m_pData->m_vGDIObjects.push_back(pBitmap);
+
+	// Select our new stock bitmap into the device context
+	HBITMAP hbmView = (HBITMAP)::SelectObject(MemDC, h9Bitmap);
+
+	// Detach the bitmap from our internally managed GDIObjects
+	/*std::vector<GDIPtr>::iterator it;
+	for (it = m_pData->m_vGDIObjects.begin(); it < m_pData->m_vGDIObjects.end(); ++it)
+	{
+		if ((*it)->GetHandle() == hBitmap)
+			(*it)->Detach();
+	}
+
+	// Create a local CBitmap. We can return this by value because it is reference counted
+	CBitmap Bitmap(hBitmap);
+	return Bitmap;
+	//end bitmap detach
+	*/
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+
+
+	// Bring up a dialog to choose the printer
+	PRINTDLG pd = { 0 };
+	pd.lStructSize = sizeof(pd);
+	pd.Flags = PD_RETURNDC;
+
+	// Retrieve the printer DC
+	PrintDlg(&pd);
+
+	DOCINFO di = { 0 };
+	di.cbSize = sizeof(DOCINFO);
+	di.lpszDocName = _T("Scribble Printout");
+	di.lpszOutput = (LPTSTR)NULL;
+	di.lpszDatatype = (LPTSTR)NULL;
+	di.fwType = 0;
+
+	// Begin a print job by calling the StartDoc function.
+	StartDoc(pd.hDC, &di);
+
+	// Inform the driver that the application is about to begin sending data.
+	StartPage(pd.hDC);
+
+	RECT rcView;
+	GetClientRect(view_window->window_handle, &rcView);
+	 Width = rcView.right - rcView.left;
+	Height = rcView.bottom - rcView.top;
+
+	// Fill the BITMAPINFOHEADER structure
+	BITMAPINFOHEADER bi = { 0 };
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biHeight = Height;
+	bi.biWidth = Width;
+	bi.biPlanes = 1;
+	bi.biBitCount = 24;
+	bi.biCompression = BI_RGB;
+
+	// Note: BITMAPINFO and BITMAPINFOHEADER are the same for 24 bit bitmaps
+	// Get the size of the image data
+	GetDIBits(MemDC, hbmView, 0, Height, NULL, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+	// Retrieve the image data
+	byte* pBits = new byte[bi.biSizeImage];
+	GetDIBits(MemDC, hbmView, 0, Height, pBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+
+
+
+	// Determine the scaling factors required retain the bitmap's original proportions.
+	float fLogPelsX1 = (float)GetDeviceCaps(ViewDC, LOGPIXELSX);
+	float fLogPelsY1 = (float)GetDeviceCaps(ViewDC, LOGPIXELSY);
+	float fLogPelsX2 = (float)GetDeviceCaps(pd.hDC, LOGPIXELSX);
+	float fLogPelsY2 = (float)GetDeviceCaps(pd.hDC, LOGPIXELSY);
+	float fScaleX = WINXX_MAX(fLogPelsX1, fLogPelsX2) / WINXX_MIN(fLogPelsX1, fLogPelsX2);
+	float fScaleY = WINXX_MAX(fLogPelsY1, fLogPelsY2) / WINXX_MIN(fLogPelsY1, fLogPelsY2);
+
+	// Compute the coordinates of the upper left corner of the centered bitmap.
+	int cWidthPels = GetDeviceCaps(pd.hDC, HORZRES);
+	int xLeft = ((cWidthPels / 2) - ((int)(((float)Width) * fScaleX)) / 2);
+	int cHeightPels = GetDeviceCaps(pd.hDC, VERTRES);
+	int yTop = ((cHeightPels / 2) - ((int)(((float)Height) * fScaleY)) / 2);
+
+	// Use StretchDIBits to scale the bitmap and maintain its original proportions
+	StretchDIBits(pd.hDC, xLeft, yTop, (int)((float)Width * fScaleX),
+		(int)((float)Height * fScaleY), 0, 0, Width, Height, pBits,
+		(BITMAPINFO*)&bi, DIB_RGB_COLORS, SRCCOPY);
+
+	// Inform the driver that the page is finished.
+	EndPage(pd.hDC);
+
+	// Inform the driver that document has ended.
+	EndDoc(pd.hDC);
+
+	// Cleanup
+	::DeleteObject(hbmView);
+	delete[]pBits;
+
+}*/
+/*
+void ui_menu_item_drucken(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	//printdlg wird nicht mehr empfohlen,kann ertfernt werden,daher printfdlgex(eigentlich komische entscheidung)
+	//PRINTDLGEX pd = { 0 };
+	//ZeroMemory(&pd, sizeof(PRINTDLGEX));//gleiches wie memset(,0,)
+	//pd.Flags = PD_ENABLEPRINTTEMPLATE;
+	//pd.lStructSize = sizeof(PRINTDLGEX);
+	HRESULT hResult;
+	PRINTDLGEX pdx = { 0 };
+	LPPRINTPAGERANGE pPageRanges = NULL;
+	HDC source_dc = ::GetDC(uicontrol->static_draw_field->window_handle);
+	// Allocate an array of PRINTPAGERANGE structures.
+	pPageRanges = (LPPRINTPAGERANGE)GlobalAlloc(GPTR, 10 * sizeof(PRINTPAGERANGE));
+	if (!pPageRanges){ throw std::runtime_error("out of memory"); }
+	//  Initialize the PRINTDLGEX structure.
+	pdx.lStructSize = sizeof(PRINTDLGEX);
+	pdx.hwndOwner = hWnd;
+	pdx.hDevMode = NULL;
+	pdx.hDevNames = NULL;
+	pdx.hDC =NULL;
+	pdx.Flags = PD_RETURNDC | PD_COLLATE;
+	pdx.Flags2 = 0;
+	pdx.ExclusionFlags = 0;
+	pdx.nPageRanges = 0;
+	pdx.nMaxPageRanges = 10;
+	pdx.lpPageRanges = pPageRanges;
+	pdx.nMinPage = 1;
+	pdx.nMaxPage = 1000;
+	pdx.nCopies = 1;
+	pdx.hInstance = 0;
+	pdx.lpPrintTemplateName = NULL;
+	pdx.lpCallback = NULL;
+	pdx.nPropertyPages = 0;
+	pdx.lphPropertyPages = NULL;
+	pdx.nStartPage = START_PAGE_GENERAL;
+	pdx.dwResultAction = 0;
+	hResult = PrintDlgEx(&pdx);
+	if ((hResult == S_OK) && pdx.dwResultAction == PD_RESULT_PRINT)
+	{
+
+		/*DOCINFO di;
+
+		memset(&di, 0, sizeof(DOCINFO));
+		di.cbSize = sizeof(DOCINFO);
+		di.lpszDocName = "drucktest";
+		//if (pdx.hDC != NULL){ ::MessageBox(NULL,"fd","fdfd",MB_OK); }
+		// drucken
+		StartDoc(pdx.hDC, &di);
+		
+		StartPage(pdx.hDC);
+		// Inhalt ausgeben
+		//SelectObject(pdx.hDC, MyFont);
+		//TextOut(pd.hDC, 70, 70, String, strlen(String));
+		//TextOut(pd.hDC, 10, 17, String, strlen(String));
+		
+		Windows::WindowRect r = uicontrol->static_draw_field->ClientRect_get();
+		BitBlt(pdx.hDC, 0, 0, r.width, r.height, source_dc, 0, 0, SRCCOPY);
+
+		EndPage(pdx.hDC);
+
+		EndDoc(pdx.hDC);  // Dokument wird geschlossen
+		if (pdx.hDevMode != NULL) GlobalFree(pdx.hDevMode);
+		if (pdx.hDevNames != NULL) GlobalFree(pdx.hDevNames);//http://www.willemer.de/informatik/windows/windruck.htm
+		//::MessageBox(NULL,"dfdf","fds",MB_OK);
+		// User clicked the Print button, so use the DC and other information returned in the 
+		// PRINTDLGEX structure to print the document.*/
+/*
+		const LPDEVMODE devmode = (LPDEVMODE)GlobalLock(pdx.hDevMode);
+
+		const LPDEVNAMES devnames = (LPDEVNAMES)GlobalLock(pdx.hDevNames);
+
+		LPCTSTR driver = LPCTSTR(devnames) + devnames->wDriverOffset;
+		LPCTSTR device = LPCTSTR(devnames) + devnames->wDeviceOffset;
+		LPCTSTR output = LPCTSTR(devnames) + devnames->wOutputOffset;
+
+		HDC hPrinterDC = CreateDC("WINSPOOL\0", device, NULL, NULL);
+
+		DOCINFO di;
+
+		memset(&di, 0, sizeof(DOCINFO));
+
+		di.cbSize = sizeof(DOCINFO);
+
+		di.lpszDocName = "PrintIt";
+
+		di.lpszOutput = (LPTSTR)NULL;
+
+		di.lpszDatatype = (LPTSTR)NULL;
+
+		di.fwType = 0;
+		int nError = StartDoc(hPrinterDC, &di);
+
+
+		int cWidthPels, cHeightPels;
+
+		cWidthPels = GetDeviceCaps(hPrinterDC, HORZRES);
+
+		cHeightPels = GetDeviceCaps(hPrinterDC, VERTRES);
+		RECT rcPrinter;
+
+		rcPrinter.top = 5;
+
+		rcPrinter.left = 5;
+
+		rcPrinter.right = cWidthPels - 10;
+
+		rcPrinter.bottom = cHeightPels - 10;
+		nError = StartPage(hPrinterDC);
+		LPCSTR text = "hhhe";
+		//DrawText(hPrinterDC, text, strlen(text), &rcPrinter, DT_TOP | DT_LEFT | DT_WORDBREAK);
+		BitBlt(pdx.hDC, 0, 0, rcPrinter.right, rcPrinter.left, source_dc, 0, 0, SRCCOPY);
+		nError = EndPage(hPrinterDC);
+		nError = EndDoc(hPrinterDC);
+		DeleteDC(hPrinterDC);
+
+
+		DeleteDC(pdx.hDC);
+	}
+
+	if (pdx.hDevMode != NULL)
+		GlobalFree(pdx.hDevMode);
+	if (pdx.hDevNames != NULL)
+		GlobalFree(pdx.hDevNames);
+	if (pdx.lpPageRanges != NULL)
+		GlobalFree(pPageRanges);
+
+	
+		
+
+}
+
+*/
+
 void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	//::MessageBoxA(NULL,"fds","dfd",MB_ICONASTERISK);
 	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
@@ -268,6 +764,24 @@ void on_opengl_click_moue_pos(int x, int y,int width,int height){
 	auto d3 = p[2];//@TODO:falsche werte,z.b. 255,weil er den hintergrund erwischt
 	auto d4 = p[3]; 
 	OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
+	//objekt auswählen //@TODO:mit mehr als 255 soll es gehn
+	if ((d3 != 255)&&(d3>=0) ){
+		//Treffer
+
+		//current_obj_selection = &startp_endp_list_objs[d3];
+		for (sp_endp_type& d : startp_endp_list_objs){
+			if ((d3 >= d.startp) && (d3 <= (d.endp-1))){
+				//dann in Range
+				current_obj_selection = &d;
+					break;
+
+			}
+			
+
+		}
+
+
+	}
 }
 
 void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -299,15 +813,21 @@ void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 }
 
+
+
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
 	using namespace Windows;
 	int width=1024, height=768;//@TODO:bind struct proggen
+	width += 300; height += 250;
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
+
+
+//ws = new Windows::Window({ "STATIC", "" }, { 300, 300, 1000, 250 }, WS_VISIBLE | WS_CHILD, aw,WS_EX_CLIENTEDGE);
 	//ApplicationWindow*aw2 = new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
 	//
 	//@TODO: WM_KILLFOCUS
@@ -361,6 +881,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
+	//m->add_Menu_Item(new Menu_Item("Drucken",ui_on_file_print));
 	for (int i = 0; i < 75; i++){
 		p1->add_Menu_Item(new Menu_Item("Schließen", ui_close_window));
 	}
@@ -388,6 +909,11 @@ m->showMenu();
 	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
+
+
+	
+	
+
 
 	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle);
 	WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
@@ -439,6 +965,6 @@ m->showMenu();
 	//es kann sein,dass ein WM_PAINT auf das opengl feld reicht,da controls gesubcalssed msg könnte hier net ankommen
 	//aw->addOnMessageInvoke(WM_SHOWWINDOW, winapi_suitable_glmain_render);
 	
-
+	
 	return (new MessageLoop())->GetMessage_Approach();
 }

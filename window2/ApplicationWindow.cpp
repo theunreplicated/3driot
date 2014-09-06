@@ -3,7 +3,7 @@
 #include <Windows.h>
 //#include <Uxtheme.h>
 //#pragma comment(lib, "uxtheme.lib")
-
+//#define WindowAPIStyle_hacky_WindowRectSplit(wr) wr.x , wr.y ,wr.width,wr.height
 namespace Windows{
 	std::vector<winproc_callback_function_struct> ApplicationWindow::winproc_callback_function_data;
 	std::vector<winproc_additional_data_struct> ApplicationWindow::additional_winproc_data;
@@ -51,7 +51,7 @@ namespace Windows{
 		// return 0;
 		switch (message)
 		{
-		case WM_COMMAND:{
+		/*case WM_COMMAND:{
 			if (::IsDlgButtonChecked(hWnd, 1)) {
 				CheckDlgButton(hWnd, 1, BST_UNCHECKED);
 
@@ -59,7 +59,7 @@ namespace Windows{
 			else {
 				CheckDlgButton(hWnd, 1, BST_CHECKED);
 
-			}}; break;
+			}}; break;*/
 		case WM_CREATE:
 
 			return 0;
@@ -82,20 +82,7 @@ namespace Windows{
 		}break;*/
 		case WM_DESTROY:
 			return 0;
-		case WM_SIZE:
-			//glm->render();
-			break;
-		case WM_KEYDOWN:
-			switch (wParam)
-			{
-
-			case VK_ESCAPE:
-				//::MessageBoxA(NULL,"fd","fd",MB_OK);
-				//PostQuitMessage(0);
-				return 0;
-
-			}
-			return 0;
+		
 
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
@@ -106,7 +93,7 @@ namespace Windows{
 
 	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
 	 ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc,wndclass_style_data additonal_style_data)/*:standard_window(window_handle,window_handle)*/{
-		WNDCLASS wc;
+		 WNDCLASS wc = {0};
 		m_hInstance= hInstance;
 		wc.style = CS_OWNDC;
 		wc.lpfnWndProc = proc;
