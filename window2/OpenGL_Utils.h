@@ -10,12 +10,12 @@
 //attribLocation //getAttrib-Unterscheidung und bindAttriblocation,dann mit counter hier
 //vllt. eigene opengl klassen für buffer,program,...
 namespace OpenGL_Utils{
-	using namespace OGL;
+	//using namespace OGL;
 
-	void LoadShaders(/*const char * vertex_file_path, const char * fragment_file_path,*/bool use_legacy_opengl_shaders, GLuint ProgramID){
+	void LoadShaders(/*const char * vertex_file_path, const char * fragment_file_path,*/bool use_legacy_opengl_shaders, GLuint ProgramID);//{
 		//Quelle:irgendwo her,keina Ahnung mehr
 		//kann bei assimp dingens datei nicht öffnen
-		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+		/*GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 		GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 		// Read the Vertex Shader code from the file
@@ -42,7 +42,7 @@ namespace OpenGL_Utils{
 		FragmentShaderCode += "\n" + Line;
 		FragmentShaderStream.close();
 		}*/
-
+		/*
 		GLint Result = GL_FALSE;
 		int InfoLogLength;
 
@@ -94,6 +94,6 @@ namespace OpenGL_Utils{
 		glDeleteShader(FragmentShaderID);
 
 		//return ProgramID;
-	}
+	}*/
 };
 #endif

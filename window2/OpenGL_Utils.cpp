@@ -1,36 +1,44 @@
-#include "OpenGL_Utils.h"
+#ifndef INC_OpenGL_UTILS_CPP
+#define INC_OpenGL_UTILS_CPP
+#include "../window2/OpenGLImport.h"
 #include <fstream>
 #include <string>
 #include <iostream>
-//attribLocation //getAttrib-Unterscheidung und bindAttriblocation,dann mit counter hier
-//vllt. eigene opengl klassen für buffer,program,...
+#include "../window2/Resource_Loading.h"
+#include "../window2/resource.h"
 namespace OpenGL_Utils{
 	using namespace OGL;
-	/*GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
+
+	void LoadShaders(/*const char * vertex_file_path, const char * fragment_file_path,*/bool use_legacy_opengl_shaders, GLuint ProgramID){
 		//Quelle:irgendwo her,keina Ahnung mehr
+		//kann bei assimp dingens datei nicht öffnen
 		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 		GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 		// Read the Vertex Shader code from the file
 		std::string VertexShaderCode;
-		std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
+		//const char * filepath=vertex_file_path ;
+		//vertex_file_path = "D:\\Aktuelle Dateien\\ultimateFORCE\\Eigene Dokumente\\Visual Studio 2013\\Projects\\window2\\window2\\";
+
+		/*std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
+
 		if (VertexShaderStream.is_open())
 		{
-			std::string Line = "";
-			while (getline(VertexShaderStream, Line))
-				VertexShaderCode += "\n" + Line;
-			VertexShaderStream.close();
-		}
+		std::string Line = "";
+		while (getline(VertexShaderStream, Line))
+		VertexShaderCode += "\n" + Line;
+		VertexShaderStream.close();
+		}*/
 
 		// Read the Fragment Shader code from the file
-		std::string FragmentShaderCode;
+		/*std::string FragmentShaderCode;//streams werden nicht geöffnet-Problem
 		std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
 		if (FragmentShaderStream.is_open()){
-			std::string Line = "";
-			while (getline(FragmentShaderStream, Line))
-				FragmentShaderCode += "\n" + Line;
-			FragmentShaderStream.close();
-		}
+		std::string Line = "";
+		while (getline(FragmentShaderStream, Line))
+		FragmentShaderCode += "\n" + Line;
+		FragmentShaderStream.close();
+		}*/
 
 		GLint Result = GL_FALSE;
 		int InfoLogLength;
@@ -38,7 +46,9 @@ namespace OpenGL_Utils{
 
 		// Compile Vertex Shader
 		// printf("Compiling shader : %s\n", vertex_file_path);
-		char const * VertexSourcePointer = VertexShaderCode.c_str();
+
+
+		char const * VertexSourcePointer = (use_legacy_opengl_shaders ? Resource::CommonLoad(IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH) : Resource::CommonLoad(IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL));
 		glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 		glCompileShader(VertexShaderID);
 
@@ -51,7 +61,8 @@ namespace OpenGL_Utils{
 
 		// Compile Fragment Shader
 		// printf("Compiling shader : %s\n", fragment_file_path);
-		char const * FragmentSourcePointer = FragmentShaderCode.c_str();
+		//char const * FragmentSourcePointer = FragmentShaderCode.c_str();
+		char const * FragmentSourcePointer = (use_legacy_opengl_shaders ? Resource::CommonLoad(IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH) : Resource::CommonLoad(IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL));
 		glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 		glCompileShader(FragmentShaderID);
 
@@ -64,7 +75,7 @@ namespace OpenGL_Utils{
 
 		// Link the program
 		//fprintf(stdout, "Linking program\n");
-		GLuint ProgramID = glCreateProgram();
+
 		glAttachShader(ProgramID, VertexShaderID);
 		glAttachShader(ProgramID, FragmentShaderID);
 		glLinkProgram(ProgramID);
@@ -79,8 +90,7 @@ namespace OpenGL_Utils{
 		glDeleteShader(VertexShaderID);
 		glDeleteShader(FragmentShaderID);
 
-		return ProgramID;
-	}*/
-
-
+		//return ProgramID;
+	}
 };
+#endif

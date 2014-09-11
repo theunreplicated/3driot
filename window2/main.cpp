@@ -4,13 +4,14 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <map>
+#include <vector>
 #include "ApplicationUI_Control_Mgr.h"
 #include "file_dialog.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "OpenGLContext.h"
-#include "SysUtils_Load_Library.h"
+//#include "SysUtils_Load_Library.h"
 #include "OpenGLImport.h"
 #include "GLMain.h"
 #include "Assimp_Mesh_Importer.h"
@@ -29,12 +30,12 @@
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
-#include "../gyp_workspace2/App_Initialize_Components.h"
+#include "App_Initialize_Components.h"
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-Windows::ApplicationWindow* aw; Windows::Window*ws;
-ApplicationUI_Control_Mgr*uicontrol;
+Windows::ApplicationWindow* aw; //Windows::Window*ws;
+ApplicationUI_Control_Mgr*uicontrol; OpenGLContext*ctx;
 Win_Utils*wn;
 List_View*lv;
 HWND default_focus;
@@ -284,7 +285,7 @@ void ui_close_window(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	::PostQuitMessage(0);
 }
-/*
+
 void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	PRINTDLG pd = { 0 };
 	pd.lStructSize = sizeof(pd);
@@ -306,8 +307,9 @@ void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	di.lpszDatatype = (LPTSTR)NULL;
 	di.fwType = 0;
 	StartDoc(pd.hDC,&di);
-	StartPage(pd.hDC);
-	ctx->Enable_to_DeviceContext(pd.hDC);//fehler bei druckertreibern,hängt sioch so auf,dass ichs nocht mehr mitmdem taskmgr beenden kann
+	StartPage(pd.hDC);//danach passierts wohl,denn die auf die erste anweisung von Enable_to_DeviceContext wurde der breakpoint nicht getroffen,auch nicht for Enable_to_DeviceContext mit f10 von hier aus
+	ctx->Enable_to_DeviceContext(pd.hDC);//fehler bei druckertreibern,hängt sioch so auf,dass ichs nocht mehr mitmdem taskmgr beenden kann//muss man mindestens 2x in der windows user session machen,beim ersten mal gibts
+	glmain->draw_elements.clear();
 	glmain->render();
 	ctx->gl_layer_MakeCurrent(NULL,NULL);
 	//ctx->Enable_to_DeviceContext(uicontrol->static_draw_field->DeviceContext_get());
@@ -316,7 +318,7 @@ void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	::EndPage(pd.hDC);
 	::EndDoc(pd.hDC);
 
-}*/
+}
 //void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	/*Windows::WindowRect rect = aw->ClientRect_get();
 	int Width = rect.width; int Height = rect.height;
@@ -881,7 +883,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
-	//m->add_Menu_Item(new Menu_Item("Drucken",ui_on_file_print));
+	m->add_Menu_Item(new Menu_Item("Prozess unsterblich machen-der epische Drucker dafür ist Adobe PDF-nur-mit-VS-Debugge-2x hintereinander",ui_on_file_print));
 	for (int i = 0; i < 75; i++){
 		p1->add_Menu_Item(new Menu_Item("Schließen", ui_close_window));
 	}
@@ -912,10 +914,10 @@ m->showMenu();
 
 
 	
-	
+	App_Inizialize_GL_DLL::dll_opengl = new SysUtils_Load_Library("opengl32.dll");
+	ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, App_Inizialize_GL_DLL::dll_opengl);
 
-
-	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle);
+	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle,ctx);
 	WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
 	glmain->setViewPort(rect);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get());//wohl so nicht richtig
