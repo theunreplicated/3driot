@@ -14,7 +14,7 @@
 //jo,ma wissens dass es kein guter Stil ist,is gud
 #define SCHLECHTER_STIL_FRAMED_WINDOW //NEBEN SCHLECHTEM STIL HIER AuCH NOCH SEHR SCHLECHT IMPLEMENTIERT,fast so wie der fullscreen code,könnte man afaik auch mit einem createwindow ohne die setwindowlongs erledigen(aber vllt. probleme mit anfangswert x0>hab ich jetzt auhc,null darf wohl nicht so genommen werden)
 
-#include "../gyp_workspace2/App_Initialize_Components.h"
+#include "../window2/App_Initialize_Components.h"
 //#include "../window2/GLMain.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -32,7 +32,7 @@ inline int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst
 {
 	Windows::ApplicationWindow*aw = new Windows::ApplicationWindow(hInstance, { "hey", "" }, { 500, 500 }, NULL, Application::Basic_WndProc, { (HBRUSH)GetStockObject(BLACK_BRUSH) });
 	HWND native_window_handle = aw->window_handle;
-	Application::fullscreen(native_window_handle);
+	Application::fullscreen(aw);
 #ifndef SCHLECHTER_STIL_SHOW_WINDOW_AFTER_FINISHED
 	::ShowWindow(native_window_handle,SW_SHOW);
 #endif

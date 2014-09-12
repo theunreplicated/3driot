@@ -15,7 +15,7 @@ namespace Windows{
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);
 		
-		int Position_set(WindowRect rect, bool repaint = true);
+		int Position_set(WindowRect rect, UINT uFlags = SWP_NOZORDER);
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		HDC DeviceContext_get();
 		int DeviceContext_release(HDC device_context);//TODO:ohne arg,selbes wie _get

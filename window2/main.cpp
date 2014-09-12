@@ -785,7 +785,51 @@ void on_opengl_click_moue_pos(int x, int y,int width,int height){
 
 	}
 }
+HWND DoCreateTabControl(Windows::standard_window *w, HINSTANCE hInstance)
+{
+	RECT rcClient;
+	INITCOMMONCONTROLSEX icex;
+	HWND hwndTab;
+	TCITEM tie;
+	int i;
+	TCHAR achTemp[256];  // Temporary buffer for strings.
 
+	// Initialize common controls.
+	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwICC = ICC_TAB_CLASSES;
+	InitCommonControlsEx(&icex);
+
+	// Get the dimensions of the parent window's client area, and 
+	// create a tab control child window of that size. Note that g_hInst
+	// is the global instance handle.
+	/*GetClientRect(hwndParent, &rcClient);
+	hwndTab = CreateWindow(WC_TABCONTROL, TEXT(""),
+		WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
+		700, 500, rcClient.right, rcClient.bottom,
+		hwndParent, NULL, hInstance, NULL);
+		*/
+	hwndTab = w->window_handle;
+
+	if (hwndTab == NULL)
+	{
+		return NULL;
+	}
+
+	// Add tabs for each day of the week. 
+	tie.mask = TCIF_TEXT /*| TCIF_IMAGE*/;
+	tie.iImage = -1;
+	tie.pszText = "hallo";
+
+	TabCtrl_InsertItem(hwndTab, 0, &tie);
+	tie.pszText = "2";
+		if (TabCtrl_InsertItem(hwndTab,1, &tie) == -1)
+		{
+			DestroyWindow(hwndTab);
+			return NULL;
+		}
+	
+	return hwndTab;
+}
 void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	glmain->render();
 }
@@ -827,7 +871,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
-
+	Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,aw);
+	DoCreateTabControl(ccc, hInstance);
+	//ein und dieselbe window-klasse kriegt also dieselbe message loop,TODO:das in c++ nacbilden mit new XXx wenn möglich
+	/*CreateWindow(
+		"t1", "111text",
+		WS_VISIBLE | WS_OVERLAPPEDWINDOW ,
+		0, 0, 1500, 800,
+		NULL, NULL, hInstance, NULL);*/
+	//Window*z = new Window({ "edit", "z" }, { 50,50,30,30 }, WS_CHILD | WS_VISIBLE, aw, WS_EX_CLIENTEDGE,ccc);
 
 //ws = new Windows::Window({ "STATIC", "" }, { 300, 300, 1000, 250 }, WS_VISIBLE | WS_CHILD, aw,WS_EX_CLIENTEDGE);
 	//ApplicationWindow*aw2 = new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
@@ -864,22 +916,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	aw->addOnMessageInvoke(WM_KEYDOWN, keydown);
 	::DragAcceptFiles(aw->window_handle,true);
 	aw->addOnMessageInvoke(WM_DROPFILES, ondropfiles);
-
+	
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 	InitCommonControls();
+	
 	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, aw, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
 
-	//wbtn->on(BTN_CLICK,onclick);
-	
-	//erstelle controls am rechten Rand
 
-	//dc->SaveFileName(L"C:\\");
-
-	//aw->Position_set({1920,1080});
-	
-	
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));

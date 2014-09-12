@@ -4,16 +4,16 @@
 namespace Windows{
 
 	//template <typename T_wn_types>
-	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent,HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
-
-		m_ApplicationWindow = aw;
-		window_handle = CreateWindowExA(dwExStyle,
+	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle,standard_window* window_parent,HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
+		m_window_parent= window_parent;
+		m_ApplicationWindow = aw; m_hInstance = aw->m_hInstance;
+		window_handle = ::CreateWindowExA(dwExStyle,
 			names.lpClassName,
 			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
-			(window_parent==NULL ? aw->window_handle:window_parent),
+			(window_parent==NULL ? aw->window_handle:window_parent->window_handle),
 			menu_id,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
@@ -21,16 +21,16 @@ namespace Windows{
 
 	}
 	//function param inheritance hätte ich hier gerne,und besserer Compiler-support dabei ohne das <LPCSTR> jedes mal zu schreiben
-	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, HWND window_parent, HMENU menu_id) /*:standard_window(&window_handle, &window_parent)*/{
-
+	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, standard_window*window_parent, HMENU menu_id) /*:standard_window(&window_handle, &window_parent)*/{
+		m_window_parent = window_parent; m_hInstance = aw->m_hInstance;
 		m_ApplicationWindow = aw;
-		window_handle = CreateWindowExW(dwExStyle,
+		window_handle = ::CreateWindowExW(dwExStyle,
 			names.lpClassName,
 			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
-			(window_parent == NULL ? aw->window_handle : window_parent),
+			(window_parent == NULL ? aw->window_handle : window_parent->window_handle),
 			menu_id,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
@@ -53,7 +53,7 @@ namespace Windows{
 		m_ApplicationWindow->additional_winproc_data.push_back(wads);
 
 	}
-	WindowRect Window::Position_get(){//funzt in ApplicationWindow net,ich weiß aber warum//@TODO:dabei anderes window parent als applicationwindow+evtl. subcalssing ermöglichen von messageloop für vllt. scrolling(functionx.com? )
+	WindowRect Window::Position_get(Position_Relative_to pos_relative){//funzt in ApplicationWindow net,ich weiß aber warum//@TODO:dabei anderes window parent als applicationwindow+evtl. subcalssing ermöglichen von messageloop für vllt. scrolling(functionx.com? )
 		//so könnte es auch gehen: http://stackoverflow.com/questions/18034975/how-do-i-find-position-of-a-win32-control-window-relative-to-its-parent-window
 		RECT rCtlWin;                   // Koordinaten des Controls
 		//@TODO:anderes parent als applicationwindow erlauben
@@ -71,8 +71,8 @@ namespace Windows{
 
 		p0.x = 0;
 		p0.y = 0;                         // Ursprung der Dialog-Client area ...
-
-		ClientToScreen(m_ApplicationWindow->window_handle, &p0);    // ... in Screenkoordinaten wandeln (Dialog-Handle verwenden)
+		//manchmal kommt wg struktur hier n nullpointer an bei m_window_parent,da nur optional arg;arghhh.
+		ClientToScreen((pos_relative == Position_Relative_to_Window) ? m_ApplicationWindow->window_handle : m_window_parent->window_handle, &p0);    // ... in Screenkoordinaten wandeln (Dialog-Handle verwenden)
 
 		// --> p0.x = Breite der linken Border in Pixel
 

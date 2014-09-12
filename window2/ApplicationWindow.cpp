@@ -60,14 +60,10 @@ namespace Windows{
 				CheckDlgButton(hWnd, 1, BST_CHECKED);
 
 			}}; break;*/
-		case WM_CREATE:
 
-			return 0;
-	//	case WM_CONTEXTMENU:
-		//	break;
 
 		case WM_CLOSE:
-			PostQuitMessage(0);
+			PostQuitMessage(0);//schlieﬂt alles
 			return 0;
 		/*case WM_PAINT:{
 						  PAINTSTRUCT   ps;

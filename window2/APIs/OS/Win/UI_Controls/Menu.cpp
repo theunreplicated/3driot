@@ -1,6 +1,6 @@
 //@TODO: komplettes rewrite,n haufen unnötiger Code gibts hier,und viel copy and paste
 
-#define MENU_ITEMS_STARTWERT 200 //markos vom namen möglichst weit abschotten wäre besser,aber jetzt unwichtig,es gibt größere Probleme;-)und zwar dass die Erde keine Scheibe ist.nein,ich meins hier direkt lokal vom Ort im dreckigen/batschigen Code
+#define MENU_ITEMS_STARTWERT 2000 //markos vom namen möglichst weit abschotten wäre besser,aber jetzt unwichtig,es gibt größere Probleme;-)und zwar dass die Erde keine Scheibe ist.nein,ich meins hier direkt lokal vom Ort im dreckigen/batschigen Code
 #include "Menu.h"
 unsigned int Menu::menu_items_counter = MENU_ITEMS_STARTWERT;
 std::vector<Windows::winproc_callback_function> Menu::callbackfunctions;
