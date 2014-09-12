@@ -10,6 +10,7 @@ namespace Windows{
 		UINT message;
 		winproc_callback_function cbf;
 	};
+
 	struct winproc_addittional_callbackf_input_data_extended{
 		HWND on_invoke_window;
 		winproc_callback_function callbackf;
@@ -30,7 +31,7 @@ namespace Windows{
 	//public://TODO:Friend calss
 		
 	public:
-		HINSTANCE m_hInstance;
+		//HINSTANCE m_hInstance;
 		ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc = WndProc, wndclass_style_data additonal_style_data= {reinterpret_cast<HBRUSH>(COLOR_WINDOW)});
 		//HWND native_window_handle;
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

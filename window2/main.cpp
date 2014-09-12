@@ -120,6 +120,9 @@ http://www.rohitab.com/discuss/topic/35738-c-win32-listview-clicking-an-item/
 
 	return (pa->hwndFrom == caller_wnd) && ((pa->code == NM_CLICK) || (pa->code == NM_RETURN));
 }
+bool TABSELECTION_SELECT_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd){
+	return ((LPNMHDR)lParam)->code==TCN_SELCHANGE;
+}
 
 
 //__declspec(dllimport)bool saveToFile(const char* fileName, const char * data);//,-) piraten-smilie-einäugig für harte Jungs(so hart wie Piraten)
@@ -785,51 +788,7 @@ void on_opengl_click_moue_pos(int x, int y,int width,int height){
 
 	}
 }
-HWND DoCreateTabControl(Windows::standard_window *w, HINSTANCE hInstance)
-{
-	RECT rcClient;
-	INITCOMMONCONTROLSEX icex;
-	HWND hwndTab;
-	TCITEM tie;
-	int i;
-	TCHAR achTemp[256];  // Temporary buffer for strings.
 
-	// Initialize common controls.
-	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	icex.dwICC = ICC_TAB_CLASSES;
-	InitCommonControlsEx(&icex);
-
-	// Get the dimensions of the parent window's client area, and 
-	// create a tab control child window of that size. Note that g_hInst
-	// is the global instance handle.
-	/*GetClientRect(hwndParent, &rcClient);
-	hwndTab = CreateWindow(WC_TABCONTROL, TEXT(""),
-		WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
-		700, 500, rcClient.right, rcClient.bottom,
-		hwndParent, NULL, hInstance, NULL);
-		*/
-	hwndTab = w->window_handle;
-
-	if (hwndTab == NULL)
-	{
-		return NULL;
-	}
-
-	// Add tabs for each day of the week. 
-	tie.mask = TCIF_TEXT /*| TCIF_IMAGE*/;
-	tie.iImage = -1;
-	tie.pszText = "hallo";
-
-	TabCtrl_InsertItem(hwndTab, 0, &tie);
-	tie.pszText = "2";
-		if (TabCtrl_InsertItem(hwndTab,1, &tie) == -1)
-		{
-			DestroyWindow(hwndTab);
-			return NULL;
-		}
-	
-	return hwndTab;
-}
 void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	glmain->render();
 }
@@ -859,6 +818,28 @@ void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 }
 
+//@TODO:addonmessageinvoke muss return werte unterstützen
+void tab_handle_selection_change(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	int iPage = TabCtrl_GetCurSel(uicontrol->main_tab_control->window_handle);
+	::MessageBox(NULL,std::to_string(iPage).c_str(),"fdfds",MB_OK);
+}
+void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	DWORD mousepos = ::GetMessagePos();
+	POINTS p = MAKEPOINTS(mousepos);
+	//http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
+	//@TODO:gucken->da,warhscheinlich falsche koordinaten
+	LPPOINT pr = new tagPOINT; pr->x = p.x; pr->y = p.y;
+	::ScreenToClient(hWnd, pr);
+	Windows::WindowRect pxx=uicontrol->dragdropbutton->Position_get();
+	pxx.x = pr->x; pxx.y = pr->y;
+
+	uicontrol->dragdropbutton->Position_set(pxx );
+	//InvalidateRect(uicontrol->dragdropbutton->window_handle, &(uicontrol->dragdropbutton->Rect_get()),true);
+}
+void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	aw->addOnMessageInvoke(WM_MOUSEMOVE,dragdropmousemove);
+
+}//@TODO: http://codingmisadventures.wordpress.com/2009/03/06/dragging-or-moving-a-window-using-mouse-win32/
 
 
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
@@ -871,8 +852,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
 	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
-	Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,aw);
-	DoCreateTabControl(ccc, hInstance);
+	//@TODO:vllt. aus applicationwindow die window-funktionen entfernen->dann nur noch message loop und wclass erzeuger
+	//Window*mainwindow = new Window(hInstance, { "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW,aw);
+	
+	
+	
+	//aw->addOnMessageInvoke(WM_NOTIFY,onnotify_tab);
 	//ein und dieselbe window-klasse kriegt also dieselbe message loop,TODO:das in c++ nacbilden mit new XXx wenn möglich
 	/*CreateWindow(
 		"t1", "111text",
@@ -923,8 +908,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, aw, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
+	winproc_promise_event TABSELECTION_CHANGED = { TABSELECTION_SELECT_FUNC, WM_NOTIFY, false };
 
-
+	//am besten wäre die möglichkeit params an den on handler weiterzuschicken
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
@@ -947,13 +933,19 @@ m->showMenu();
 
 	lv->items->add("Hallo,kann ich behilflich sein??");
 
+
+	//Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
+	//DoCreateTabControl(ccc, hInstance);
 	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
+	uicontrol->main_tab_control->on(TABSELECTION_CHANGED,tab_handle_selection_change);
 	//uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);
 	uicontrol->open_file_btn->on(BTN_CLICK, action_dialog_onclick);
 	uicontrol->save_threed_objects->on(BTN_CLICK, action_save_state);
 	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
+
+	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
 

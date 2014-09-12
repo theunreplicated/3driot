@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include "WindowStructs.h"
+//#include "ApplicationWindow.h"
 namespace Windows{
 	class standard_window{
 	private:
@@ -10,7 +11,7 @@ namespace Windows{
 	protected:
 		void makeAppearBetter();
 	public:
-	
+		HINSTANCE m_hInstance;
 		HWND window_handle;
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);

@@ -14,10 +14,12 @@ Windows::ApplicationWindow *ApplicationUI_Control_Mgr::ApplicationWindow;
 Windows::Window *ApplicationUI_Control_Mgr::new_row_add_button;
 Windows::Window*ApplicationUI_Control_Mgr::action_button;
 Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
+Windows::Window*ApplicationUI_Control_Mgr::main_tab_control;
 Windows::Window* ApplicationUI_Control_Mgr::objects_list;
 Windows::Window* ApplicationUI_Control_Mgr::open_file_btn;
 Windows::Window* ApplicationUI_Control_Mgr::save_threed_objects;
-
+Windows::Window* ApplicationUI_Control_Mgr::m_parentWindow;
+Windows::Window* ApplicationUI_Control_Mgr::dragdropbutton;
 ui_mouse_pos_callback_type ui_mouse_pos_callback;
 //updatewindow?
 LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
@@ -51,22 +53,73 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	}
 	//@TODO:org proc aufrufen
 }
+HWND DoCreateTabControl(Windows::standard_window *w, HINSTANCE hInstance)
+{//http://msdn.microsoft.com/en-us/library/windows/desktop/hh298367(v=vs.85).aspx
+	RECT rcClient;
+	INITCOMMONCONTROLSEX icex;
+	HWND hwndTab;
+	TCITEM tie;
+	int i;//TCHAR anstatt LPCSTR
+	TCHAR achTemp[256];  // Temporary buffer for strings.
 
-ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height){
-	ApplicationWindow = aw;
+	// Initialize common controls.
+	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwICC = ICC_TAB_CLASSES;
+	InitCommonControlsEx(&icex);
+
+	// Get the dimensions of the parent window's client area, and 
+	// create a tab control child window of that size. Note that g_hInst
+	// is the global instance handle.
+	/*GetClientRect(hwndParent, &rcClient);
+	hwndTab = CreateWindow(WC_TABCONTROL, TEXT(""),
+	WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
+	700, 500, rcClient.right, rcClient.bottom,
+	hwndParent, NULL, hInstance, NULL);
+	*/
+	hwndTab = w->window_handle;
+
+	if (hwndTab == NULL)
+	{
+		return NULL;
+	}
+
+	// Add tabs for each day of the week. 
+	tie.mask = TCIF_TEXT /*| TCIF_IMAGE*/;
+	tie.iImage = -1;
+	tie.pszText = "hallo";
+
+	TabCtrl_InsertItem(hwndTab, 0, &tie);
+	tie.pszText = "2";
+	if (TabCtrl_InsertItem(hwndTab, 1, &tie) == -1)
+	{
+		DestroyWindow(hwndTab);
+		return NULL;
+	}
+
+	return hwndTab;
+}
+ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height,Windows::Window*parent){
+	ApplicationWindow = aw;// m_parentWindow = parent;
 	m_width = width;
 	m_height = height;
 	editheight = 20;
 	padding = editheight + 20;
-	edit_startpoint_h = 30;
+	edit_startpoint_h = 30; unsigned int hoehhe_verschiebung_a_cause_de_tabs = 30;
+	//
+	
+
+	main_tab_control = new Windows::Window({ WC_TABCONTROL, "" }, aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
+	DoCreateTabControl(main_tab_control, aw->m_hInstance);
+	parent = main_tab_control;
+	
 	//@das wäre am besten einheitliche variablenname für gleiche typen übers ganze projekt(auch beachtung von member)
-	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 0, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/);
+	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 10, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/,parent);
 	SetWindowLongPtr(static_draw_field->window_handle,
 		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
 
 
-	CheckBox*cb = new CheckBox("text", {20,20,710,150},ApplicationWindow);
-	cb->check();
+	CheckBox*cb = new CheckBox("text", {20,20,710,150},ApplicationWindow);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
+	cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
 
 
 	Windows::Window* combox = new Windows::Window({ WC_COMBOBOX, "" }, { 200, 200, 750, 300 }, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,ApplicationWindow);
@@ -83,12 +136,12 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 
 	//::SetFocus(wnd);
 	//cb->window->on({ cb->EVENT_IS_CHECKED, WM_COMMAND, true },oncheck);
-	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, 0 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL);
-	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, 0 }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL );//bei anderem parent andere message loop?//@TODO:warum parent nicht geht
+	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
 		//GWLP_WNDPROC, (LONG_PTR)WndProcedure);
-	//Windows::Window *btn = new Windows::Window({ "BUTTON", "hi" }, { 300, 500, 0, 0 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL, ApplicationWindow, WS_EX_CLIENTEDGE,f->window_handle);
-	
+	dragdropbutton = new Windows::Window({ "BUTTON", "dragdrop" }, { 70,50, 800, 100 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE,aw);
+
 }
 void ApplicationUI_Control_Mgr::set_mouse_pos_callback(ui_mouse_pos_callback_type uim){ ui_mouse_pos_callback = uim; }
 void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){

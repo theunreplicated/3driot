@@ -42,7 +42,7 @@ namespace Windows{
 
 				 }
 
-				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam);  }
+				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam); }
 
 			 }
 
@@ -105,6 +105,7 @@ namespace Windows{
 		wc.lpszClassName = names.lpClassName;
 		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
 
+		//m_ApplicationWindow = this;//vllt.schlechter stil?
 		window_handle = CreateWindow(
 			names.lpClassName, names.lpWindowName,
 			dwStyle,

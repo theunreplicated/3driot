@@ -4,12 +4,13 @@
 namespace Windows{
 
 	//template <typename T_wn_types>
+
 	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle,standard_window* window_parent,HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
-		m_window_parent= window_parent;
+		m_window_parent = window_parent;
 		m_ApplicationWindow = aw; m_hInstance = aw->m_hInstance;
 		window_handle = ::CreateWindowExA(dwExStyle,
 			names.lpClassName,
-			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
+			names.lpWindowName,    
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
@@ -26,7 +27,7 @@ namespace Windows{
 		m_ApplicationWindow = aw;
 		window_handle = ::CreateWindowExW(dwExStyle,
 			names.lpClassName,
-			names.lpWindowName,    // <- das ist der Inhalt der Editfelds
+			names.lpWindowName,    
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
