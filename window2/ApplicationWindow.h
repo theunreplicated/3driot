@@ -32,7 +32,7 @@ namespace Windows{
 		
 	public:
 		//HINSTANCE m_hInstance;
-		ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc = WndProc, wndclass_style_data additonal_style_data= {reinterpret_cast<HBRUSH>(COLOR_WINDOW)});
+		ApplicationWindow(LPCSTR class_name, HINSTANCE hInstance, WNDPROC proc=WndProc, wndclass_style_data additonal_style_data = { reinterpret_cast<HBRUSH>(COLOR_WINDOW) });
 		//HWND native_window_handle;
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void addOnMessageInvoke(UINT message, winproc_callback_function callbackf);

@@ -14,7 +14,7 @@ struct TripleEditWindow{
 };
 class ApplicationUI_Control_Mgr{
 public:
-	ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height,Windows::Window*parent=NULL);
+	ApplicationUI_Control_Mgr(Windows::Window*mw, int width, int height,Windows::Window*parent=NULL);
 	static void addButtons(Windows::winproc_promise_event wpe);
 	static void addEditControls();
 	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam);
@@ -25,6 +25,7 @@ public:
 	static Windows::Window*save_threed_objects;
 	static Windows::Window*main_tab_control;
 	static Windows::Window*dragdropbutton;
+	static Windows::Window*main_window;
 	void set_mouse_pos_callback(ui_mouse_pos_callback_type uim);
 	//static void add_objects_list_child_btn(Windows::Window );
 private:

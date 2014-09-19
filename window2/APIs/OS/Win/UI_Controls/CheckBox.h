@@ -2,9 +2,9 @@
 #include "../../../Window.h"
 class CheckBox{
 private:
-	Windows::ApplicationWindow*ApplicationWindow;
+	Windows::Window*main_window;;
 public:
-	CheckBox(LPCSTR text, Windows::WindowRect rect, Windows::ApplicationWindow*aw, DWORD additional_styles=WS_VISIBLE);
+	CheckBox(LPCSTR text, Windows::WindowRect rect, Windows::Window*mw, DWORD additional_styles=WS_VISIBLE);
 	Windows::Window*window;
 	void check();
 	void uncheck();

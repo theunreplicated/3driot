@@ -22,8 +22,26 @@ namespace Windows{
 		makeAppearBetter();
 
 	}
-	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle,Window* window_parent,HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
-		m_window_parent = window_parent;
+	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, Window*parent_window, DWORD dwExStyle, HMENU menu_id){
+
+		m_window_parent = parent_window;
+		m_ApplicationWindow = m_window_parent->m_ApplicationWindow;
+		m_hInstance = m_ApplicationWindow->m_hInstance;
+		window_handle = ::CreateWindowExW(dwExStyle,
+			names.lpClassName,
+			names.lpWindowName,
+			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
+			ES_AUTOVSCROLL*/dwStyle,
+			rect.x, rect.y, rect.width, rect.height,
+			m_window_parent->window_handle,
+			menu_id,
+			/*((LPCREATESTRUCT)lParam)->*/m_ApplicationWindow->m_hInstance,
+			NULL);
+		makeAppearBetter();
+
+	}
+	Window::Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle,/*Window* window_parent,*/HMENU menu_id)/* :standard_window(&window_handle, &window_parent)*/{
+		m_window_parent =NULL;
 		m_ApplicationWindow = aw; m_hInstance = aw->m_hInstance;
 		window_handle = ::CreateWindowExA(dwExStyle,
 			names.lpClassName,
@@ -31,30 +49,20 @@ namespace Windows{
 			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
 			ES_AUTOVSCROLL*/dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
-			(window_parent==NULL ? aw->window_handle:window_parent->window_handle),
+			NULL,
 			menu_id,
 			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
 			NULL);
-		makeAppearBetter();
+		//makeAppearBetter();
 
 	}
+
+
 	//function param inheritance hätte ich hier gerne,und besserer Compiler-support dabei ohne das <LPCSTR> jedes mal zu schreiben
 	Window::Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle, Window*window_parent, HMENU menu_id) /*:standard_window(&window_handle, &window_parent)*/{
-		m_window_parent = window_parent; m_hInstance = aw->m_hInstance;
-		m_ApplicationWindow = aw;
-		window_handle = ::CreateWindowExW(dwExStyle,
-			names.lpClassName,
-			names.lpWindowName,    
-			/*WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |
-			ES_AUTOVSCROLL*/dwStyle,
-			rect.x, rect.y, rect.width, rect.height,
-			(window_parent == NULL ? aw->window_handle : window_parent->window_handle),
-			menu_id,
-			/*((LPCREATESTRUCT)lParam)->*/aw->m_hInstance,
-			NULL);
-		makeAppearBetter();
+		::MessageBox(NULL,TEXT("der compiler hat sich doch net geirrt"),TEXT("hi"),MB_OK);
 
-	}
+}
 
 	void Window_ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		MessageBox(NULL, "dssd---", "dsds", MB_OK);

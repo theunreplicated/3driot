@@ -1,12 +1,12 @@
 #include "TrackBar.h" //vllt. statt immer so vielen Argumenten structs
 #include <CommCtrl.h>
-TrackBar::TrackBar(LPCSTR name, Windows::WindowRect rect, Windows::ApplicationWindow*aw, TrackBar_Value_Pairs range_values, TrackBar_Value_Pairs selction_values){
+TrackBar::TrackBar(LPCSTR name, Windows::WindowRect rect, Windows::Window*mw, TrackBar_Value_Pairs range_values, TrackBar_Value_Pairs selction_values){
 	//http://msdn.microsoft.com/de-de/library/windows/desktop/hh298370(v=vs.85).aspx
 	int Menu_id = 5;//@TODO:weg von festem test-wert
 	window_handle = new Windows::Window({ TRACKBAR_CLASS, name }, rect,WS_CHILD |
 		WS_VISIBLE |
 		TBS_AUTOTICKS |
-		TBS_ENABLESELRANGE ,aw,NULL,NULL,reinterpret_cast<HMENU>(Menu_id));
+		TBS_ENABLESELRANGE ,mw,NULL,reinterpret_cast<HMENU>(Menu_id));
 	SendMessage(window_handle->window_handle, TBM_SETRANGE,
 		(WPARAM)TRUE,                   // redraw flag 
 		(LPARAM)MAKELONG(range_values.min, range_values.max));  // min. & max. positions

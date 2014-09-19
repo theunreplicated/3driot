@@ -35,6 +35,7 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 Windows::ApplicationWindow* aw; //Windows::Window*ws;
+Windows::Window*main_window;//so das window wo sich das main befindet
 ApplicationUI_Control_Mgr*uicontrol; OpenGLContext*ctx;
 Win_Utils*wn;
 List_View*lv;
@@ -293,7 +294,7 @@ void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	PRINTDLG pd = { 0 };
 	pd.lStructSize = sizeof(pd);
 	pd.Flags = PD_RETURNDC;
-	pd.hwndOwner = aw->window_handle;
+	pd.hwndOwner = main_window->window_handle;
 
 	// Retrieve the printer DC
 	if (!PrintDlg(&pd))
@@ -873,7 +874,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	width += 300; height += 250;
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
-	aw = new ApplicationWindow(hInstance, { "t1", "t2" }, { width, height },WS_VISIBLE | WS_OVERLAPPEDWINDOW/*,WndProc*/);//@TODO:->show erst später aufrufen,daher kein ws_visible
+	aw = new ApplicationWindow("t1",hInstance);//@TODO:->show erst später aufrufen,daher kein ws_visible
+
+	/*aw->window_handle=CreateWindow(
+		"t1", "t2",
+		WS_VISIBLE | WS_OVERLAPPEDWINDOW,
+		0, 0, width, height,
+		NULL, NULL, hInstance, NULL);*/
+	aw->window_handle = NULL;
+	main_window = new Windows::Window({ "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW, aw);
+aw->window_handle = main_window->window_handle;
+
+
 	//@TODO:vllt. aus applicationwindow die window-funktionen entfernen->dann nur noch message loop und wclass erzeuger
 	//Window*mainwindow = new Window(hInstance, { "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW,aw);
 	
@@ -888,7 +900,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		NULL, NULL, hInstance, NULL);*/
 	//Window*z = new Window({ "edit", "z" }, { 50,50,30,30 }, WS_CHILD | WS_VISIBLE, aw, WS_EX_CLIENTEDGE,ccc);
 
-//ws = new Windows::Window({ "STATIC", "" }, { 300, 300, 1000, 250 }, WS_VISIBLE | WS_CHILD, aw,WS_EX_CLIENTEDGE);
+	Windows::Window*ws = new Windows::Window({ "STATIC", "" }, { 300, 300, 1000, 250 }, WS_VISIBLE | WS_CHILD,main_window, WS_EX_CLIENTEDGE);
+	Windows::Window*wx = new Windows::Window({ "EDIT", "123456789" }, { 100, 200, 1000, 250 }, WS_VISIBLE | WS_CHILD,main_window);
+
+
 	//ApplicationWindow*aw2 = new ApplicationWindow(hInstance, { "t122", "t222" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
 	//
 	//@TODO: WM_KILLFOCUS
@@ -927,7 +942,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//MessageBox(NULL, wedit->Text_get(), wedit->Text_get(), MB_OK);
 	InitCommonControls();
 	
-	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, aw, { 4, 6 }, {4,5});
+	TrackBar* tb = new TrackBar("hallo", { 200, 50, 610, 370 }, main_window, { 4, 6 }, {4,5});
 	winproc_promise_event BTN_CLICK = {CLICK_FUNC, WM_COMMAND, true };//default=false
 	winproc_promise_event LISTVIEW_SELECT = { LISTVIEW_SELECT_FUNC, WM_NOTIFY,false };
 	winproc_promise_event TABSELECTION_CHANGED = { TABSELECTION_SELECT_FUNC, WM_NOTIFY, false };
@@ -948,7 +963,7 @@ m->showMenu();
 	int lwidth = 200; int lheight = 200;
 	
 
-	Windows::Window*w = new Windows::Window({ WC_LISTVIEWW, NULL }, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT, aw, NULL);
+	Windows::Window*w = new Windows::Window({ WC_LISTVIEWW, NULL }, { lwidth, lheight, width - lwidth - 50, 0 + 100 }, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SHOWSELALWAYS | LVS_REPORT,main_window);
 	w->on(LISTVIEW_SELECT,listview_handle_click);
 	lv = new List_View(w);
 	lv->columns->add("verkacktes Objeccckkt");
@@ -958,8 +973,8 @@ m->showMenu();
 
 	//Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
 	//DoCreateTabControl(ccc, hInstance);
-	uicontrol = new ApplicationUI_Control_Mgr(aw,width,height);
-	uicontrol->main_tab_control->on(TABSELECTION_CHANGED,tab_handle_selection_change);
+	uicontrol = new ApplicationUI_Control_Mgr(main_window,width,height);
+	//uicontrol->main_tab_control->on(TABSELECTION_CHANGED,tab_handle_selection_change);
 	//uicontrol->open_file_btn->on(BTN_CLICK,onMeshImportButton);
 	//uicontrol->addEditControls();
 	//uicontrol->addButtons(BTN_CLICK);

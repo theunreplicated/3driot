@@ -11,6 +11,7 @@ int ApplicationUI_Control_Mgr::edit_startpoint_h;
 using std::vector;
 vector<TripleEditWindow> ApplicationUI_Control_Mgr::windowInsts;
 Windows::ApplicationWindow *ApplicationUI_Control_Mgr::ApplicationWindow;
+Windows::Window* ApplicationUI_Control_Mgr::main_window;
 Windows::Window *ApplicationUI_Control_Mgr::new_row_add_button;
 Windows::Window*ApplicationUI_Control_Mgr::action_button;
 Windows::Window *ApplicationUI_Control_Mgr::static_draw_field;
@@ -99,9 +100,9 @@ HWND DoCreateTabControl(Windows::standard_window *w, HINSTANCE hInstance)
 
 	return hwndTab;
 }
-ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow* aw, int width, int height,Windows::Window*parent){
-	ApplicationWindow = aw;// m_parentWindow = parent;
-	m_width = width;
+ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::Window* mw, int width, int height,Windows::Window*parent){
+//	ApplicationWindow = aw;// m_parentWindow = parent;
+	m_width = width; main_window = mw;
 	m_height = height;
 	editheight = 20;
 	padding = editheight + 20;
@@ -109,27 +110,27 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	//
 	
 
-	main_tab_control = new Windows::Window({ WC_TABCONTROL, "" }, aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
-	DoCreateTabControl(main_tab_control, aw->m_hInstance);
-	parent = main_tab_control;
+//	main_tab_control = new Windows::Window({ WC_TABCONTROL, "" }, mw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, mw);
+//	DoCreateTabControl(main_tab_control, mw->m_hInstance);
+	//parent = main_tab_control;
 	
 	//@das wäre am besten einheitliche variablenname für gleiche typen übers ganze projekt(auch beachtung von member)
-	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 10, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE/*NULL*/,parent);
+	static_draw_field = new Windows::Window({ "STATIC", "" }, { 600,700, 10, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, mw, WS_EX_CLIENTEDGE/*NULL*/);
 	SetWindowLongPtr(static_draw_field->window_handle,
 		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
 
 
-	CheckBox*cb = new CheckBox("text", {20,20,710,150},ApplicationWindow);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
+	CheckBox*cb = new CheckBox("text", {20,20,710,150},mw);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
 	cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
 
 
-	Windows::Window* combox = new Windows::Window({ WC_COMBOBOX, "" }, { 200, 200, 750, 300 }, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,ApplicationWindow);
+	Windows::Window* combox = new Windows::Window({ WC_COMBOBOX, "" }, { 200, 200, 750, 300 }, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,mw);
 	HWND hWndComboBox = combox->window_handle;
 	Combo_Box*cb1 = new Combo_Box(&hWndComboBox);
 	cb1->items->add("hallo");
 	cb1->items->add("hallo2");
 
-	Windows::Window* treev = new Windows::Window({ WC_TREEVIEW, "" }, { 200, 200, 750, 500 }, WS_VISIBLE | TVS_EDITLABELS | WS_CHILD | WS_GROUP | WS_TABSTOP | WS_BORDER | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_HASLINES | TVS_SHOWSELALWAYS | TVS_INFOTIP, ApplicationWindow);
+	Windows::Window* treev = new Windows::Window({ WC_TREEVIEW, "" }, { 200, 200, 750, 500 }, WS_VISIBLE | TVS_EDITLABELS | WS_CHILD | WS_GROUP | WS_TABSTOP | WS_BORDER | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_HASLINES | TVS_SHOWSELALWAYS | TVS_INFOTIP,mw);
 	Tree_View*tv = new Tree_View(treev->window_handle);
 	auto curent_x_factor/*;-)*/ = tv->items->add("anti-aliasing-techniken");
 	auto mlaa=	curent_x_factor->add("morphological-alising");
@@ -137,11 +138,11 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 
 	//::SetFocus(wnd);
 	//cb->window->on({ cb->EVENT_IS_CHECKED, WM_COMMAND, true },oncheck);
-	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, /*WS_EX_CLIENTEDGE*/NULL );//bei anderem parent andere message loop?//@TODO:warum parent nicht geht
-	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	open_file_btn = new Windows::Window({ "BUTTON", "Mesh importieren" }, { 150, 70, 610, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE,mw, /*WS_EX_CLIENTEDGE*/NULL );//bei anderem parent andere message loop?//@TODO:warum parent nicht geht
+	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, mw, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
 		//GWLP_WNDPROC, (LONG_PTR)WndProcedure);
-	dragdropbutton = new Windows::Window({ "BUTTON", "dragdrop" }, { 70,50, 800, 100 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE);
+	dragdropbutton = new Windows::Window({ "BUTTON", "dragdrop" }, { 70,50, 800, 100 }, WS_CHILD | WS_VISIBLE , mw, WS_EX_CLIENTEDGE);
 
 }
 void ApplicationUI_Control_Mgr::set_mouse_pos_callback(ui_mouse_pos_callback_type uim){ ui_mouse_pos_callback = uim; }
@@ -193,9 +194,9 @@ void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lPar
 }
 void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 	int editwidth = 100, editheight = 20, edit_startpoint_w = m_width - editwidth - 30, edit_startpoint_h = 30, padding = editheight + 20, padding_w = 20;
-	new_row_add_button = new Windows::Window({ "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50 }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
+	new_row_add_button = new Windows::Window({ "button", "Neue Reihe hinzufügen" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50 }, WS_CHILD | WS_VISIBLE, main_window);
 	//SetFocus(new_row_add_button->window_handle);
-	action_button = new Windows::Window({ "button", "Actionnnn" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50+padding }, WS_CHILD | WS_VISIBLE, ApplicationWindow);
+	action_button = new Windows::Window({ "button", "Actionnnn" }, { 175, 30, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h + 50+padding }, WS_CHILD | WS_VISIBLE, main_window);
 	new_row_add_button->on(wpe, btn_add_row_cb);
 	action_button->on(wpe,btn_action);
 
@@ -204,9 +205,9 @@ void ApplicationUI_Control_Mgr::addButtons(Windows::winproc_promise_event wpe){
 void ApplicationUI_Control_Mgr::addEditControls(){
 	using Windows::Window;
 	int editwidth = 100,  edit_startpoint_w = m_width - editwidth - 30, padding_w = 20;
-	Window*x=new Window( { "edit", "x" }, { editwidth, editheight,edit_startpoint_w - ((editwidth + padding_w) * 2), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow,WS_EX_CLIENTEDGE);
-	Window*y = new Window({ "edit", "y" }, { editwidth, editheight, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
-	Window*z = new Window({ "edit", "z" }, { editwidth, editheight, edit_startpoint_w, edit_startpoint_h }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
+	Window*x=new Window( { "edit", "x" }, { editwidth, editheight,edit_startpoint_w - ((editwidth + padding_w) * 2), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, main_window,WS_EX_CLIENTEDGE);
+	Window*y = new Window({ "edit", "y" }, { editwidth, editheight, edit_startpoint_w - ((editwidth + padding_w) * 1), edit_startpoint_h }, WS_CHILD | WS_VISIBLE, main_window, WS_EX_CLIENTEDGE);
+	Window*z = new Window({ "edit", "z" }, { editwidth, editheight, edit_startpoint_w, edit_startpoint_h }, WS_CHILD | WS_VISIBLE, main_window, WS_EX_CLIENTEDGE);
 
 
 	windowInsts.push_back({x,y,z});

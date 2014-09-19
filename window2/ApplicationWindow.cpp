@@ -88,7 +88,7 @@ namespace Windows{
 
 
 	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
-	 ApplicationWindow::ApplicationWindow(HINSTANCE hInstance, WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, WNDPROC proc,wndclass_style_data additonal_style_data)/*:standard_window(window_handle,window_handle)*/{
+	 ApplicationWindow::ApplicationWindow(LPCSTR class_name,HINSTANCE hInstance,  WNDPROC proc,wndclass_style_data additonal_style_data)/*:standard_window(window_handle,window_handle)*/{
 		 WNDCLASS wc = {0};
 		m_hInstance= hInstance;
 		wc.style = CS_OWNDC;
@@ -102,18 +102,25 @@ namespace Windows{
 	//	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 		wc.hbrBackground =additonal_style_data.background_brush;//win-api.de
 		wc.lpszMenuName = NULL;
-		wc.lpszClassName = names.lpClassName;
+		wc.lpszClassName = class_name;
+	
 		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
-
+	
 		//m_ApplicationWindow = this;//vllt.schlechter stil?
-		window_handle = CreateWindow(
+		/*window_handle = CreateWindow(
 			names.lpClassName, names.lpWindowName,
 			dwStyle,
 			rect.x, rect.y, rect.width, rect.height,
 			NULL, NULL, hInstance, NULL);
+			*/
+
 		//makeAppearBetter(); bringt wohl nichts bei solchen windows
 		//::SetWindowTheme(window_handle, L" ", L" ");
 	}
+
+	 /*
+	 *@warning nicht in message func ausführen
+	 */
 	 void ApplicationWindow::removeOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		 std::vector<winproc_callback_function_struct>::iterator it = winproc_callback_function_data.begin(); 
 		 while (it != winproc_callback_function_data.end())//http://stackoverflow.com/questions/12702561/c-iterate-through-vector-using-for-loop
