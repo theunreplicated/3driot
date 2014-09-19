@@ -142,7 +142,7 @@ void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
 	int clicked_item_number = lpNMItem->iItem;
 	//::MessageBoxA(NULL,std::to_string(lpNMItem->iItem).c_str(),"fdfd",MB_OK);//Diagramme auf Klick bei Varialben Zustands-Veränderung(alle oder ausgewähleter Bereich) wären ganz nett hier
-	if ((clicked_item_number!=0)&&(current_obj_selection!=nullptr/*@TODO:gucken ob das da hier und jetzt(oder auch später) entfernen*/)){
+	if ((clicked_item_number!=0)&&(clicked_item_number!=-1)&&(current_obj_selection!=nullptr/*@TODO:gucken ob das da hier und jetzt(oder auch später) entfernen*/)){
 		current_obj_selection = &startp_endp_list_objs[clicked_item_number - 1/*@TODO:-1 entferen,da ihc ja noch den Default-Text habe*/];
 		scalemat = scalemat_s[clicked_item_number - 1];
 		translatemat = translatemat_s[clicked_item_number - 1];
@@ -823,24 +823,46 @@ void tab_handle_selection_change(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	int iPage = TabCtrl_GetCurSel(uicontrol->main_tab_control->window_handle);
 	::MessageBox(NULL,std::to_string(iPage).c_str(),"fdfds",MB_OK);
 }
+bool capture_drag_drop = false;
 void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	DWORD mousepos = ::GetMessagePos();
-	POINTS p = MAKEPOINTS(mousepos);
-	//http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
-	//@TODO:gucken->da,warhscheinlich falsche koordinaten
-	LPPOINT pr = new tagPOINT; pr->x = p.x; pr->y = p.y;
-	::ScreenToClient(hWnd, pr);
-	Windows::WindowRect pxx=uicontrol->dragdropbutton->Position_get();
-	pxx.x = pr->x; pxx.y = pr->y;
+	OutputDebugString("mouse_move"); OutputDebugString(std::to_string(rand()).c_str()); OutputDebugString("\n");
+	if (capture_drag_drop){
+		DWORD mousepos = ::GetMessagePos();
+		POINTS p = MAKEPOINTS(mousepos);
+		//http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
+		//@TODO:gucken->da,warhscheinlich falsche koordinaten
+		LPPOINT pr = new tagPOINT; pr->x = p.x; pr->y = p.y;
+		::ScreenToClient(hWnd, pr);
+		Windows::WindowRect pxx = uicontrol->dragdropbutton->Position_get();
+		pxx.x = pr->x; pxx.y = pr->y;
 
-	uicontrol->dragdropbutton->Position_set(pxx );
-	//InvalidateRect(uicontrol->dragdropbutton->window_handle, &(uicontrol->dragdropbutton->Rect_get()),true);
+		uicontrol->dragdropbutton->Position_set(pxx, SWP_NOACTIVATE |
+			SWP_NOOWNERZORDER | SWP_NOZORDER |
+			SWP_NOSIZE);
+		
+		RedrawWindow(uicontrol->dragdropbutton->window_handle,
+			NULL,
+			NULL,
+			RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+		//InvalidateRect(uicontrol->dragdropbutton->window_handle, &(uicontrol->dragdropbutton->Rect_get()),true);
+		//Hinweis: http://stackoverflow.com/questions/2325894/difference-between-invalidaterect-and-redrawwindow 
+	}
+
 }
+void capture_release(HWND hWnd, WPARAM wParam, LPARAM lParam){
+	capture_drag_drop = false;
+	::ReleaseCapture();
+//	aw->removeOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
+	//aw->removeOnMessageInvoke(WM_LBUTTONDOWN, capture_release);
+}
+
 void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	aw->addOnMessageInvoke(WM_MOUSEMOVE,dragdropmousemove);
+	capture_drag_drop = true;
+	SetCapture(hWnd);
+	
 
 }//@TODO: http://codingmisadventures.wordpress.com/2009/03/06/dragging-or-moving-a-window-using-mouse-win32/
-
+//klappt wohl net richtig wg. fokus,den die controls von mousemove kriegen(aber nur vllt.)
 
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
@@ -914,7 +936,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	Menu * m = new Menu(aw);
 	//PopUp_Menu<char*> *p = new PopUp_Menu<char*>("s");
 	PopUp_Menu * p1 = m->add_PopUp_Menu(new PopUp_Menu("Datei"));
-	m->add_Menu_Item(new Menu_Item("Prozess unsterblich machen-der epische Drucker dafür ist Adobe PDF-nur-mit-VS-Debugge-2x hintereinander",ui_on_file_print));
+	m->add_Menu_Item(new Menu_Item("Prozess unsterblich machen-der epische Drucker dafür ist Adobe PDF-2x hintereinander",ui_on_file_print));
 	for (int i = 0; i < 75; i++){
 		p1->add_Menu_Item(new Menu_Item("Schließen", ui_close_window));
 	}
@@ -946,6 +968,10 @@ m->showMenu();
 	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
 
 	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
+	aw->addOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
+	aw->addOnMessageInvoke(WM_LBUTTONUP, capture_release);
+
+
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
 

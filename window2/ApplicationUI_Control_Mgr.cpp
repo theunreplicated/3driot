@@ -30,6 +30,7 @@ LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	/*case WM_KEYDOWN:
 		MessageBox(NULL,"fds","fds",MB_OK);
 		break;*/
+	//case WM_MOUSEMOVE: ::MessageBox(NULL,"fd","fd",MB_APPLMODAL); break;
 	case WM_LBUTTONDOWN:{
 		//::SetFocus(hWnd);//@TODO:setfocus auf das,dann wohl tastatureingaben darauf lenken,aber vemutlich global gewollt,also das andere verhindern vom fokus bekommen
 		RECT rect;
@@ -140,7 +141,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::ApplicationWindow*
 	save_threed_objects = new Windows::Window({ "BUTTON", "RenderObjects speichern" }, { 150, 70, 780, hoehhe_verschiebung_a_cause_de_tabs }, WS_CHILD | WS_VISIBLE, ApplicationWindow, WS_EX_CLIENTEDGE);
 	//WNDPROC OldWndProc = (WNDPROC)SetWindowLongA(f->window_handle,
 		//GWLP_WNDPROC, (LONG_PTR)WndProcedure);
-	dragdropbutton = new Windows::Window({ "BUTTON", "dragdrop" }, { 70,50, 800, 100 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE,aw);
+	dragdropbutton = new Windows::Window({ "BUTTON", "dragdrop" }, { 70,50, 800, 100 }, WS_CHILD | WS_VISIBLE , ApplicationWindow, WS_EX_CLIENTEDGE);
 
 }
 void ApplicationUI_Control_Mgr::set_mouse_pos_callback(ui_mouse_pos_callback_type uim){ ui_mouse_pos_callback = uim; }

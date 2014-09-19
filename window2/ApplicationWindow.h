@@ -36,6 +36,7 @@ namespace Windows{
 		//HWND native_window_handle;
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void addOnMessageInvoke(UINT message, winproc_callback_function callbackf);
+		void removeOnMessageInvoke(UINT message, winproc_callback_function callbackf);
 		//void addOnMessagePumpEndInvoke(winproc_callback_function callbackf);
 		static std::vector<winproc_additional_data_struct> additional_winproc_data;
 		static std::vector<winproc_callback_function_struct> winproc_callback_function_data;

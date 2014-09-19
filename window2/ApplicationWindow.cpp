@@ -114,6 +114,26 @@ namespace Windows{
 		//makeAppearBetter(); bringt wohl nichts bei solchen windows
 		//::SetWindowTheme(window_handle, L" ", L" ");
 	}
+	 void ApplicationWindow::removeOnMessageInvoke(UINT message, winproc_callback_function callbackf){
+		 std::vector<winproc_callback_function_struct>::iterator it = winproc_callback_function_data.begin(); 
+		 while (it != winproc_callback_function_data.end())//http://stackoverflow.com/questions/12702561/c-iterate-through-vector-using-for-loop
+		 {
+			 it++;
+			 //http://stackoverflow.com/questions/3779227/why-is-this-vector-iterator-not-incrementable
+			 if ((it->message == message) && (it->cbf==callbackf)){
+				
+			//	it=winproc_callback_function_data.erase(it);
+				 winproc_callback_function_data.erase(it);
+				break;
+
+			 }
+			 //else{ it++; }
+		
+			 
+		 }
+		
+		
+	 }
 	void ApplicationWindow::addOnMessageInvoke(UINT message, winproc_callback_function callbackf){
 		winproc_callback_function_struct d = {message,callbackf};
 		
