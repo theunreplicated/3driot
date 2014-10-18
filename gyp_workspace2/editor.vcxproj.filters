@@ -1,0 +1,661 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\ext">
+      <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\ext\skia">
+      <UniqueIdentifier>{426FFB3D-87DA-BE1E-9819-8EDBC6A5D70A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs">
+      <UniqueIdentifier>{A090CF6D-5716-5DED-E866-9530B7A5A05C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS">
+      <UniqueIdentifier>{F6F37010-A4E0-B1B6-78D9-036139082AE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win">
+      <UniqueIdentifier>{117FF8BE-6376-21CE-36A5-2B183AEA7D3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\OS\Win\UI_Controls">
+      <UniqueIdentifier>{A653E1D9-F168-3F52-F613-6C860832DC52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2\APIs\win32++">
+      <UniqueIdentifier>{a0dc9d73-9a79-4df2-81f0-c61955942114}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\window2\main.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\dingens_struct_base.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\egl_display_binding.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\GLMain.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\GLStructs.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\ext\skia\GrGLFunctions.h">
+      <Filter>..\window2\ext\skia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\IMGSTRUCTS.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\OpenGL_Data_Types.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\OpenGL_Utils.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\OpenGLContext.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\OpenGLImport.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\3DObject_Serializer.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\ApplicationUI_Control_Mgr.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\ApplicationWindow.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Assimp_Material_Importer.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Assimp_Mesh_Importer.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Assimp_Utils.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Assimp_Utils_m_convert_16.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\file_dialog.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\ImageLoader.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Import_Object_Struct.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\MessageLoop.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\resource.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Resource_Loading.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\standard_window.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\SysUtils_Load_Library.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Window.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\WindowStructs.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\WinUtils.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\egl_display_binding.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\OpenGLContext.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\3DObject_Serializer.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\ApplicationUI_Control_Mgr.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\ApplicationWindow.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Assimp_Material_Importer.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Assimp_Mesh_Importer.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Assimp_Utils.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\file_dialog.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\ImageLoader.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\MessageLoop.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\standard_window.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\SysUtils_Load_Library.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Win_Utils.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Window.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ResourceCompile Include="..\window2\resource_script.rc">
+      <Filter>..\window2</Filter>
+    </ResourceCompile>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\List_View.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\List_View.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\CheckBox.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\CheckBox.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\Menu.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\Menu.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <None Include="info-proj.gyp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\ComboBox.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\ListBox.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Main\my_gfx_rect.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXBitmap.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\win32++\WCXXCDC.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\win32++\WCXXClientDC.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\win32++\WCXXGDIObject.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\win32++\WCXXMEMDC.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\APIs\win32++\WCXXWinApp.cpp">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\App_Intizialize_GL_DLL.cpp" />
+    <ClCompile Include="..\window2\GLMain.cpp" />
+    <ClCompile Include="..\window2\OpenGLFunctions.cpp" />
+    <ClCompile Include="..\window2\OpenGL_Utils.cpp" />
+    <ClCompile Include="..\window2\Resource_Loading.cpp" />
+    <ClCompile Include="..\window2\App_Initialize_Components.cpp" />
+    <ClCompile Include="network_tcp_iocp_server.cpp" />
+    <ClCompile Include="FreeTypeImplementation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\ComboBox.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\ListBox.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Main\my_gfx_rect.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXBitmap.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\win32++\WCXXCDC.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\win32++\WCXXClientDC.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\win32++\WCXXGDIObject.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\win32++\WCXXMEMDC.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\APIs\win32++\WCXXWinApp.h">
+      <Filter>..\window2\APIs\win32++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\App_Intizialize_GL_DLL.h" />
+    <ClInclude Include="..\window2\App_Initialize_Components.h" />
+    <ClInclude Include="..\window2\OpenGLFunctions.h" />
+    <ClInclude Include="network_tcp_iocp_server.h" />
+    <ClInclude Include="FreeTypeImplementation.h" />
+  </ItemGroup>
+</Project>

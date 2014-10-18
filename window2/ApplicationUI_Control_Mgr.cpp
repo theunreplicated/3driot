@@ -23,6 +23,7 @@ Windows::Window* ApplicationUI_Control_Mgr::m_parentWindow;
 Windows::Window* ApplicationUI_Control_Mgr::dragdropbutton;
 ui_mouse_pos_callback_type ui_mouse_pos_callback;
 //updatewindow?
+//@TODO:eigentliches hook_proc aufrufen,deshalb wohl auch probleme mit diesem Window
 LRESULT CALLBACK draw_field_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 	//@TODO:bei lbuttondown koordinaten(natürlich relativ zu dem Feld) hier,dann von diesem Punkt den entsprechenden OpenglGL-Pixel ausrechen,diesen einen dann glreadpixel übergeben,dass die depth werte ausliest,und da ich es so machen will,dass über den depth wert die id-des objekts gespeicert wird(textur) könnte man das obj so wählen//@TODO:verbesssertes subclassing

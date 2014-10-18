@@ -1,0 +1,12 @@
+//#version 330 core
+precision mediump float;
+varying vec2 UV;
+uniform sampler2D myTextureSampler;//out vec3 weggelassen
+void main()
+{
+
+	// Output color = red 
+	//color = vec3(1,0,0);
+//gl_FragColor = texture2D( myTextureSampler, UV ).rgb;
+gl_FragColor.rgb = texture2D( myTextureSampler, UV ).rgb;
+}

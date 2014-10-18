@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Main">
+      <UniqueIdentifier>{97112C77-0055-4FC5-1293-F3EB3AE0DD10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\window2">
+      <UniqueIdentifier>{01C13DCD-B60F-15E4-E315-41B5292FDD3E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Main\main.cpp">
+      <Filter>..\Main</Filter>
+    </ClCompile>
+    <ClInclude Include="..\Main\File_Parser.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+    <ClCompile Include="..\Main\File_Parser.cpp">
+      <Filter>..\Main</Filter>
+    </ClCompile>
+    <ClInclude Include="..\Main\GLStruct_Copy.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Main\ImageLoader_Copy.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+    <ClCompile Include="..\Main\ImageLoader_Copy.cpp">
+      <Filter>..\Main</Filter>
+    </ClCompile>
+    <ClInclude Include="..\Main\my_gfx_rect.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+    <ClCompile Include="..\Main\my_gfx_rect.cpp">
+      <Filter>..\Main</Filter>
+    </ClCompile>
+    <ResourceCompile Include="..\window2\resource_script.rc">
+      <Filter>..\window2</Filter>
+    </ResourceCompile>
+    <ClInclude Include="..\window2\resource.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\WinUtils.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\Win_Utils.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\MessageLoop.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\MessageLoop.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\OpenGLContext.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\OpenGLContext.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\SysUtils_Load_Library.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\SysUtils_Load_Library.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\GLMain.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\ApplicationWindow.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\ApplicationWindow.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\WindowStructs.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClCompile Include="..\window2\standard_window.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\window2\standard_window.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
+    <None Include="info-proj.gyp" />
+    <ClCompile Include="..\Main\Physics_Input_Data.cpp">
+      <Filter>..\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\App_Initialize_Components.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Main\Physics_Input_Data.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="App_Initialize_Components.h">
+      <Filter>..\Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

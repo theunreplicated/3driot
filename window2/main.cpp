@@ -1,6 +1,7 @@
 ﻿#include "ApplicationWindow.h"
 #include "MessageLoop.h"
 #include "Window.h"
+//#include <WinSock2.h>
 #include <Windows.h>
 #include <stdio.h>
 #include <map>
@@ -31,7 +32,7 @@
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
 #include "App_Initialize_Components.h"
-
+#include "../gyp_workspace2/FreeTypeImplementation.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 Windows::ApplicationWindow* aw; //Windows::Window*ws;
@@ -818,7 +819,8 @@ void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 
 }
-
+//http://www.gamedev.net/topic/625972-choosing-a-network-library/ OVERLAPPED I/O -> IOCP
+//http://stackoverflow.com/questions/10911294/potential-kind-of-asynchronous-overlapped-i-o-implementation-in-windows
 //@TODO:addonmessageinvoke muss return werte unterstützen
 void tab_handle_selection_change(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	int iPage = TabCtrl_GetCurSel(uicontrol->main_tab_control->window_handle);
@@ -828,23 +830,51 @@ bool capture_drag_drop = false;
 void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	OutputDebugString("mouse_move"); OutputDebugString(std::to_string(rand()).c_str()); OutputDebugString("\n");
 	if (capture_drag_drop){
-		DWORD mousepos = ::GetMessagePos();
+		/*DWORD mousepos = ::GetMessagePos();
 		POINTS p = MAKEPOINTS(mousepos);
 		//http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
 		//@TODO:gucken->da,warhscheinlich falsche koordinaten
 		LPPOINT pr = new tagPOINT; pr->x = p.x; pr->y = p.y;
 		::ScreenToClient(hWnd, pr);
-		Windows::WindowRect pxx = uicontrol->dragdropbutton->Position_get();
-		pxx.x = pr->x; pxx.y = pr->y;
+		Windows::WindowRect pxx = uicontrol->dragdropbutton->Position_get();*/
+	POINT pos;
+	pos.x = (int)(short)LOWORD(lParam);
+	pos.y = (int)(short)HIWORD(lParam);
+		//pxx.x = pos.x; pxx.y = pos.y;
 
-		uicontrol->dragdropbutton->Position_set(pxx, SWP_NOACTIVATE |
+		//TODO: send wm_poschanged und wm_poschaning
+
+
+
+		//SWP_NOZORDER | (bool)bRepaint * SWP_NOREDRAW
+
+		/*WINDOWPOS pos;
+		pos.hwnd = uicontrol->dragdropbutton->window_handle;
+		pos.hwndInsertAfter = NULL;
+		pos.cx = pxx.width; pos.cy = pxx.height;
+		pos.x = pxx.x; pos.y = pxx.y;
+		pos.flags = SWP_NOACTIVATE |
+			SWP_NOOWNERZORDER | SWP_NOZORDER ;
+		//::SendMessage(uicontrol->dragdropbutton->window_handle, WM_WINDOWPOSCHANGED, 0,(LPARAM)&pos);*/
+		//POINT pos;
+		//pos.x = (int)(short)LOWORD(lParam);
+		//pos.y = (int)(short)HIWORD(lParam);
+		RECT prc;
+		GetWindowRect(uicontrol->dragdropbutton->window_handle, &prc);
+		//ClientToScreen(hWnd, &pos);
+		MoveWindow(uicontrol->dragdropbutton->window_handle, pos.x,pos.y, prc.right - prc.left, prc.bottom - prc.top, TRUE);
+		bool bRepaint = true;
+		//setposition !=movewindow
+		/*uicontrol->dragdropbutton->Position_set(pxx, SWP_NOACTIVATE |
 			SWP_NOOWNERZORDER | SWP_NOZORDER |
 			SWP_NOSIZE);
+		*/
 		
-		RedrawWindow(uicontrol->dragdropbutton->window_handle,
+		/*RedrawWindow(uicontrol->dragdropbutton->window_handle,
 			NULL,
 			NULL,
 			RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+			*/
 		//InvalidateRect(uicontrol->dragdropbutton->window_handle, &(uicontrol->dragdropbutton->Rect_get()),true);
 		//Hinweis: http://stackoverflow.com/questions/2325894/difference-between-invalidaterect-and-redrawwindow 
 	}
@@ -860,8 +890,8 @@ void capture_release(HWND hWnd, WPARAM wParam, LPARAM lParam){
 void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	capture_drag_drop = true;
 	SetCapture(hWnd);
+	SetForegroundWindow(uicontrol->dragdropbutton->window_handle);//bringttop geht auch net
 	
-
 }//@TODO: http://codingmisadventures.wordpress.com/2009/03/06/dragging-or-moving-a-window-using-mouse-win32/
 //klappt wohl net richtig wg. fokus,den die controls von mousemove kriegen(aber nur vllt.)
 
@@ -884,7 +914,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	aw->window_handle = NULL;
 	main_window = new Windows::Window({ "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW, aw);
 aw->window_handle = main_window->window_handle;
-
+//es gibt auch noch showasync
 
 	//@TODO:vllt. aus applicationwindow die window-funktionen entfernen->dann nur noch message loop und wclass erzeuger
 	//Window*mainwindow = new Window(hInstance, { "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW,aw);
@@ -985,7 +1015,8 @@ m->showMenu();
 	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
 	aw->addOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
 	aw->addOnMessageInvoke(WM_LBUTTONUP, capture_release);
-
+	//SOCKET ss;
+	//WSAAsyncSelect(ss,main_window->window_handle,104,FD_READ);
 
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
@@ -1010,6 +1041,9 @@ m->showMenu();
 	glmain->initGL();//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
+	
+
+	FreeType_Implementation*ft = new FreeType_Implementation();
 	
 	
 	//Windows::WindowRect re = uicontrol->static_draw_field->Position_get();

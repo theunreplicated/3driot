@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DCB8D323-807A-0B6B-EC19-4BF2A258BB5B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>editor</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Locals">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\.\bin\;$(MSBuildProjectDirectory)\.\bin\</ExecutablePath>
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetPath>$(OutDir)\$(ProjectName)$(TargetExt)</TargetPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <EnablePREfast>false</EnablePREfast>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libEGL.lib;ILUT.lib;ILU.lib;DevIL.lib;gdi32.lib;user32.lib;assimpd.lib;comctl32.lib;comdlg32.lib;Shell32.lib;freetype253_D.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\objs\win32\vc2010;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\build\Debug_Win32\lib;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\lib;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libEGL.lib;ILUT.lib;ILU.lib;DevIL.lib;gdi32.lib;user32.lib;assimpd.lib;comctl32.lib;comdlg32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\build\Debug_Win32\lib;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\lib;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\angle_tracking_repository\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\glm\glm-0.9.5.3;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\DevIL-1.7.8-x86\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\ai_build\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="info-proj.gyp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Main\my_gfx_rect.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\ComboBox.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\ListBox.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXBitmap.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXCDC.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXClientDC.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXGDIObject.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXMEMDC.h" />
+    <ClInclude Include="..\window2\APIs\win32++\WCXXWinApp.h" />
+    <ClInclude Include="..\window2\App_Initialize_Components.h" />
+    <ClInclude Include="..\window2\App_Intizialize_GL_DLL.h" />
+    <ClInclude Include="..\window2\dingens_struct_base.h" />
+    <ClInclude Include="..\window2\egl_display_binding.h" />
+    <ClInclude Include="..\window2\GLMain.h" />
+    <ClInclude Include="..\window2\GLStructs.h" />
+    <ClInclude Include="..\window2\ext\skia\GrGLFunctions.h" />
+    <ClInclude Include="..\window2\IMGSTRUCTS.h" />
+    <ClInclude Include="..\window2\OpenGLFunctions.h" />
+    <ClInclude Include="..\window2\OpenGL_Data_Types.h" />
+    <ClInclude Include="..\window2\OpenGL_Utils.h" />
+    <ClInclude Include="..\window2\OpenGLContext.h" />
+    <ClInclude Include="..\window2\OpenGLImport.h" />
+    <ClInclude Include="..\window2\3DObject_Serializer.h" />
+    <ClInclude Include="..\window2\ApplicationUI_Control_Mgr.h" />
+    <ClInclude Include="..\window2\ApplicationWindow.h" />
+    <ClInclude Include="..\window2\Assimp_Material_Importer.h" />
+    <ClInclude Include="..\window2\Assimp_Mesh_Importer.h" />
+    <ClInclude Include="..\window2\Assimp_Utils.h" />
+    <ClInclude Include="..\window2\Assimp_Utils_m_convert_16.h" />
+    <ClInclude Include="..\window2\file_dialog.h" />
+    <ClInclude Include="..\window2\ImageLoader.h" />
+    <ClInclude Include="..\window2\Import_Object_Struct.h" />
+    <ClInclude Include="..\window2\MessageLoop.h" />
+    <ClInclude Include="..\window2\resource.h" />
+    <ClInclude Include="..\window2\Resource_Loading.h" />
+    <ClInclude Include="..\window2\standard_window.h" />
+    <ClInclude Include="..\window2\SysUtils_Load_Library.h" />
+    <ClInclude Include="..\window2\Window.h" />
+    <ClInclude Include="..\window2\WindowStructs.h" />
+    <ClInclude Include="..\window2\WinUtils.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\List_View.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\CheckBox.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.h" />
+    <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\Menu.h" />
+    <ClInclude Include="FreeTypeImplementation.h" />
+    <ClInclude Include="network_tcp_iocp_server.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Main\my_gfx_rect.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\ComboBox.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\ListBox.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXBitmap.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXCDC.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXClientDC.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXGDIObject.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXMEMDC.cpp" />
+    <ClCompile Include="..\window2\APIs\win32++\WCXXWinApp.cpp" />
+    <ClCompile Include="..\window2\App_Initialize_Components.cpp" />
+    <ClCompile Include="..\window2\App_Intizialize_GL_DLL.cpp" />
+    <ClCompile Include="..\window2\GLMain.cpp" />
+    <ClCompile Include="..\window2\main.cpp" />
+    <ClCompile Include="..\window2\egl_display_binding.cpp" />
+    <ClCompile Include="..\window2\OpenGLContext.cpp" />
+    <ClCompile Include="..\window2\3DObject_Serializer.cpp" />
+    <ClCompile Include="..\window2\ApplicationUI_Control_Mgr.cpp" />
+    <ClCompile Include="..\window2\ApplicationWindow.cpp" />
+    <ClCompile Include="..\window2\Assimp_Material_Importer.cpp" />
+    <ClCompile Include="..\window2\Assimp_Mesh_Importer.cpp" />
+    <ClCompile Include="..\window2\Assimp_Utils.cpp" />
+    <ClCompile Include="..\window2\file_dialog.cpp" />
+    <ClCompile Include="..\window2\ImageLoader.cpp" />
+    <ClCompile Include="..\window2\MessageLoop.cpp" />
+    <ClCompile Include="..\window2\OpenGLFunctions.cpp" />
+    <ClCompile Include="..\window2\OpenGL_Utils.cpp" />
+    <ClCompile Include="..\window2\Resource_Loading.cpp" />
+    <ClCompile Include="..\window2\standard_window.cpp" />
+    <ClCompile Include="..\window2\SysUtils_Load_Library.cpp" />
+    <ClCompile Include="..\window2\Win_Utils.cpp" />
+    <ClCompile Include="..\window2\Window.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\List_View.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\CheckBox.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.cpp" />
+    <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\Menu.cpp" />
+    <ClCompile Include="FreeTypeImplementation.cpp" />
+    <ClCompile Include="network_tcp_iocp_server.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\window2\resource_script.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
