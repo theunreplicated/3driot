@@ -923,12 +923,6 @@ aw->window_handle = main_window->window_handle;
 	
 	//aw->addOnMessageInvoke(WM_NOTIFY,onnotify_tab);
 	//ein und dieselbe window-klasse kriegt also dieselbe message loop,TODO:das in c++ nacbilden mit new XXx wenn möglich
-	/*CreateWindow(
-		"t1", "111text",
-		WS_VISIBLE | WS_OVERLAPPEDWINDOW ,
-		0, 0, 1500, 800,
-		NULL, NULL, hInstance, NULL);*/
-	//Window*z = new Window({ "edit", "z" }, { 50,50,30,30 }, WS_CHILD | WS_VISIBLE, aw, WS_EX_CLIENTEDGE,ccc);
 
 	Windows::Window*ws = new Windows::Window({ "STATIC", "" }, { 300, 300, 1000, 250 }, WS_VISIBLE | WS_CHILD,main_window, WS_EX_CLIENTEDGE);
 	Windows::Window*wx = new Windows::Window({ "EDIT", "123456789" }, { 100, 200, 1000, 250 }, WS_VISIBLE | WS_CHILD,main_window);
@@ -958,11 +952,7 @@ aw->window_handle = main_window->window_handle;
 	CheckDlgButton(wnd2, 1, BST_CHECKED);
 	*/
 	//HWND hCtrl0_0 = CreateWindowEx(0, WC_BUTTON, ("Check"), WS_VISIBLE | WS_CHILD | WS_TABSTOP | BS_AUTOCHECKBOX, 125, 111, 149, 37, aw->window_handle, (HMENU)0, hInstance, 0);
-	//Window*wedit = new Window(hInstance, { "edit", "freetext" }, { 155, 155 }, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE |ES_AUTOVSCROLL, aw);
-	//Window*wbtn = new Window(hInstance, { "button", "button" }, { 555, 555,200,200 }, WS_CHILD | WS_VISIBLE, aw);
-	//aw->addOnMessageInvoke(WM_KEYDOWN,keydown);//WM_CREATE shafft er net
-	//aw->addOnMessageInvoke(WM_COMMAND,oncommand);
-	//aw->addOnMessageInvoke(WM_LBUTTONDOWN,mousedown);
+
 	//mouse_hook=::SetWindowsHookEx(WH_MOUSE_LL,MouseProc,hInstance,0/*alle Threads*/);
 	default_focus = ::GetFocus();//@TODO:vllt. was anderes machen als gelicht den Fokus umzukehren,ich denke ,dass KOnzept mit dem Fokus kann ja wohl nicht so sinnlo sein
 	aw->addOnMessageInvoke(WM_KEYDOWN, keydown);

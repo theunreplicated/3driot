@@ -19,8 +19,9 @@ class FreeType_Face{
 public:
 	void set_font_size(unsigned int height, unsigned int secondparam = 0);
 	//http://stackoverflow.com/questions/17348596/freetype-error-ft-load-char-returns-36 daher->folgende Zeile
-	/*@pre vorher muss adjust_font_size aufgerufen weden*/FT_GlyphSlot load_char(FT_ULong to_load_char, FT_Int32 loadflag = FT_LOAD_RENDER);
-	FreeType_Face(FreeType_Implementation*impl,const char*font);
+	
+	FT_GlyphSlot load_char(FT_ULong to_load_char, FT_Int32 loadflag = FT_LOAD_RENDER);
+	FreeType_Face(FreeType_Implementation*impl, const char*font, unsigned int font_height);
 	
 
 };

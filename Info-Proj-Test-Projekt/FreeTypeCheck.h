@@ -8,12 +8,12 @@ TEST(FTCHECK, Init){
 }
 FreeType_Face*fc;
 TEST(FTCHECK, Face_init){
-	EXPECT_NO_THROW(fc = new FreeType_Face(ft, "C:\\Windows\\Fonts\\arial.ttf"));
+	EXPECT_NO_THROW(fc = new FreeType_Face(ft, "C:\\Windows\\Fonts\\arial.ttf",33));
 
 
 }
 TEST(FTCHECK, Face_loadchar){
-	EXPECT_NO_THROW(fc->set_font_size(33));
+	//
 	EXPECT_NO_THROW(fc->load_char('X'));
 
 

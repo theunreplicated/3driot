@@ -131,5 +131,7 @@ namespace OGL{
 	const GLenum GL_DEPTH_ATTACHMENT = 0x8D00;
 	const GLenum GL_RGBA8 = 0x8058;//@TODO:code damit entferene,da vermutlich nicht teil von gles 2.0
 	const GLenum GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
+	const GLenum GL_COMPILE_STATUS=0x8B81;
+	const GLenum GL_INFO_LOG_LENGTH=0x8B84;//taste bis zum nächsten zeichen wäre cool und andere text(blöcke)
 
 }

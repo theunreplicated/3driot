@@ -140,6 +140,7 @@ namespace OGL{
 	extern const GLenum GL_DEPTH_ATTACHMENT;
 	extern const GLenum GL_RGBA8;//@TODO:code damit entferene,da vermutlich nicht teil von gles 2.0
 	extern const GLenum GL_FRAMEBUFFER_COMPLETE;
-
+	extern const GLenum GL_COMPILE_STATUS;
+	extern const GLenum GL_INFO_LOG_LENGTH;
 }
 #endif

@@ -17,10 +17,10 @@ void FreeType_Face::FT_Function_CHECK(FT_Error result){
 	
 	if (result!=0){ throw std::runtime_error("freetype face returned an error"); }
 }
-FreeType_Face::FreeType_Face(FreeType_Implementation*impl,const char*font){
+FreeType_Face::FreeType_Face(FreeType_Implementation*impl,const char*font,unsigned int font_height){
 	ft_library = impl;//@TODO:pointer check
 	FT_Function_CHECK(FT_New_Face(impl->ft, font, 0, &face));
-
+	set_font_size(font_height);
 
 }
 void FreeType_Face::set_font_size(unsigned int height, unsigned int secondparam){
@@ -28,6 +28,7 @@ void FreeType_Face::set_font_size(unsigned int height, unsigned int secondparam)
 	FT_Function_CHECK(FT_Set_Pixel_Sizes(face, secondparam, height));
 }
 FT_GlyphSlot FreeType_Face::load_char(FT_ULong to_load_char,FT_Int32 loadflag){
+	//vor einem ft_load_char muss set_pixel_sizes aufgerufen werden
 	FT_Function_CHECK(FT_Load_Char(face, to_load_char, loadflag));//ruft internf ft_load_glyph auf,also highe rlevel da nich anzahl
 	return face->glyph;
 }

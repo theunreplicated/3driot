@@ -450,9 +450,6 @@
     <ClInclude Include="..\window2\OpenGL_Data_Types.h">
       <Filter>..\window2</Filter>
     </ClInclude>
-    <ClInclude Include="..\window2\OpenGL_Utils.h">
-      <Filter>..\window2</Filter>
-    </ClInclude>
     <ClInclude Include="..\window2\OpenGLContext.h">
       <Filter>..\window2</Filter>
     </ClInclude>
@@ -617,11 +614,12 @@
     <ClCompile Include="..\window2\App_Intizialize_GL_DLL.cpp" />
     <ClCompile Include="..\window2\GLMain.cpp" />
     <ClCompile Include="..\window2\OpenGLFunctions.cpp" />
-    <ClCompile Include="..\window2\OpenGL_Utils.cpp" />
     <ClCompile Include="..\window2\Resource_Loading.cpp" />
     <ClCompile Include="..\window2\App_Initialize_Components.cpp" />
     <ClCompile Include="network_tcp_iocp_server.cpp" />
     <ClCompile Include="FreeTypeImplementation.cpp" />
+    <ClCompile Include="..\window2\ShaderSource.cpp" />
+    <ClCompile Include="..\window2\GLProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h">
@@ -657,5 +655,7 @@
     <ClInclude Include="..\window2\OpenGLFunctions.h" />
     <ClInclude Include="network_tcp_iocp_server.h" />
     <ClInclude Include="FreeTypeImplementation.h" />
+    <ClInclude Include="..\window2\ShaderSource.h" />
+    <ClInclude Include="..\window2\GLProgram.h" />
   </ItemGroup>
 </Project>

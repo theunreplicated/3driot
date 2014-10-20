@@ -10,6 +10,8 @@
 #include "WindowStructs.h"
 #include "Import_Object_Struct.h"
 #include <glm\mat4x4.hpp>
+#include "GLProgram.h"
+#include "ShaderSource.h"
 //mat#include <glm/mat4x4.hpp>
 using std::vector;
 typedef Windows::WindowRect GLRect;
@@ -37,12 +39,14 @@ public:
 	T_Gl_typ * get_pixels_at_position(int pos_x, int pos_y, GLenum format,GLenum type, int width = 1, int height = 1);/*@TODO:template für typ*/
 	void TEST_create_dummy_texture();
 	void TEST_restore_dummy_texture();
+	void set_current_program(GL_Program*program);
 private:
 	//T_swapBuffersFuncType swapBuffers;
-	//void(*swapBuffers)();
+	GL_Program*m_current_program;
 	void swapBuffers();
 	std::vector<T_DRAW_STRUCTURE> TEST_orig_draw_elements_for_restoring;
-	GLuint programId; GLsizei width, height;
+
+	GLsizei width, height;
 	//GLuint * vertex_buffer,*indices_buffer,*texcoords_buffer;
 	//GLuint * Diffuse_Texture_IDs;
 	//std::vector<GLuint> vertex_buffer, indices_buffer, texcoords_buffer, Diffuse_Texture_IDs;
@@ -54,7 +58,6 @@ private:
 	T_swapBuffersFuncType swapBuffersFunc;
 	//template <typename T_vertices_data, typename T_indices_data>
 	//void addRenderElement(T_vertices_data &vertices, T_indices_data &indices, draw_method dm, int num_elements_to_draw);
-	GLuint attrib_location_counter = 0;
 	GLuint loc_Matrix;
 	GLuint loc_Position, ID_framebuffer, colorRenderbuffer, depthRenderbuffer;
 	GLuint texcoord_position,diffuse_Texture_sample_Loc;

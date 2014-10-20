@@ -92,12 +92,12 @@
     <ClInclude Include="..\window2\dingens_struct_base.h" />
     <ClInclude Include="..\window2\egl_display_binding.h" />
     <ClInclude Include="..\window2\GLMain.h" />
+    <ClInclude Include="..\window2\GLProgram.h" />
     <ClInclude Include="..\window2\GLStructs.h" />
     <ClInclude Include="..\window2\ext\skia\GrGLFunctions.h" />
     <ClInclude Include="..\window2\IMGSTRUCTS.h" />
     <ClInclude Include="..\window2\OpenGLFunctions.h" />
     <ClInclude Include="..\window2\OpenGL_Data_Types.h" />
-    <ClInclude Include="..\window2\OpenGL_Utils.h" />
     <ClInclude Include="..\window2\OpenGLContext.h" />
     <ClInclude Include="..\window2\OpenGLImport.h" />
     <ClInclude Include="..\window2\3DObject_Serializer.h" />
@@ -113,6 +113,7 @@
     <ClInclude Include="..\window2\MessageLoop.h" />
     <ClInclude Include="..\window2\resource.h" />
     <ClInclude Include="..\window2\Resource_Loading.h" />
+    <ClInclude Include="..\window2\ShaderSource.h" />
     <ClInclude Include="..\window2\standard_window.h" />
     <ClInclude Include="..\window2\SysUtils_Load_Library.h" />
     <ClInclude Include="..\window2\Window.h" />
@@ -139,6 +140,7 @@
     <ClCompile Include="..\window2\App_Initialize_Components.cpp" />
     <ClCompile Include="..\window2\App_Intizialize_GL_DLL.cpp" />
     <ClCompile Include="..\window2\GLMain.cpp" />
+    <ClCompile Include="..\window2\GLProgram.cpp" />
     <ClCompile Include="..\window2\main.cpp" />
     <ClCompile Include="..\window2\egl_display_binding.cpp" />
     <ClCompile Include="..\window2\OpenGLContext.cpp" />
@@ -152,8 +154,8 @@
     <ClCompile Include="..\window2\ImageLoader.cpp" />
     <ClCompile Include="..\window2\MessageLoop.cpp" />
     <ClCompile Include="..\window2\OpenGLFunctions.cpp" />
-    <ClCompile Include="..\window2\OpenGL_Utils.cpp" />
     <ClCompile Include="..\window2\Resource_Loading.cpp" />
+    <ClCompile Include="..\window2\ShaderSource.cpp" />
     <ClCompile Include="..\window2\standard_window.cpp" />
     <ClCompile Include="..\window2\SysUtils_Load_Library.cpp" />
     <ClCompile Include="..\window2\Win_Utils.cpp" />

@@ -2,7 +2,7 @@
 #define INC_GLMain_CPP
 #include <string>
 #include <fstream>
-#include "../window2/OpenGL_Utils.h"
+#include "OpenGLImport.h"
 //#include "GLStructs.h"
 //#include "Matrix.h"
 #include "../window2/WindowStructs.h"
@@ -10,6 +10,7 @@
 #include <glm\mat4x4.hpp>
 using namespace OGL;
 #include "../window2/GLMain.h"
+#include "resource.h"
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setCameraTransformMatrix(glm::mat4 matrix){
 	//proj_camera_matrix = matrix;
@@ -37,9 +38,9 @@ template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::bindAttribLocation(const char* attrib_name){
 	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
 	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
-	glBindAttribLocation(programId, attrib_location_counter, attrib_name);
-	attrib_location_counter++;
-	return (attrib_location_counter - 1);
+	glBindAttribLocation(m_current_program->m_program_id, m_current_program->attrib_location_counter, attrib_name);
+	m_current_program->attrib_location_counter++;
+	return (m_current_program->attrib_location_counter - 1);
 }
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
@@ -91,12 +92,23 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	//num_draw_elements++;
 }
 
+template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::set_current_program(GL_Program* program){
+	m_current_program = program; glUseProgram(program->m_program_id);
+
+	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders/
+	texcoord_position = bindAttribLocation("vertexUV");//@TODO:rename von bindattriblocation
+	loc_Matrix = glGetUniformLocation(m_current_program->m_program_id, "MVP");
+	diffuse_Texture_sample_Loc = glGetUniformLocation(m_current_program->m_program_id, "myTextureSampler");
+
+
+}
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::GLMain(/*void(*swapBuffersFunc)(),*/ T_swapBuffersFuncType swapBuffersFunc2, T_swapBuffers_class_reference * swapBuffersFuncClass, bool use_legacy_system_opengl){
 	//	programId = glCreateProgram555();
 
-	programId = glCreateProgram();
+//	programId = glCreateProgram();
 
 	//draw_elements = new THREEDObject[2];
 	//glCreateShader(GL_VERTEX_SHADER);
@@ -409,20 +421,24 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 	/*programId = */
 	//glDepthFunc(GL_LEQUAL);//@TODO:gucken ob ich das vllt. doch besser nicht auskommentiere
+	GL_Program*gp = new GL_Program();
+
 	glDepthMask(GL_TRUE);
 	glDepthRangef(0.0, 1.0);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
 	//@TODO:Problem depth test:anweisung konfigureiren wie hier:http://www.opengl.org/wiki/Depth_Buffer
-	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl, programId);
-	glUseProgram(programId);
+	//	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl, programId);
+	//Shader_Source sc();//gefährlich@TODO:gucken
+	Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
+		(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}) );
+	gp->assign_shaders(sc->setup_for_usage_by_program());
+	//glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
 	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
-	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders/
-	texcoord_position = bindAttribLocation("vertexUV");
-	loc_Matrix = glGetUniformLocation(programId, "MVP");
-	diffuse_Texture_sample_Loc = glGetUniformLocation(programId, "myTextureSampler");
+	
+	set_current_program(gp);
 	//Diffuse_Texture_ID = loadTexture();
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	//vertex_buffer = new GLuint[num_draw_elements];
