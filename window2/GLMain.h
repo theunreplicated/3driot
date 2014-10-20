@@ -24,7 +24,7 @@ public:
 	void render(bool swap_the_Buffers=true);
 	//void setNumDrawElements(int count);
 	void addMesh_RenderObject_struct(Mesh_RenderObject *obj, float* pass_matrix=0);
-	void initGL();
+	void initGL(GL_Program*program_to_start_with);
 	void setViewPort(GLRect rect);
 	std::vector<T_DRAW_STRUCTURE> draw_elements;
 	//THREEDObject * draw_elements; 

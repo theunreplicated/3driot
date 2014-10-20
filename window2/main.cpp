@@ -1,6 +1,8 @@
 ﻿#include "ApplicationWindow.h"
 #include "MessageLoop.h"
 #include "Window.h"
+#include "ShaderSource.h"
+#include "GLProgram.h"
 //#include <WinSock2.h>
 #include <Windows.h>
 #include <stdio.h>
@@ -28,6 +30,7 @@
 #include "WinUtils.h"
 #include "GLStructs.h"
 #include <stdio.h>
+#include "resource.h"
 #include "APIs\OS\Win\UI_Controls\List_View.h"
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
@@ -1028,7 +1031,20 @@ m->showMenu();
 	//glmain->setViewPort({ pos.right, pos.bottom, pos.left, pos.top/*@TODO:check ob reihenfolge von left und top stimmt,kann auch sein dass ichs vertauscht hab*/ });
 	
 	//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
-	glmain->initGL();//vieles wenn möglich als const markieren wegen thread-safety(überblick)
+
+	GL_Program*gp = new GL_Program();
+	
+	//Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
+	//	(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}));//unglaublich dass das net geht
+	Shader_Source*sc = new Shader_Source(
+#ifndef USE_GLESV2
+	{ IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH }, { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH }
+#else
+	{IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}, {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}
+#endif
+	);//orgendwie komisch
+	gp->assign_shaders(sc->setup_for_usage_by_program());
+	glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	

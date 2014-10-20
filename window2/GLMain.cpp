@@ -386,7 +386,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 }
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
-void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::initGL(){
+void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::initGL(GL_Program*program_to_start_with){
 	GLuint VertexArrayID;
 	//glGenVertexArrays(1, &VertexArrayID);
 	//glBindVertexArray(VertexArrayID);
@@ -421,7 +421,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 	/*programId = */
 	//glDepthFunc(GL_LEQUAL);//@TODO:gucken ob ich das vllt. doch besser nicht auskommentiere
-	GL_Program*gp = new GL_Program();
+	//GL_Program*gp = new GL_Program();
 
 	glDepthMask(GL_TRUE);
 	glDepthRangef(0.0, 1.0);
@@ -431,14 +431,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	//@TODO:Problem depth test:anweisung konfigureiren wie hier:http://www.opengl.org/wiki/Depth_Buffer
 	//	OpenGL_Utils::LoadShaders(m_use_legacy_system_opengl, programId);
 	//Shader_Source sc();//gefährlich@TODO:gucken
-	Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
-		(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}) );
-	gp->assign_shaders(sc->setup_for_usage_by_program());
+	//Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
+	//	(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}) );
+	//gp->assign_shaders(sc->setup_for_usage_by_program());
 	//glUseProgram(programId);
 	//loc_Position = 0;//bei >anzahl def. error,daher ist mit ++ am besten oder glgetattriblocation
 	//glBindAttribLocation(programId, loc_Position,"vertexPosition_modelspace");
 	
-	set_current_program(gp);
+	set_current_program(program_to_start_with);
 	//Diffuse_Texture_ID = loadTexture();
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	//vertex_buffer = new GLuint[num_draw_elements];
