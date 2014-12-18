@@ -64,10 +64,7 @@ namespace Windows{
 
 }
 
-	void Window_ApplicationWindow_std_callback(HWND hWnd, WPARAM wParam, LPARAM lParam){
-		MessageBox(NULL, "dssd---", "dsds", MB_OK);
 
-	}
 	void Window::on(winproc_promise_event pe, winproc_callback_function callbackf){
 		//m_ApplicationWindow->addOnMessageInvoke(pe.invoke_on_message, Window_ApplicationWindow_std_callback);
 		winproc_additional_data_struct wads;

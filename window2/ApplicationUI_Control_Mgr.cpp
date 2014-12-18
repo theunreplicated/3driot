@@ -121,10 +121,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::Window* mw, int wi
 		GWLP_WNDPROC, (LONG_PTR)draw_field_proc);
 
 
-	CheckBox*cb = new CheckBox("text", {20,20,710,150},mw);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
-	cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
-
-
+	
 	Windows::Window* combox = new Windows::Window({ WC_COMBOBOX, "" }, { 200, 200, 750, 300 }, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,mw);
 	HWND hWndComboBox = combox->window_handle;
 	Combo_Box*cb1 = new Combo_Box(&hWndComboBox);

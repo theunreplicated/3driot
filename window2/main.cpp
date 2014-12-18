@@ -35,6 +35,7 @@
 #include "APIs\OS\Win\UI_Controls\Menu.h"
 #include "APIs\OS\Win\UI_Controls\TrackBar.h"
 #include "App_Initialize_Components.h"
+#include "APIs\OS\Win\UI_Controls\CheckBox.h"
 #include "../gyp_workspace2/FreeTypeImplementation.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -993,6 +994,9 @@ m->showMenu();
 
 	lv->items->add("Hallo,kann ich behilflich sein??");
 
+	CheckBox*cb = new CheckBox("text", { 20, 20, 710, 150 },main_window);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
+	cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
+	cb->window->on(BTN_CLICK, action_dialog_onclick/*natürlich falsch;checkboxes sind buttons*/);
 
 	//Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
 	//DoCreateTabControl(ccc, hInstance);
@@ -1042,15 +1046,16 @@ m->showMenu();
 #else
 	{IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}, {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}
 #endif
-	);//orgendwie komisch
+	);//ohhirgendwie komisch,ock,ack
 	gp->assign_shaders(sc->setup_for_usage_by_program());
 	glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
+	delete sc;
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
 
 	FreeType_Implementation*ft = new FreeType_Implementation();
-	
+	//FreeType_Face*fc = new FreeType_Face(ft);
 	
 	//Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
 	/*float aspectRatio = float(/*re.width*//*pos.right) / float(/*re.height*//*pos.bottom);//@TODO:mit Rect

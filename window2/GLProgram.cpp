@@ -14,12 +14,12 @@ void GL_Program::assign_shaders(ShaderSource_Shader_IDs shader_ids){
 	//check
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
-
+	//nur noch sehr wenig vom orogonal-code von opengl-programming;boah stell vor ich find die schreibfehler auf einmal lustig.orogonal.hihihi.hahha.wie lustig..hohohohoho
 	glGetProgramiv(m_program_id, GL_LINK_STATUS, &Result);
 	glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	char*ProgramErrorMessage = new char[max(InfoLogLength, int(1))];
 	glGetProgramInfoLog(m_program_id, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-	//fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+	
 	OutputDebugString(&ProgramErrorMessage[0]);
 	delete[] ProgramErrorMessage;
 

@@ -22,7 +22,7 @@ namespace Windows{
 
 
 			 if (data.wpe.invoke_on_message == message){
-				 bool promise_true_fragezeichen; bool called = false;
+				 bool promise_true_fragezeichen=false; bool called = false;
 				 if (data.wpe.use_window_check){
 					 if (lParam == (LPARAM)*data.wpe.wnd_ptr){
 						 called = true;
@@ -89,7 +89,7 @@ namespace Windows{
 
 	}//@TODO: abgeleitetete procs von einzelenen controls unterstützen
 	 ApplicationWindow::ApplicationWindow(LPCSTR class_name,HINSTANCE hInstance,  WNDPROC proc,wndclass_style_data additonal_style_data)/*:standard_window(window_handle,window_handle)*/{
-		 WNDCLASS wc = {0};
+		 WNDCLASSA wc = {0};
 		m_hInstance= hInstance;
 		wc.style = CS_OWNDC;
 		wc.lpfnWndProc = proc;
@@ -104,7 +104,7 @@ namespace Windows{
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = class_name;
 	
-		(!RegisterClass(&wc) ?throw std::runtime_error("registering window class failed"):true);
+		(!RegisterClassA(&wc) ?throw std::runtime_error("registering window class failed"):true);
 	
 		//m_ApplicationWindow = this;//vllt.schlechter stil?
 		/*window_handle = CreateWindow(

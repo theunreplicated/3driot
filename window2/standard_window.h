@@ -15,17 +15,16 @@ namespace Windows{
 		HWND window_handle;
 		char *Text_get();
 		int Text_set(LPCTSTR lpString);
-		
+
 		int Position_set(WindowRect rect, UINT uFlags = SWP_NOZORDER);
 		void on(winproc_promise_event pe, winproc_callback_function callbackf);
 		HDC DeviceContext_get();
 		int DeviceContext_release(HDC device_context);//TODO:ohne arg,selbes wie _get
 		RECT  Rect_get();
-		
+
 		WindowRect ClientRect_get();
 		//http://stackoverflow.com/questions/17488826/the-meaning-of-sw-show-and-sw-shownormal
 		int show(int show_command = SW_SHOW/*NORMAL*//*da wohl auch show/hide möglich sein soll,nur vllt. ist das dann mit dem Restoren falsch*/);
-
 	};
 }
 #endif
