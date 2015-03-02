@@ -28,7 +28,8 @@ namespace Resource{
 		char* buffer = new char[rt->size + 1];
 		::memcpy(buffer, rt->data, rt->size);
 		buffer[rt->size] = 0; // NULL terminator
-
+		
+		delete rt->data;/*oder delete[]?*/
 		return buffer;
 	}
 };

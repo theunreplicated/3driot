@@ -1,10 +1,17 @@
 #include "GLProgram.h"
-#include "OpenGLImport.h"
+
 using namespace OGL;
 GL_Program::GL_Program(){
 	m_program_id = glCreateProgram();
 	
 
+}
+GLuint GL_Program::bindAttribLocation(const char* attrib_name){
+	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
+	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
+	glBindAttribLocation(m_program_id, attrib_location_counter, attrib_name);
+	attrib_location_counter++;
+	return (attrib_location_counter - 1);
 }
 void GL_Program::assign_shaders(ShaderSource_Shader_IDs shader_ids){
 	glAttachShader(m_program_id, shader_ids.vertex_id);

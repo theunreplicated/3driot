@@ -37,6 +37,7 @@
 #include "App_Initialize_Components.h"
 #include "APIs\OS\Win\UI_Controls\CheckBox.h"
 #include "../gyp_workspace2/FreeTypeImplementation.h"
+#include "../gyp_workspace2/GL_Text_Render_Main.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 Windows::ApplicationWindow* aw; //Windows::Window*ws;
@@ -1047,30 +1048,25 @@ m->showMenu();
 	{IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}, {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}
 #endif
 	);//ohhirgendwie komisch,ock,ack
+	//@TODO:das essl brauchen wir nicht mehr
+	//test code//@todo:entfernen
+	
 	gp->assign_shaders(sc->setup_for_usage_by_program());
 	glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	delete sc;
+
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
 	
-
-	FreeType_Implementation*ft = new FreeType_Implementation();
+	/*GL_Program*gp_text = new GL_Program();
+	Shader_Source*scc = new Shader_Source({ IDR_WIKIBOOKS_FREETYPE_VERTEX_SHADER, WIKIBOOKS_FREETYPE_VERTEX_SHADER_PATH }, { IDR_WIKIBOOKS_FREETYPE_FRAGMENT_SHADER, WIKIBOOKS_FREETYPE_FRAGMENT_SHADER_PATH });
+	gp_text->assign_shaders(scc->setup_for_usage_by_program());//am besten wärs wenn das shader_source objekte akzeptieren würde
+	GL_Text_Render_Main<swapBuffersFunc, OpenGLContext>*gtrm = new GL_Text_Render_Main<swapBuffersFunc, OpenGLContext>(&OpenGLContext::SwapBuffers, ctx,false);
+	gtrm->initGL(gp_text);
+	gtrm->render();*/
+	//FreeType_Implementation*ft = new FreeType_Implementation();
 	//FreeType_Face*fc = new FreeType_Face(ft);
 	
-	//Windows::WindowRect re = uicontrol->static_draw_field->Position_get();
-	/*float aspectRatio = float(/*re.width*//*pos.right) / float(/*re.height*//*pos.bottom);//@TODO:mit Rect
-
-	//glm::mat4 matt2 = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
-	projection_matrix = glm::perspective(45.0f, aspectRatio, 0.01f, 5000.0f);
-	glm::mat4 model_mat = glm::mat4(1.0f);
-
-
-//	glmain->setCameraandProjMatrix(std_res);
-	glmain->setProjectionMatrix(projection_matrix);
-	glmain->setCameraMatrix(camera_mat);
-	//LPWSTR dcc = dc->OpenFileName(L"C:\\Users\\ultimateFORCE\\Desktop");
-
-	*/
 	Application::set_std_camera_projection_matrices(glmain,rect.width,rect.height);
 
 	//Thread*t = new Thread(threadFunc, NULL);

@@ -1,6 +1,7 @@
 #ifndef INC_FILE_DIALOG_H
 #define INC_FILE_DIALOG_H
 #include <Windows.h>
+#include <commdlg.h>
 namespace Windows{
 	namespace Dialogs{
 		class File_Dialog{

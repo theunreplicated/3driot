@@ -1,14 +1,9 @@
-#version 330 core
-in vec2 UV;
-// Output data
-//out vec3 color;
-out vec4 color;
-uniform sampler2D myTextureSampler;
+#version 120
+varying vec2 UV;
+uniform sampler2D myTextureSampler;//out vec3 weggelassen
 void main()
 {
-//https://code.google.com/p/opengl-tutorial-org/source/browse/tutorial05_textured_cube/TextureFragmentShader.fragmentshader
-	// Output color = red 
-	//color = vec3(1,0,0);
-//color = texture2D( myTextureSampler, UV ).rgb;
-color = texture2D( myTextureSampler, UV );
+
+//gl_FragColor.rgb = texture2D( myTextureSampler, UV ).rgb;//vllt.ist das nur so korrekt??
+gl_FragColor = texture2D( myTextureSampler, UV );
 }

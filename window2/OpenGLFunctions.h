@@ -45,7 +45,7 @@ namespace OGL{
 	//};	
 	//struct Uniforms{
 	IMPORT_GL_DECLARE(UniformMatrix4fv);
-
+	IMPORT_GL_DECLARE(Uniform4fv);
 	//IMPORT_GL_DECLARE(GenVertexArrays);
 	//IMPORT_GL_DECLARE(BindVertexArray);
 
@@ -82,12 +82,15 @@ namespace OGL{
 	IMPORT_GL_DECLARE(RenderbufferStorage);
 	IMPORT_GL_DECLARE(FramebufferRenderbuffer);
 	IMPORT_GL_DECLARE(CheckFramebufferStatus);
+
+	IMPORT_GL_DECLARE(BlendFunc);
 }
 
 namespace OGL{
 	extern const GLenum GL_VERTEX_SHADER;
 	extern const GLenum GL_ARRAY_BUFFER;
 	extern const GLenum GL_STATIC_DRAW;
+	extern const GLenum GL_DYNAMIC_DRAW;
 	extern const GLenum GL_ELEMENT_ARRAY_BUFFER;
 
 	extern const GLenum GL_FRAGMENT_SHADER;//https://chromium.googlesource.com/angle/angle/+/master/include/GLES2/gl2.h
@@ -98,6 +101,7 @@ namespace OGL{
 	extern const GLenum GL_TRUE;
 	extern const  GLenum GL_FLOAT;
 	extern const GLenum GL_TRIANGLES;//TODO merge zu einem
+	extern const GLenum GL_TRIANGLE_STRIP;
 	extern const GLenum GL_VERSION;
 	extern const GLenum GL_SCISSOR_TEST;
 	extern const GLenum GL_UNPACK_ALIGNMENT;
@@ -109,6 +113,10 @@ namespace OGL{
 	extern const GLenum GL_NEAREST;
 	extern const GLenum GL_TEXTURE_MIN_FILTER;
 	extern const GLenum GL_TEXTURE_MAG_FILTER;
+	extern const GLenum GL_TEXTURE_WRAP_S;
+	extern const GLenum GL_TEXTURE_WRAP_T;
+	extern const GLenum GL_CLAMP_TO_EDGE;
+	extern const GLenum GL_LINEAR;
 	extern const GLenum GL_TEXTURE0;
 	extern const GLenum GL_RGB;
 	extern const GLenum GL_LESS;
@@ -142,5 +150,8 @@ namespace OGL{
 	extern const GLenum GL_FRAMEBUFFER_COMPLETE;
 	extern const GLenum GL_COMPILE_STATUS;
 	extern const GLenum GL_INFO_LOG_LENGTH;
+	extern const GLenum GL_BLEND;
+	extern const GLenum GL_SRC_ALPHA;
+	extern const GLenum GL_ONE_MINUS_SRC_ALPHA;
 }
 #endif

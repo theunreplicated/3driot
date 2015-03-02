@@ -53,7 +53,7 @@ private:
 	void create_and_bind_framebuffer();
 	void create_color_renderbuffer();
 	void create_depth_renderbuffer();
-	GLuint bindAttribLocation(const char* attrib_name);
+	//GLuint bindAttribLocation(const char* attrib_name);
 	T_swapBuffers_class_reference *swap_buffers_func_class;
 	T_swapBuffersFuncType swapBuffersFunc;
 	//template <typename T_vertices_data, typename T_indices_data>

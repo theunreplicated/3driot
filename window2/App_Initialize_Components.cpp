@@ -71,11 +71,11 @@ namespace Application{
 			return 0; break;
 		case WM_CLOSE:
 			PostQuitMessage(0); break;//Geht jetzt auch beim klick aufs x
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
+		//default:
+			
 
 		}
-
+		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	struct window_info{
 		bool maximized;

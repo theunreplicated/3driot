@@ -37,6 +37,7 @@ namespace OGL{
 	//};	
 	//struct Uniforms{
 	IMPORT_GL_DECLARE_NORMAL(UniformMatrix4fv);
+	IMPORT_GL_DECLARE_NORMAL(Uniform4fv);
 
 	//IMPORT_GL_DECLARE_NORMAL(GenVertexArrays);
 	//IMPORT_GL_DECLARE_NORMAL(BindVertexArray);
@@ -74,11 +75,13 @@ namespace OGL{
 	IMPORT_GL_DECLARE_NORMAL(RenderbufferStorage);
 	IMPORT_GL_DECLARE_NORMAL(FramebufferRenderbuffer);
 	IMPORT_GL_DECLARE_NORMAL(CheckFramebufferStatus);
+	IMPORT_GL_DECLARE_NORMAL(BlendFunc);
 }
 namespace OGL{
 	const GLenum GL_VERTEX_SHADER = 0x8B31;
 	const GLenum GL_ARRAY_BUFFER = 0x8892;
 	const GLenum GL_STATIC_DRAW = 0x88E4;
+	const GLenum GL_DYNAMIC_DRAW = 0x88E8;
 	const GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
 
 	const GLenum GL_FRAGMENT_SHADER = 0x8B30;//https://chromium.googlesource.com/angle/angle/+/master/include/GLES2/gl2.h
@@ -89,6 +92,7 @@ namespace OGL{
 	const GLenum GL_TRUE = 1;
 	const  GLenum GL_FLOAT = 0x1406;
 	const GLenum GL_TRIANGLES = 0x0004;//TODO merge zu einem
+	const GLenum GL_TRIANGLE_STRIP = 0x0005;
 	const GLenum GL_VERSION = 0x1F02;
 	const GLenum GL_SCISSOR_TEST = 0x0C11;
 	const GLenum GL_UNPACK_ALIGNMENT = 0x0CF5;
@@ -100,6 +104,10 @@ namespace OGL{
 	const GLenum GL_NEAREST = 0x2600;
 	const GLenum GL_TEXTURE_MIN_FILTER = 0x2801;
 	const GLenum GL_TEXTURE_MAG_FILTER = 0x2800;
+	const GLenum GL_TEXTURE_WRAP_S = 0x2802;
+	const GLenum GL_TEXTURE_WRAP_T = 0x2803;
+	const GLenum GL_CLAMP_TO_EDGE = 0x812F;
+	const GLenum GL_LINEAR = 0x2601;
 	const GLenum GL_TEXTURE0 = 0x84C0;
 	const GLenum GL_RGB = 0x1907;
 	const GLenum GL_LESS = 0x0201;
@@ -133,5 +141,9 @@ namespace OGL{
 	const GLenum GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
 	const GLenum GL_COMPILE_STATUS=0x8B81;
 	const GLenum GL_INFO_LOG_LENGTH=0x8B84;//taste bis zum nächsten zeichen wäre cool und andere text(blöcke)
+
+	const GLenum GL_BLEND=0x0BE2;
+	const GLenum/*const kosten glaub ich n cast wenn in ohne const verwendet wird*/ GL_SRC_ALPHA=0x0302;
+	const GLenum GL_ONE_MINUS_SRC_ALPHA = 0x0303;
 
 }

@@ -620,6 +620,7 @@
     <ClCompile Include="FreeTypeImplementation.cpp" />
     <ClCompile Include="..\window2\ShaderSource.cpp" />
     <ClCompile Include="..\window2\GLProgram.cpp" />
+    <ClCompile Include="GL_Text_Render_Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h">
@@ -657,5 +658,6 @@
     <ClInclude Include="FreeTypeImplementation.h" />
     <ClInclude Include="..\window2\ShaderSource.h" />
     <ClInclude Include="..\window2\GLProgram.h" />
+    <ClInclude Include="GL_Text_Render_Main.h" />
   </ItemGroup>
 </Project>

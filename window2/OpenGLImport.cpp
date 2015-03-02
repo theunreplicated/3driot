@@ -53,6 +53,7 @@ IMPORT_GL_FUNC(EnableVertexAttribArray);
 IMPORT_GL_FUNC(DisableVertexAttribArray);
 
 IMPORT_GL_FUNC(UniformMatrix4fv);
+IMPORT_GL_FUNC(Uniform4fv);
 
 //IMPORT_GL_FUNC(GenVertexArrays);
 //IMPORT_GL_FUNC(BindVertexArray);
@@ -87,6 +88,8 @@ IMPORT_GL_FUNC(BindRenderbuffer);
 IMPORT_GL_FUNC(RenderbufferStorage);
 IMPORT_GL_FUNC(FramebufferRenderbuffer);
 IMPORT_GL_FUNC(CheckFramebufferStatus);
+
+IMPORT_GL_FUNC(BlendFunc);//3x uffffffff...
 //@TODO:in module machen,dann falss import fail->einzelen module nicht verfügbar
 //if (import("glDrawElements")){ OutputDebugString("----"); }
 //else{

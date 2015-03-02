@@ -29,6 +29,7 @@ namespace Windows{
 
 
 		}
+	
 		LPWSTR File_Dialog::OpenFileName(LPCWSTR initial_dir){//stdafx. mitlinken bedeutetn unicode(W),also sonst doch keien Unterscheide
 			
 			ofn.lpstrInitialDir =initial_dir;

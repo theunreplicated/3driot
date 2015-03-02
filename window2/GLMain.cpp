@@ -34,14 +34,14 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 }
 
 
-template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
+/*template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 GLuint GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::bindAttribLocation(const char* attrib_name){
 	//https://www.opengl.org/discussion_boards/showthread.php/171837-glBindAttribLocation-after-glLinkProgram
 	//muss vor glLinkProgram(damit Shader linken)aufgerufen werden,damit vor initGL
 	glBindAttribLocation(m_current_program->m_program_id, m_current_program->attrib_location_counter, attrib_name);
 	m_current_program->attrib_location_counter++;
 	return (m_current_program->attrib_location_counter - 1);
-}
+}*/
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::setViewPort(GLRect rect){
 	glViewport(rect.x, rect.y, rect.width, rect.height);
@@ -96,8 +96,8 @@ template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::set_current_program(GL_Program* program){
 	m_current_program = program; glUseProgram(program->m_program_id);
 
-	loc_Position = bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders/
-	texcoord_position = bindAttribLocation("vertexUV");//@TODO:rename von bindattriblocation
+	loc_Position = m_current_program->bindAttribLocation("vertexPosition_modelspace");//@TODO:check ob wirklich vor loadShaders/
+	texcoord_position = m_current_program->bindAttribLocation("vertexUV");//@TODO:rename von bindattriblocation
 	loc_Matrix = glGetUniformLocation(m_current_program->m_program_id, "MVP");
 	diffuse_Texture_sample_Loc = glGetUniformLocation(m_current_program->m_program_id, "myTextureSampler");
 

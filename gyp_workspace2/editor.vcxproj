@@ -124,6 +124,7 @@
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.h" />
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\Menu.h" />
     <ClInclude Include="FreeTypeImplementation.h" />
+    <ClInclude Include="GL_Text_Render_Main.h" />
     <ClInclude Include="network_tcp_iocp_server.h" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
     <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.cpp" />
     <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\Menu.cpp" />
     <ClCompile Include="FreeTypeImplementation.cpp" />
+    <ClCompile Include="GL_Text_Render_Main.cpp" />
     <ClCompile Include="network_tcp_iocp_server.cpp" />
   </ItemGroup>
   <ItemGroup>
