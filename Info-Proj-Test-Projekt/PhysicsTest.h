@@ -10,17 +10,17 @@ TEST(BT_DATA, Init){
 
 
 TEST(BT_DATA, Mesh_ADD){
-	btVector3 * vertices;
+	float * vertices;
 
 	btQuaternion rotation = btQuaternion(0, 0, 0, 1); btVector3 position = btVector3(0, 50, 0);
-	unsigned short * indices; int num_indices; int num_vertices;
+	unsigned int * indices; int num_indices; int num_vertices;
 	btScalar mass = 3;
-	auto d = Geometry::basic_Cube<unsigned short, btVector3>();
+	auto d = Geometry::basic_Cube<unsigned int, float>();
 	vertices = d->vertices;
 	num_vertices = d->num_vertices;
 	num_indices = d->num_indices;
 	indices = d->indices;
-	physics->add_Mesh({ vertices, rotation, position, indices, num_indices, num_vertices, mass });
+	physics->add_Mesh({ vertices, rotation, position, indices, num_indices, num_vertices, mass },PHY_INTEGER);
 	
 };
 TEST(BT_DATA, Mesh_After_ADD_RIGIDBODY){
@@ -38,5 +38,5 @@ TEST(BT_DATA, simulate_rigidbody_transform){
 	btTransform transform = physics->simulate_AfterActionHandler_getTransform(0);
 	::OutputDebugString(std::to_string(transform.getOrigin().getY()).c_str());
 	EXPECT_NE(transform.getOrigin().getY(),50);
-
+	EXPECT_GE(transform.getOrigin().getY(),0);
 }

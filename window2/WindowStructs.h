@@ -5,6 +5,7 @@
 namespace Windows{
 	typedef  void(*winproc_callback_function)(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	typedef bool(*winproc_promise_event_func)(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd);
+	typedef void(*winproc_promise_event_further_func)(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd);
 	struct winproc_promise_event{
 		winproc_promise_event_func  wpef_callback;
 		UINT invoke_on_message;
@@ -13,7 +14,8 @@ namespace Windows{
 	};
 	struct winproc_additional_data_struct{
 		winproc_promise_event wpe;
-		winproc_callback_function cbf;
+		winproc_promise_event_further_func cbf;
+		//winproc_callback_function cbf;
 	};
 	enum CW_CLASS_TYPES { EDIT, BUTTON };//@TODO:in ui_control_mgr verwenden
 

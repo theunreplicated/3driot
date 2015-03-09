@@ -3,10 +3,11 @@
 #include <btBulletDynamicsCommon.h>
 #include <vector>
 namespace Physics{
+	//template <typename indices_type>
 	struct Physics_TriangleMesh__description_info{
-		btVector3 * vertices;
+		float * vertices;
 		btQuaternion rotation; btVector3 position;
-		unsigned short * indices;unsigned int num_indices; unsigned int num_vertices;
+		unsigned int * indices; unsigned int num_indices; unsigned int num_vertices;
 		btScalar mass;
 		
 
@@ -15,15 +16,20 @@ namespace Physics{
 	public:
 		Main();
 		void createStaticPlaneShape();
-		void add_Mesh(const Physics_TriangleMesh__description_info& inp);//http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?p=&f=&t=3627
+		//template <typename indices_type>//Das ist echt nervig bei templates
+		
 		void simulate_ActionHandler(float frequency/*z.b. 1/60.0f*/);
 		btTransform simulate_AfterActionHandler_getTransform(int Mesh_uid);
 		btDiscreteDynamicsWorld* dynamicsWorld;
 		std::vector<btRigidBody*>fallRigidBodies;
+		//template <typename indices_type>
+		void add_Mesh(const Physics_TriangleMesh__description_info& inp, PHY_ScalarType indices_scalartype);//http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?p=&f=&t=3627
+	
+
 	private:
 		
 		template <typename T>
-		T* constructShapeFromTriangle(btVector3 * gVertices, unsigned short * gIndices, unsigned int num_indices,unsigned  int num_vertices);
+		T* constructShapeFromTriangle(float * gVertices, unsigned int * gIndices, unsigned int num_indices, unsigned  int num_vertices, PHY_ScalarType indices_scalartype);
 		
 
 	};
@@ -31,5 +37,5 @@ namespace Physics{
 
 }
 
-
+//#include "../Info-Proj-Test-Projekt/Physics_Input_data_templated_impl.cpp"
 #endif

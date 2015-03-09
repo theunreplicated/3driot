@@ -29,7 +29,7 @@ namespace Resource{
 		::memcpy(buffer, rt->data, rt->size);
 		buffer[rt->size] = 0; // NULL terminator
 		
-		delete rt->data;/*oder delete[]?*/
+		//delete rt->data;/*oder delete[]?*/
 		return buffer;
 	}
 };

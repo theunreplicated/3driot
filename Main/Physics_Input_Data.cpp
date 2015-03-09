@@ -1,3 +1,5 @@
+#ifndef INC_PHYSICS_INPUT_CPP
+#define INC_PHYSICS_INPUT_CPP
 #include "Physics_Input_Data.h"
 namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
 	Main::Main(){
@@ -14,23 +16,15 @@ namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.or
 
 	}
 
-	//DynamicsWorld_is_initialized = true;
-	//createStaticPlaneShape();
-	void Main::createStaticPlaneShape(){//um ein Fallen irgendwohin zu vermeiden
-		btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);//nahe zu unendlich an einer Seite (hier vohl x ,trotz y spezifiziert)
-		btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));/*btMotionState auch x,y,z, -Drehung; wenn hier y 0 dann res=2,da bie bullet die koord. die Mitte von dem Objekt ist*/
-		btRigidBody::btRigidBodyConstructionInfo
-			groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-		btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-		dynamicsWorld->addRigidBody(groundRigidBody);
-
-	}
-	void Main::add_Mesh(const Physics_TriangleMesh__description_info& inp){
+	//template <typename indices_type>//so ein Mist,der c++ compilerbau ist echt scheisse,erlässt mich keine Templates draus machen
+	void Main::add_Mesh(const Physics_TriangleMesh__description_info& inp, PHY_ScalarType indices_scalartype)//http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?p=&f=&t=3627
+	{
+		//int num_indices = inp.num_indices;
 		//somit kein statisches Mesh//@TODO: statisches hinzufuegen mit btbvhtrianglemeshshape
-		btConvexTriangleMeshShape*fallShape = constructShapeFromTriangle<btConvexTriangleMeshShape>(inp.vertices,inp.indices, inp.num_indices, inp.num_vertices);
+		btConvexTriangleMeshShape*fallShape = constructShapeFromTriangle<btConvexTriangleMeshShape>(inp.vertices, inp.indices, inp.num_indices, inp.num_vertices, indices_scalartype);
 
 		//btBvhTriangleMeshShape* fallShape = unityStaticMeshTest<btBvhTriangleMeshShape>();//verboten für so was
-		btTransform mesh_transform = btTransform(inp.rotation,inp.position);
+		btTransform mesh_transform = btTransform(inp.rotation, inp.position);
 		//btTransform *mesh_transform = &btTransform(Mesh_rotationQuat, Mesh_position);
 
 
@@ -42,9 +36,9 @@ namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.or
 
 
 		//hier wird nur der RIgidbody erstelllt
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(mesh_transform);
-		
-		btVector3 fallInertia(0,0,0);
+		btDefaultMotionState* fallMotionState = new btDefaultMotionState(mesh_transform);
+
+		btVector3 fallInertia(0, 0, 0);
 		fallShape->calculateLocalInertia(inp.mass, fallInertia);/*bei fallinteria o,0,0 brauch mans wohl nicht ungebdingt(vllt. falsche aussage),aber besser mit,da Widerstand http://stackoverflow.com/questions/16322080/what-does-having-an-inertia-tensor-of-zero-do-in-bullet*/
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(inp.mass, fallMotionState, fallShape, fallInertia);
 		btRigidBody*fallRigidBody = new btRigidBody(fallRigidBodyCI);
@@ -62,16 +56,29 @@ namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.or
 		dynamicsWorld->addRigidBody(fallRigidBody);
 		//@TODO:fallRigidBody->setUserPointer((void*)i) http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-a-physics-library/
 
-	}
+	};
+	//DynamicsWorld_is_initialized = true;
+	//createStaticPlaneShape();
+	void Main::createStaticPlaneShape(){//um ein Fallen irgendwohin zu vermeiden
+		btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);//nahe zu unendlich an einer Seite (hier vohl x ,trotz y spezifiziert)
+		btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));/*btMotionState auch x,y,z, -Drehung; wenn hier y 0 dann res=2,da bie bullet die koord. die Mitte von dem Objekt ist*/
+		btRigidBody::btRigidBodyConstructionInfo
+			groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+		btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+		dynamicsWorld->addRigidBody(groundRigidBody);
 
+	}
+	//template <typename indices_type>
+	//void Main::add_Mesh(const Physics_TriangleMesh__description_info<indices_type>& inp,PHY_ScalarType indices_scalartype)
 	template <typename T>//@note:indices:Annahme:typ integer,Anzahl auch wichtig,da durch 3 geteilt wird
-	T* Main::constructShapeFromTriangle(btVector3 * gVertices, unsigned short * gIndices, unsigned int num_indices, unsigned int num_vertices){
+	T* Main::constructShapeFromTriangle(/*btVector3*/float * gVertices, unsigned int * gIndices, unsigned int num_indices, unsigned int num_vertices, PHY_ScalarType indices_scalartype){
 
 		//int num_indices = 36;
 		//int num_vertices = 24;//vertexcount
 
-		int vertStride = sizeof(btVector3);//stride=Gangart,ein SChritt
-		int indexStride = 3 * sizeof(unsigned short);
+		//int vertStride = sizeof(btVector3);//stride=Gangart,ein SChritt
+		int vertStride = 3 * sizeof(float);
+		int indexStride = 3 * sizeof(unsigned int);
 
 		//btVector3 * gVertices = new btVector3[num_vertices];
 		//int * gIndices = new short[num_indices];
@@ -82,17 +89,17 @@ namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.or
 		//std::cout <<"<y"<< gVertices[23].x()<<"end";
 		btTriangleIndexVertexArray * mesh = new btTriangleIndexVertexArray();
 		btIndexedMesh indexed_mesh;
-		indexed_mesh.m_vertexBase = (const unsigned char*)&gVertices[0].x();//oder mit &vertices[0]
+		indexed_mesh.m_vertexBase = (const unsigned char*)&gVertices[0]/*.x()*/;//oder mit &vertices[0]
 		indexed_mesh.m_vertexStride = vertStride;
 		indexed_mesh.m_vertexType = PHY_FLOAT;
-		indexed_mesh.m_numVertices = num_vertices;
+		indexed_mesh.m_numVertices = num_vertices / 3;/*nicht be btVector3*/
 
 		indexed_mesh.m_triangleIndexBase = (const unsigned char*)&gIndices[0];
 		indexed_mesh.m_triangleIndexStride = indexStride;
-		indexed_mesh.m_indexType = PHY_SHORT;
+		indexed_mesh.m_indexType = indices_scalartype;
 		indexed_mesh.m_numTriangles = num_indices / 3;
 
-		mesh->addIndexedMesh(indexed_mesh,PHY_SHORT/*dieses doofe Stück hier hat mich viel Zeit gekostet*/);/*=default-Wert,typ der indices*///);
+		mesh->addIndexedMesh(indexed_mesh,indices_scalartype/*dieses doofe Stück hier hat mich viel Zeit gekostet*/);/*=default-Wert,typ der indices*///);
 
 		//return new btBvhTriangleMeshShape(mesh, true);
 
@@ -126,3 +133,4 @@ namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.or
 		return trans;
 	}
 }
+#endif

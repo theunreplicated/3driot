@@ -22,7 +22,7 @@ namespace Windows{
 		Window(WindowNames<LPCSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL,/*Window*window_parent = NULL,*/ HMENU menu_id = NULL);//als extra parameter gehts net;-)
 		Window(WindowNames<LPCWSTR> names, WindowRect rect, DWORD dwStyle, ApplicationWindow*aw, DWORD dwExStyle = NULL, Window*window_parent = NULL, HMENU menu_id = NULL);
 	
-		void on(winproc_promise_event pe, winproc_callback_function callbackf);
+		void on(winproc_promise_event pe, winproc_promise_event_further_func callbackf);
 		WindowRect Position_get(Position_Relative_to pos_relative=Position_Relative_to_Window);
 
 	};

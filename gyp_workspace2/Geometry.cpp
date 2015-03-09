@@ -26,7 +26,7 @@ FORCE_INLINE Vertices_indices_data<indices_type, vertices_type> * Geometry::basi
 		0, 3, 7,
 		0, 7, 4 };
 
-	vertices_type Vertices[] = {
+	/*vertices_type Vertices[] = {
 		 { 1, -1, 0 },
 		{ 1, 1, 0 },
 		{ -1, 1, 0 },
@@ -35,8 +35,17 @@ FORCE_INLINE Vertices_indices_data<indices_type, vertices_type> * Geometry::basi
 		 { 1, 1, -1 },
 		 { -1, 1, -1 },
 		 { -1, -1, -1 }
+	};*/
+	vertices_type Vertices[] = {
+		 1, -1, 0 ,
+		 1, 1, 0 ,
+		-1, 1, 0 ,
+		 -1, -1, 0 ,
+		 1, -1, -1 ,
+		 1, 1, -1 ,
+		 -1, 1, -1 ,
+		 -1, -1, -1 
 	};
-
 
 	d->num_indices/*unnötig auf heap->langsamere Zugriffszeit*/ = sizeof(indices) / sizeof(indices_type);
 	d->indices = new indices_type[d->num_indices];

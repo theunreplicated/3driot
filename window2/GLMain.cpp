@@ -371,6 +371,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 	glBindBuffer(GL_ARRAY_BUFFER, pc.vertex_buffer);
 	// Give our vertices to OpenGL.
+	
 	glBufferData(GL_ARRAY_BUFFER, /*pc.vertices_num*sizeof(GLfloat)*/pc.vertices_totalsize, pc.vertices, GL_STATIC_DRAW);
 	if (pc.indices != NULL/*nullptr*/){//falls nicht wird halt die 2-fache Menge an Buffern allocated//@TODO:das ändern
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc.indices_buffer);
@@ -462,7 +463,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 	create_depth_renderbuffer();
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		::MessageBox(NULL, "dsa", "fd", MB_OK);
+		::MessageBox(NULL, "dsa", "er will was sagen", MB_OK);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -471,7 +472,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 
 template <typename T_swapBuffersFuncType, typename T_swapBuffers_class_reference, typename T_DRAW_STRUCTURE>
 void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTURE>::render(bool swap_the_Buffers){
-
+	
 	//glCreateShader(GL_VERTEX_SHADER);
 	//glClearColor5(1.0f,1.0f,1.0f,1.0f);
 	//@note normalerweise vorher gluseprogram,ein program müsste im moment reichen,da kein Wechsel,auch net brnötig
@@ -500,7 +501,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		//if (i == 1){ 
 		//	continue; 
 		//}
-
+		//::MessageBoxA(NULL, std::to_string(pc.vertices_totalsize).c_str(), "dsads", MB_OK);
 		//int buffer_add_counter = 0;
 		//THREEDObject pc = draw_elements[i];
 		glm::mat4 m = /*glm::make_mat4(*/pc.matrix/*)*/;
@@ -550,7 +551,7 @@ void GLMain<T_swapBuffersFuncType, T_swapBuffers_class_reference, T_DRAW_STRUCTU
 		//bei kinvisible passiert wohl nichts
 		//buffer_add_counter++;
 	}
-
+	
 	glDisableVertexAttribArray(loc_Position);
 	glDisableVertexAttribArray(texcoord_position);
 	if (swap_the_Buffers){

@@ -17,8 +17,8 @@ public:
 	ApplicationUI_Control_Mgr(Windows::Window*mw, int width, int height,Windows::Window*parent=NULL);
 	static void addButtons(Windows::winproc_promise_event wpe);
 	static void addEditControls();
-	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam);
-	static void btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam);
+	static void btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam, HWND caller_window);
+	static void btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window);
 	static Windows::Window *static_draw_field;
 	static Windows::Window* objects_list;
 	static Windows::Window* open_file_btn;

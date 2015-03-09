@@ -1,19 +1,23 @@
-#ifndef THREAD_H
-#define THREAD_H
-#include <windows.h>
-#include <tchar.h>
-#include <strsafe.h>
-#include <stdio.h>
-typedef struct MyData {
-    int val1;
-    int val2;
-} MYDATA, *PMYDATA;
+#ifndef INC_THREAD_H
+#define INC_THREAD_H
+#include <Windows.h>
+//typedef void(__cdecl*Thread_Begin_Function)(void*);
+typedef DWORD(__stdcall*Thread_Begin_Function)(void*);
+
+
+namespace Threading{
+	void register_thread_message_loop();
+	extern inline bool message_get(MSG & msg);
+	HANDLE event_create();
+}
 class Thread{
 public:
-    HANDLE  hThreadHandle;
-    PMYDATA pData;
-    DWORD thread_id;
-    Thread(LPTHREAD_START_ROUTINE thread_call_func,LPVOID thread_func_arguments);
-};
+	unsigned int thread_id;
+	HANDLE thread_handle=NULL;
+	Thread(Thread_Begin_Function bgf);
 
-#endif // THREAD_H
+
+
+
+};
+#endif

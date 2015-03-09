@@ -25,7 +25,7 @@ struct THREEDObject:RenderStructBase,Interals_do_not_touch{
 	/*GL*/float * vertices;
 	bool has_indices /*= true*/;//@TODO:was damit machen
 	/*GLu*/unsigned int * indices = NULL;//nur falls Elemente
-	int vertices_num, indices_num/*könnte man eigentlich streichen*/;
+	//unsigned int /*vertices_num,*/ indices_num/*könnte man eigentlich streichen*/;
 	int draw_call_num_elements;
 	size_t vertices_totalsize, indices_totalsize,texcoords_totalsize;
 	glm::mat4 matrix; 

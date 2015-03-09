@@ -424,6 +424,9 @@
     <Filter Include="..\window2\APIs\win32++">
       <UniqueIdentifier>{a0dc9d73-9a79-4df2-81f0-c61955942114}</UniqueIdentifier>
     </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{5ff6d84f-9c6b-4e41-8e3a-c84337d9886e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\window2\main.cpp">
@@ -627,6 +630,15 @@
     <ClCompile Include="Geometry.cpp">
       <Filter>..\window2</Filter>
     </ClCompile>
+    <ClCompile Include="Physics_App_Handler.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Main\Physics_Input_Data.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\window2\Thread.cpp">
+      <Filter>..\window2\APIs\OS\Win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h">
@@ -670,6 +682,18 @@
     </ClInclude>
     <ClInclude Include="Geometry.h">
       <Filter>..\window2</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics_App_Handler.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Main\Physics_Input_Data.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\window2\Thread.h">
+      <Filter>..\window2\APIs\OS\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="my_defined_messages.h">
+      <Filter>..\window2\APIs\OS\Win</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

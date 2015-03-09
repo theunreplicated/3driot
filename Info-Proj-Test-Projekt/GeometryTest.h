@@ -20,26 +20,26 @@ unsigned short indices[] = {
 	// Bottom
 	0, 3, 7,
 	0, 7, 4 };
-btVector3 Vertices[] = {
-	{ 1, -1, 0 },
-	{ 1, 1, 0 },
-	{ -1, 1, 0 },
-	{ -1, -1, 0 },
-	{ 1, -1, -1 },
-	{ 1, 1, -1 },
-	{ -1, 1, -1 },
-	{ -1, -1, -1 }
+float Vertices[] = {
+	1, -1, 0 ,
+	 1, 1, 0 ,
+	 -1, 1, 0 ,
+	 -1, -1, 0 ,
+	 1, -1, -1 ,
+	 1, 1, -1 ,
+	 -1, 1, -1 ,
+	 -1, -1, -1 
 };
 
 TEST(GEOM, Geometry_Test){
 
-	auto d = Geometry::basic_Cube<unsigned short, btVector3>();
-	ASSERT_EQ(d->num_vertices,sizeof(Vertices)/sizeof(btVector3));
+	auto d = Geometry::basic_Cube<unsigned short, float>();
+	ASSERT_EQ(d->num_vertices,sizeof(Vertices)/sizeof(float));
 	ASSERT_EQ(d->num_indices, sizeof(indices) / sizeof(unsigned short));
 	for (int i = 0; i < d->num_vertices; i++){
-		ASSERT_EQ(d->vertices[i].x(),Vertices[i].x());
-		ASSERT_EQ(d->vertices[i].y(), Vertices[i].y());
-		ASSERT_EQ(d->vertices[i].z(), Vertices[i].z());
+		ASSERT_EQ(d->vertices[i],Vertices[i]);
+		ASSERT_EQ(d->vertices[i], Vertices[i]);
+		ASSERT_EQ(d->vertices[i], Vertices[i]);
 	}
 	for (int i = 0; i < d->num_indices; i++){
 		ASSERT_EQ(d->indices[i], indices[i]);

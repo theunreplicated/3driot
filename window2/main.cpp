@@ -39,6 +39,9 @@
 #include "../gyp_workspace2/FreeTypeImplementation.h"
 #include "../gyp_workspace2/GL_Text_Render_Main.h"
 #include "../gyp_workspace2/Menu_ID_Counter.h"
+#include "../gyp_workspace2/Physics_App_Handler.h"
+#include "../gyp_workspace2/my_defined_messages.h"
+#include "Thread.h"
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 Windows::ApplicationWindow* aw; //Windows::Window*ws;
@@ -55,6 +58,7 @@ GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
 sp_endp_type * current_obj_selection=nullptr;//@TODO:header controls winapi
+Physics_App_Handler*physics_handler=nullptr;
 /*
 void copy_to_other(){
 	HDC hPrinterDC = ws->DeviceContext_get();
@@ -134,18 +138,8 @@ bool TABSELECTION_SELECT_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWN
 
 
 //__declspec(dllimport)bool saveToFile(const char* fileName, const char * data);//,-) piraten-smilie-einäugig für harte Jungs(so hart wie Piraten)
-void winproc_callback_function5(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	MessageBox(NULL, "dd","cc", MB_OK);
-	PAINTSTRUCT   ps;
-	HDC           hDC;
-	hDC = BeginPaint(hWnd, &ps);
-	{RECT rect;
-	rect.left = 40;//gdi
-	rect.top = 10;
-	const char* message = "hi";
-	DrawText(hDC, message, -1, &rect, DT_SINGLELINE | DT_NOCLIP); }
-}
-void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam){
+
+void listview_handle_click(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_wnd){
 
 	LPNMITEMACTIVATE lpNMItem = reinterpret_cast<LPNMITEMACTIVATE>(lParam);
 	int clicked_item_number = lpNMItem->iItem;
@@ -262,7 +256,7 @@ void assimp_import_file(const char* path){
 
 }
 
-void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_wnd){
 	Windows::Dialogs::File_Dialog dccs;
 	LPWSTR dcc = dccs.OpenFileName(L"C:\\");
 	
@@ -292,6 +286,24 @@ void action_dialog_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	}
 	
 }
+void physics_checkbox_onclick(HWND hWnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd){
+	
+	auto menu_id = ::GetWindowLong(caller_wnd,GWL_USERDATA);//bei winapi generell unterscheidung ptr und non-ptr
+	if (::IsDlgButtonChecked(hWnd,menu_id)){
+
+		
+		//also start mit Physik-Engine laufen lassen
+		physics_handler->start();
+
+	}
+	else{
+
+		physics_handler->stop();
+	}
+
+
+}
+
 void ui_close_window(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 	::PostQuitMessage(0);
@@ -313,7 +325,7 @@ void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	DOCINFO di;
 	memset(&di, 0, sizeof(DOCINFO));
 	di.cbSize = sizeof(DOCINFO);
-	di.lpszDocName = _T("Scribble Printout");
+	di.lpszDocName = TEXT("Scribble Printout");
 	di.lpszOutput = (LPTSTR)NULL;
 	di.lpszDatatype = (LPTSTR)NULL;
 	di.fwType = 0;
@@ -332,7 +344,7 @@ void ui_on_file_print(HWND hWnd, WPARAM wParam, LPARAM lParam){
 }
 
 
-void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void action_save_state(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 	//::MessageBoxA(NULL,"fds","dfd",MB_ICONASTERISK);
 	THREED_Object_Serializer*tosz = new THREED_Object_Serializer();
 	std::string data = tosz->serialize(glmain->draw_elements);
@@ -480,7 +492,7 @@ void tab_handle_selection_change(HWND hWnd, WPARAM wParam, LPARAM lParam){
 }
 bool capture_drag_drop = false;
 void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	OutputDebugString("mouse_move"); OutputDebugString(std::to_string(rand()).c_str()); OutputDebugString("\n");
+	//OutputDebugString("mouse_move"); OutputDebugString(std::to_string(rand()).c_str()); OutputDebugString("\n");
 	if (capture_drag_drop){
 		/*DWORD mousepos = ::GetMessagePos();
 		POINTS p = MAKEPOINTS(mousepos);
@@ -490,7 +502,7 @@ void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		::ScreenToClient(hWnd, pr);
 		Windows::WindowRect pxx = uicontrol->dragdropbutton->Position_get();*/
 	POINT pos;
-	pos.x = (int)(short)LOWORD(lParam);
+	pos.x = (int)(short)LOWORD(lParam);//sinnlos,cast zuerst in short dann in int?@TODO:gucken
 	pos.y = (int)(short)HIWORD(lParam);
 		//pxx.x = pos.x; pxx.y = pos.y;
 
@@ -515,7 +527,7 @@ void dragdropmousemove(HWND hWnd, WPARAM wParam, LPARAM lParam){
 		GetWindowRect(uicontrol->dragdropbutton->window_handle, &prc);
 		//ClientToScreen(hWnd, &pos);
 		MoveWindow(uicontrol->dragdropbutton->window_handle, pos.x,pos.y, prc.right - prc.left, prc.bottom - prc.top, TRUE);
-		bool bRepaint = true;
+		//bool bRepaint = true;
 		//setposition !=movewindow
 		/*uicontrol->dragdropbutton->Position_set(pxx, SWP_NOACTIVATE |
 			SWP_NOOWNERZORDER | SWP_NOZORDER |
@@ -539,13 +551,19 @@ void capture_release(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	//aw->removeOnMessageInvoke(WM_LBUTTONDOWN, capture_release);
 }
 
-void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 	capture_drag_drop = true;
 	SetCapture(hWnd);
 	SetForegroundWindow(uicontrol->dragdropbutton->window_handle);//bringttop geht auch net
 	
 }//@TODO: http://codingmisadventures.wordpress.com/2009/03/06/dragging-or-moving-a-window-using-mouse-win32/
 //klappt wohl net richtig wg. fokus,den die controls von mousemove kriegen(aber nur vllt.)
+
+void message_render_f_physics(HWND hWnd, WPARAM wParam, LPARAM lParam){
+
+	glmain->render();
+
+}
 
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
@@ -556,7 +574,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	width += 300; height += 250;
 	//Hinweis:http://stackoverflow.com/questions/12796501/detect-clicking-inside-listview-and-show-context-menu
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
+	Threading::register_thread_message_loop();
 	aw = new ApplicationWindow("t1",hInstance);//@TODO:->show erst später aufrufen,daher kein ws_visible
+	Threading::register_thread_message_loop();
 
 
 /*#define BOOST_PP_VALUE 0 //ensure 0 to start
@@ -580,7 +600,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 aw->window_handle = main_window->window_handle;
 //es gibt auch noch showasync
 
-	//@TODO:vllt. aus applicationwindow die window-funktionen entfernen->dann nur noch message loop und wclass erzeuger
+	
 	//Window*mainwindow = new Window(hInstance, { "t1", "t333" }, { width, height }, WS_VISIBLE | WS_OVERLAPPEDWINDOW,aw);
 	
 	
@@ -654,9 +674,12 @@ m->showMenu();
 
 	lv->items->add("Hallo,kann ich behilflich sein??");
 
-	CheckBox*cb = new CheckBox("text", { 20, 20, 710, 150 },main_window);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
-	cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
-	cb->window->on(BTN_CLICK, action_dialog_onclick/*natürlich falsch;checkboxes sind buttons*/);
+	CheckBox*cb = new CheckBox("Physiiik", { 70, 20, 710, 150 },main_window);//@TODO:problem mit dem haken weg druch den fokus ändern/subclassung vllt. /da wohl fokus verliert,auch bei langer klick auf sonstwo
+	
+	//cb->check();//@TODO:das wegmahcne,dass bei klßick auf dragdrop haken verschwindet,komisch,beim nächsten klick wieder kommt
+	
+	cb->window->on(BTN_CLICK, physics_checkbox_onclick/*natürlich falsch;checkboxes sind buttons*/);
+
 
 	//Window*ccc = new Window({ WC_TABCONTROL, "" }, /*{ 500, 500, 700, 700 }*/aw->ClientRect_get(), WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, aw);
 	//DoCreateTabControl(ccc, hInstance);
@@ -672,6 +695,7 @@ m->showMenu();
 	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
 	aw->addOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
 	aw->addOnMessageInvoke(WM_LBUTTONUP, capture_release);
+	aw->addOnMessageInvoke(MY_MSG_RENDER,message_render_f_physics);
 	//SOCKET ss;
 	//WSAAsyncSelect(ss,main_window->window_handle,104,FD_READ);
 
@@ -710,7 +734,7 @@ m->showMenu();
 	//@TODO:das essl brauchen wir nicht mehr
 	//test code//@todo:entfernen
 	
-	gp->assign_shaders(sc->setup_for_usage_by_program());
+	gp->assign_shaders(sc->setup_for_usage_by_program());//block type invalid,scheinbar
 	glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 	delete sc;
 
@@ -725,7 +749,7 @@ m->showMenu();
 	gtrm->render();*/
 	//FreeType_Implementation*ft = new FreeType_Implementation();
 	//FreeType_Face*fc = new FreeType_Face(ft);
-	
+	physics_handler = new Physics_App_Handler(glmain,main_window->window_handle);
 	Application::set_std_camera_projection_matrices(glmain,rect.width,rect.height);
 
 	//Thread*t = new Thread(threadFunc, NULL);

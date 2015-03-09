@@ -8,7 +8,7 @@ namespace Windows{
 	std::vector<winproc_callback_function_struct> ApplicationWindow::winproc_callback_function_data;
 	std::vector<winproc_additional_data_struct> ApplicationWindow::additional_winproc_data;
 	 LRESULT CALLBACK ApplicationWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
-		 
+	
 		 for (winproc_callback_function_struct data : winproc_callback_function_data){
 			 if (data.message == message){
 				 data.cbf(hWnd,wParam,lParam);
@@ -42,7 +42,7 @@ namespace Windows{
 
 				 }
 
-				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam); }
+				 if (called&&promise_true_fragezeichen){ data.cbf(hWnd, wParam, lParam,*data.wpe.wnd_ptr); }
 
 			 }
 

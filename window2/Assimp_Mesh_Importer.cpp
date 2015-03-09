@@ -156,7 +156,7 @@ Mesh_RenderObject Assimp_Mesh_Importer::mesh_read(aiMesh * mesh){
 
 
 
-	ret_mesh.size_vertices = mesh->mNumVertices * 3;
+	ret_mesh.size_vertices = mesh->mNumVertices * 3;//mal 3 muss wohl so sein
 
 	if (mesh->HasFaces())
 	{

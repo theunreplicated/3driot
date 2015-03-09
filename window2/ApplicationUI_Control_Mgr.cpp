@@ -144,7 +144,7 @@ ApplicationUI_Control_Mgr::ApplicationUI_Control_Mgr(Windows::Window* mw, int wi
 
 }
 void ApplicationUI_Control_Mgr::set_mouse_pos_callback(ui_mouse_pos_callback_type uim){ ui_mouse_pos_callback = uim; }
-void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 	
 	//addEditControls();
 	//MessageBox(NULL,"fdsfs","fdfds",MB_OK);
@@ -162,7 +162,7 @@ void ApplicationUI_Control_Mgr::btn_add_row_cb(HWND hWnd, WPARAM wParam, LPARAM 
 	//pos.height
 
 }
-void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam){
+void ApplicationUI_Control_Mgr::btn_action(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 
 //	int cx = GetSystemMetrics(SM_CXSCREEN);
 	//int cy = GetSystemMetrics(SM_CYSCREEN);

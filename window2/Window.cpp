@@ -65,7 +65,7 @@ namespace Windows{
 }
 
 
-	void Window::on(winproc_promise_event pe, winproc_callback_function callbackf){
+	void Window::on(winproc_promise_event pe, winproc_promise_event_further_func callbackf){
 		//m_ApplicationWindow->addOnMessageInvoke(pe.invoke_on_message, Window_ApplicationWindow_std_callback);
 		winproc_additional_data_struct wads;
 		wads.cbf = callbackf;
@@ -80,7 +80,7 @@ namespace Windows{
 		//so könnte es auch gehen: http://stackoverflow.com/questions/18034975/how-do-i-find-position-of-a-win32-control-window-relative-to-its-parent-window
 		RECT rCtlWin;                   // Koordinaten des Controls
 		//@TODO:anderes parent als applicationwindow erlauben
-		POINT p0;
+		POINT p0;//vllt gehts auch  mit mappointstoclient oder so ähnlich,auf jeden fall das map
 
 		GetWindowRect(window_handle, &rCtlWin);  // Koordinaten relativ zum Parent Window und nicht zum
 
