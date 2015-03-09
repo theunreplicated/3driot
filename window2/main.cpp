@@ -49,7 +49,7 @@ Windows::Window*main_window;//so das window wo sich das main befindet
 ApplicationUI_Control_Mgr*uicontrol; OpenGLContext*ctx;
 Win_Utils*wn;
 List_View*lv;
-HWND default_focus;
+HWND default_focus; Assimp_Mesh_Importer*aiimport;
 glm::mat4 scalemat,rotmat,translatemat = glm::mat4(1.0f);
 vector<glm::mat4>scalemat_s, rotmat_s, translatemat_s;
 glm::mat4 std_res = glm::mat4(1.0f);
@@ -58,7 +58,7 @@ GLMain<swapBuffersFunc,OpenGLContext, THREEDObject> * glmain;
 struct sp_endp_type{ int startp, endp; unsigned int index; };
 vector<sp_endp_type> startp_endp_list_objs;/*zum Gruppieren*/
 sp_endp_type * current_obj_selection=nullptr;//@TODO:header controls winapi
-Physics_App_Handler*physics_handler=nullptr;
+Physics_App_Handler*physics_handler = nullptr; DWORD renderer_thread_id;
 /*
 void copy_to_other(){
 	HDC hPrinterDC = ws->DeviceContext_get();
@@ -116,6 +116,124 @@ void copy_to_other(){
 	ws->DeviceContext_release(targetDC);
 	uicontrol->static_draw_field->DeviceContext_release(hCaptureDC);
 }*///geht nicht
+const UINT RT_RENDER = 9666;
+const UINT RT_ADD_TO_BUFFER_AND_TO_DRAW_LIST = 2084;
+const UINT RT_CREATE_CONTEXT = 2085;
+const UINT RT_SET_VIEWPORT_FOR_UI_ITEM_ONCE = 2086;
+const UINT RT_INIT_GL_PROGRAM = 2087;
+const UINT RT_MOUSE_FRAMEBUFFER_CAPTURE_PART1 = 2088;
+const UINT RT_GET_PIXELS = 2090;
+bool released = false;
+HANDLE event_add_to_buffer_added_finished, event_thread_initialized;
+DWORD WINAPI renderer_thread(void*dummy_arg){
+	Threading::register_thread_message_loop();
+	::SetEvent(event_thread_initialized);
+	MSG msg;
+	while (Threading::message_get(msg)){
+		switch (msg.message){
+		case RT_RENDER:{
+			//@TODO:physics bei einem führt zu endlossch0leife,denn wairforsingleobject wird net aufgerufen da die ganze Message Loop durch render calls plötzlich überflutet wird
+			if (released){
+				glmain->render();
+			} }; break;
+		case RT_ADD_TO_BUFFER_AND_TO_DRAW_LIST:{
+			//bool releasedss = released;
+			//unsigned int startp = glmain->draw_elements.size();
+			
+			for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+			//for (unsigned int i = 0; i < aiimport->stor_meshes_render.size(); i++)
+			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
+			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+			
+
+			}
+			//unsigned int endp=glmain->draw_elements.size();
+			//startpval = startp; endpval = endp;
+			
+			::SetEvent(event_add_to_buffer_added_finished);
+		}; break;
+		case RT_CREATE_CONTEXT:{
+			
+			ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, App_Inizialize_GL_DLL::dll_opengl);
+			glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle, ctx);
+
+		}; break;
+		case RT_SET_VIEWPORT_FOR_UI_ITEM_ONCE:{//unten das brauch man net
+			Windows::WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
+
+			glmain->setViewPort(rect);
+			Application::set_std_camera_projection_matrices(glmain, rect.width, rect.height);
+
+		}break;
+		case RT_INIT_GL_PROGRAM:{
+			GL_Program*gp = new GL_Program();
+
+			//Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
+			//	(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}));//unglaublich dass das net geht
+			Shader_Source*sc = new Shader_Source(
+#ifndef USE_GLESV2
+			{ IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH }, { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH }
+#else
+			{IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}, { IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL }
+#endif
+			);//ohhirgendwie komisch,ock,ack
+			//@TODO:das essl brauchen wir nicht mehr
+			//test code//@todo:entfernen
+
+			gp->assign_shaders(sc->setup_for_usage_by_program());//block type invalid,scheinbar
+			glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
+			delete sc;
+			released = true;
+			physics_handler = new Physics_App_Handler(glmain, main_window->window_handle, renderer_thread_id,RT_RENDER);//ansonsten müsste ich es mit wait-Event machen,wichtig:die Adresse hat sich verändert,der vorherige hatte aber wohl noch adresse auf 0
+
+		}; break;
+		case RT_MOUSE_FRAMEBUFFER_CAPTURE_PART1:{
+			glmain->set_framebuffer_to_position(true);
+			glmain->TEST_create_dummy_texture();
+			glmain->render(false);
+		
+		}; break;
+
+		case RT_GET_PIXELS:{
+			auto p=glmain->get_pixels_at_position<GLubyte>(msg.wParam, msg.lParam, GL_RGBA, GL_UNSIGNED_BYTE);
+			glmain->set_framebuffer_to_position(false);
+			glmain->TEST_restore_dummy_texture();
+			auto d1 = p[0];
+			auto d2 = p[1];
+			auto d3 = p[2];//@TODO:falsche werte,z.b. 255,weil er den hintergrund erwischt
+			auto d4 = p[3];
+			OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
+			//objekt auswählen //@TODO:mit mehr als 255 soll es gehn
+			if ((d3 != 255) && (d3 >= 0)){
+				//Treffer
+
+				//current_obj_selection = &startp_endp_list_objs[d3];
+				for (sp_endp_type& d : startp_endp_list_objs){
+					if ((d3 >= d.startp) && (d3 <= (d.endp - 1))){
+						//dann in Range
+						current_obj_selection = &d;
+						break;
+
+					}
+
+
+				}
+
+
+			}
+
+		}; break;
+	
+
+
+		}
+
+
+
+	}
+	return 0;
+
+}
 bool CLICK_FUNC(HWND global_wnd, WPARAM wParam, LPARAM lParam, HWND caller_wnd)
 {
 	
@@ -211,7 +329,7 @@ void assimp_import_file(const char* path){
 	
 	
 	try{
-	Assimp_Mesh_Importer*aiimport = new Assimp_Mesh_Importer(path);
+	aiimport = new Assimp_Mesh_Importer(path);
 
 
 	//		Mesh_RenderObject o = *aiimport->stor_meshes_render[0];
@@ -229,19 +347,32 @@ void assimp_import_file(const char* path){
 	//glm->addMesh_RenderObject_struct(&aiimport->get_render_obj(i),glm::value_ptr(std_res));
 	//}
 	if (aiimport->stor_meshes_render.size() > 0){//also nur falls mehr als 0 draw-bare Element(draw-bare das Wort gibts ja gar net,wer hätte das gedacht)
-		int startp = glmain->draw_elements.size();
-		for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+		//int startp = glmain->draw_elements.size();
+
+		//for (Mesh_RenderObject d : aiimport->stor_meshes_render){
+		//for (unsigned int i = 0; i < aiimport->stor_meshes_render.size(); i++)
 			//glmain->addMesh_RenderObject_struct(&d, glm::value_ptr(std_res));
-			glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
-		}
-		int endp = glmain->draw_elements.size();
+			//glmain->add_to_buffer_and_add_to_draw_list(&d, glm::value_ptr(std_res));
+		int startp=glmain->draw_elements.size();
+		::ResetEvent(event_add_to_buffer_added_finished);
+			::PostThreadMessage(renderer_thread_id,RT_ADD_TO_BUFFER_AND_TO_DRAW_LIST,0,0);
+
+		////}
+
+			
+		//int endp = glmain->draw_elements.size();
+			::WaitForSingleObject(event_add_to_buffer_added_finished,INFINITE);//nicht der Sinn von Threads
+			::ResetEvent(event_add_to_buffer_added_finished);
+			
+			int endp = glmain->draw_elements.size();
 		startp_endp_list_objs.push_back({ startp, endp, startp_endp_list_objs.size() });
 
 		lv->items->add("Received complex command(contagious).mhhhh.");
 		current_obj_selection = &startp_endp_list_objs[startp_endp_list_objs.size() - 1];//muss gesetzt werden,da ansonseten fail bei click wg. nullptr check,und es macht auch Sinn so
 		scalemat_s.push_back(glm::mat4()); translatemat_s.push_back(glm::mat4()); rotmat_s.push_back(glm::mat4());
-		glmain->render(); 
-		
+		//glmain->render(); 
+		::PostThreadMessage(renderer_thread_id,RT_RENDER,0,0);
+
 		//SIZE sz; sz.cx = 300; sz.cy = 300; //HDC ddc = ws->DeviceContext_get();
 		//HBITMAP bitmap = CreateCompatibleBitmap(ddc,300,300);
 		//WriteOpenGLPixelsToHBITMAP(bitmap,ddc,sz);
@@ -401,7 +532,8 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 
 		}
 	}
-	glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
+	::PostThreadMessage(renderer_thread_id,RT_RENDER,0,0);
+	//glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
 	}
 }
 
@@ -419,44 +551,22 @@ void on_opengl_click_moue_pos(int x, int y,int width,int height){
 	//::MessageBox(NULL,(std::to_string(x)+"-"+std::to_string(y)).c_str(),"dfsfds",MB_OK);
 	////http://gamedev.stackexchange.com/questions/29977/how-do-i-get-the-correct-values-from-glreadpixels-in-opengl-3-0
 	//@TODO: steht da hinten,noch so ein TODO,dass so dumm do derumm steht,wie überall;-)
-	glmain->set_framebuffer_to_position(true);
-	glmain->TEST_create_dummy_texture();
-	glmain->render(false);
+	::PostThreadMessage(renderer_thread_id,RT_MOUSE_FRAMEBUFFER_CAPTURE_PART1,0,0);
+
 	int y_pos_lower_left = height - y-1;
-	auto *p = glmain->get_pixels_at_position<GLubyte>(x, y_pos_lower_left, GL_RGBA, GL_UNSIGNED_BYTE);
-	
-	glmain->set_framebuffer_to_position(false);
-	glmain->TEST_restore_dummy_texture();
+	//auto *p = glmain->get_pixels_at_position<GLubyte>(x, y_pos_lower_left, GL_RGBA, GL_UNSIGNED_BYTE);
+	::PostThreadMessage(renderer_thread_id,RT_GET_PIXELS,x,y_pos_lower_left);
+	//::WaitForSingleObject();
+
 	//glmain->render();//render istwohl net nötig
 	
+	//::PostThreadMessage(renderer_thread_id,RT_MOUSE_FRAMEBUFFER_RESTORE_PART2,0,0);
 	
-	auto d1 = p[0];
-	auto d2 = p[1];
-	auto d3 = p[2];//@TODO:falsche werte,z.b. 255,weil er den hintergrund erwischt
-	auto d4 = p[3]; 
-	OutputDebugString(std::to_string(d3).c_str());//@TODO:jetzt das mit den ID'S
-	//objekt auswählen //@TODO:mit mehr als 255 soll es gehn
-	if ((d3 != 255)&&(d3>=0) ){
-		//Treffer
-
-		//current_obj_selection = &startp_endp_list_objs[d3];
-		for (sp_endp_type& d : startp_endp_list_objs){
-			if ((d3 >= d.startp) && (d3 <= (d.endp-1))){
-				//dann in Range
-				current_obj_selection = &d;
-					break;
-
-			}
-			
-
-		}
-
-
-	}
 }
 
 void winapi_suitable_glmain_render(HWND hWnd, WPARAM wParam, LPARAM lParam){
-	glmain->render();
+	//glmain->render();
+	::PostThreadMessage(renderer_thread_id,RT_RENDER,0,0);
 }
 
 void ondropfiles(HWND hWnd, WPARAM wParam, LPARAM lParam){
@@ -559,11 +669,6 @@ void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 }//@TODO: http://codingmisadventures.wordpress.com/2009/03/06/dragging-or-moving-a-window-using-mouse-win32/
 //klappt wohl net richtig wg. fokus,den die controls von mousemove kriegen(aber nur vllt.)
 
-void message_render_f_physics(HWND hWnd, WPARAM wParam, LPARAM lParam){
-
-	glmain->render();
-
-}
 
 //http://stackoverflow.com/questions/13078953/code-analysis-says-inconsistent-annotation-for-wwinmain-this-instance-has-no
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
@@ -576,8 +681,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	//Designentscheidung:eine oder mehrere message-loops?? //DeferWindowPos zum gleichzeitngen Verschieben von mehreren Windows auf einmal,besser mehrere wegen performance,dann wohl hui in Teile aufsplitten//@TODO:das was hier vornedran stand
 	Threading::register_thread_message_loop();
 	aw = new ApplicationWindow("t1",hInstance);//@TODO:->show erst später aufrufen,daher kein ws_visible
-	Threading::register_thread_message_loop();
-
+	event_thread_initialized = Threading::event_create();
+	event_add_to_buffer_added_finished = Threading::event_create();
+	::ResetEvent(event_add_to_buffer_added_finished);
+	::ResetEvent(event_thread_initialized);
 
 /*#define BOOST_PP_VALUE 0 //ensure 0 to start
 #include BOOST_PP_ASSIGN_SLOT(1) 
@@ -695,7 +802,7 @@ m->showMenu();
 	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
 	aw->addOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
 	aw->addOnMessageInvoke(WM_LBUTTONUP, capture_release);
-	aw->addOnMessageInvoke(MY_MSG_RENDER,message_render_f_physics);
+	//aw->addOnMessageInvoke(MY_MSG_RENDER,message_render_f_physics);
 	//SOCKET ss;
 	//WSAAsyncSelect(ss,main_window->window_handle,104,FD_READ);
 
@@ -703,13 +810,16 @@ m->showMenu();
 	//commanddata.push_back(save_handle);
 
 
-	
+	Thread t(renderer_thread);
+	renderer_thread_id = t.thread_id;
 	App_Inizialize_GL_DLL::dll_opengl = new SysUtils_Load_Library("opengl32.dll");
-	ctx = new OpenGLContext(uicontrol->static_draw_field->window_handle, App_Inizialize_GL_DLL::dll_opengl);
+	::WaitForSingleObject(event_thread_initialized,INFINITE);
+	::PostThreadMessage(renderer_thread_id,RT_CREATE_CONTEXT,0,0);
 
-	glmain = Application::setup_system_gl_opengl_layer<swapBuffersFunc, OpenGLContext, THREEDObject>(uicontrol->static_draw_field->window_handle,ctx);
-	WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
-	glmain->setViewPort(rect);
+
+
+	
+	::PostThreadMessage(renderer_thread_id,RT_SET_VIEWPORT_FOR_UI_ITEM_ONCE,0,0);
 	//glm->setViewPort(uicontrol->static_draw_field->Position_get());//wohl so nicht richtig
 	//RECT lpp = uicontrol->static_draw_field->Rect_get();
 	//RECT pos = uicontrol->static_draw_field->ClientRect_get_();//client rect besser,gucken ob das so stimmt,sieht nämllich etwas verzerrt aus imho,jetzt nicht mehr,trotzdem im Auge behalten
@@ -720,23 +830,9 @@ m->showMenu();
 	
 	//bsp.nach sequenzen(neuses wort,ist overkill->headshot) gruppieren:zb.b strut x_follwed_by_y_by_widthbyheight->das dann auch für viewport oder readpixels verwende(gl)
 
-	GL_Program*gp = new GL_Program();
-	
-	//Shader_Source*sc = new Shader_Source((m_use_legacy_system_opengl ? { IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH } : {IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}),
-	//	(m_use_legacy_system_opengl ? { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH } : {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}));//unglaublich dass das net geht
-	Shader_Source*sc = new Shader_Source(
-#ifndef USE_GLESV2
-	{ IDR_MYVERTEXSHADER, VERTEX_SHADER_PATH }, { IDR_MYFRAGMENTSHADER, FRAGMENT_SHADER_PATH }
-#else
-	{IDR_MYVERTEXSHADER_ESSL, VERTEX_SHADER_PATH_ESSL}, {IDR_MYFRAGMENTSHADER_ESSL, FRAGMENT_SHADER_PATH_ESSL}
-#endif
-	);//ohhirgendwie komisch,ock,ack
-	//@TODO:das essl brauchen wir nicht mehr
-	//test code//@todo:entfernen
-	
-	gp->assign_shaders(sc->setup_for_usage_by_program());//block type invalid,scheinbar
-	glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
-	delete sc;
+
+
+	::PostThreadMessage(renderer_thread_id, RT_INIT_GL_PROGRAM, 0, 0);
 
 	//Windows::Dialogs::File_Dialog*dc
 	//dc->ofn.hwndOwner = aw->native_window_handle;//unnötig
@@ -749,8 +845,10 @@ m->showMenu();
 	gtrm->render();*/
 	//FreeType_Implementation*ft = new FreeType_Implementation();
 	//FreeType_Face*fc = new FreeType_Face(ft);
-	physics_handler = new Physics_App_Handler(glmain,main_window->window_handle);
-	Application::set_std_camera_projection_matrices(glmain,rect.width,rect.height);
+	//Windows::WindowRect rect = uicontrol->static_draw_field->ClientRect_get();
+	
+	
+
 
 	//Thread*t = new Thread(threadFunc, NULL);
 	
