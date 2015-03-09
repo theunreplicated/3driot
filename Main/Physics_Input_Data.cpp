@@ -1,5 +1,5 @@
 #include "Physics_Input_Data.h"
-namespace Physics{
+namespace Physics{//danach z.t. nachbebaut,aber nur .z.t http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
 	Main::Main(){
 		btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 
@@ -16,7 +16,7 @@ namespace Physics{
 
 	//DynamicsWorld_is_initialized = true;
 	//createStaticPlaneShape();
-	void Main::createStaticPlaneShape(){
+	void Main::createStaticPlaneShape(){//um ein Fallen irgendwohin zu vermeiden
 		btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);//nahe zu unendlich an einer Seite (hier vohl x ,trotz y spezifiziert)
 		btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));/*btMotionState auch x,y,z, -Drehung; wenn hier y 0 dann res=2,da bie bullet die koord. die Mitte von dem Objekt ist*/
 		btRigidBody::btRigidBodyConstructionInfo
@@ -40,8 +40,8 @@ namespace Physics{
 
 		*/
 
-		//btDefaultMotionState* fallMotionState =
-		//	new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+
+		//hier wird nur der RIgidbody erstelllt
 	btDefaultMotionState* fallMotionState = new btDefaultMotionState(mesh_transform);
 		
 		btVector3 fallInertia(0,0,0);
@@ -65,13 +65,13 @@ namespace Physics{
 	}
 
 	template <typename T>//@note:indices:Annahme:typ integer,Anzahl auch wichtig,da durch 3 geteilt wird
-	T* Main::constructShapeFromTriangle(btVector3 * gVertices, int * gIndices, int num_indices, int num_vertices){
+	T* Main::constructShapeFromTriangle(btVector3 * gVertices, unsigned short * gIndices, unsigned int num_indices, unsigned int num_vertices){
 
 		//int num_indices = 36;
 		//int num_vertices = 24;//vertexcount
 
-		int vertStride = sizeof(btVector3);
-		int indexStride = 3 * sizeof(int);
+		int vertStride = sizeof(btVector3);//stride=Gangart,ein SChritt
+		int indexStride = 3 * sizeof(unsigned short);
 
 		//btVector3 * gVertices = new btVector3[num_vertices];
 		//int * gIndices = new short[num_indices];
@@ -89,10 +89,10 @@ namespace Physics{
 
 		indexed_mesh.m_triangleIndexBase = (const unsigned char*)&gIndices[0];
 		indexed_mesh.m_triangleIndexStride = indexStride;
-		indexed_mesh.m_indexType = PHY_INTEGER;
+		indexed_mesh.m_indexType = PHY_SHORT;
 		indexed_mesh.m_numTriangles = num_indices / 3;
 
-		mesh->addIndexedMesh(indexed_mesh);/*=default-Wert,typ der indices*///);
+		mesh->addIndexedMesh(indexed_mesh,PHY_SHORT/*dieses doofe Stück hier hat mich viel Zeit gekostet*/);/*=default-Wert,typ der indices*///);
 
 		//return new btBvhTriangleMeshShape(mesh, true);
 

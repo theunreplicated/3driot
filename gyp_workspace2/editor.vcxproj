@@ -38,7 +38,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Programmierung\boost_1_57_0;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,7 +124,9 @@
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.h" />
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\Menu.h" />
     <ClInclude Include="FreeTypeImplementation.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="GL_Text_Render_Main.h" />
+    <ClInclude Include="Menu_ID_Counter.h" />
     <ClInclude Include="network_tcp_iocp_server.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +168,9 @@
     <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\TrackBar.cpp" />
     <ClCompile Include="..\window2\APIs\OS\Win\UI_Controls\Menu.cpp" />
     <ClCompile Include="FreeTypeImplementation.cpp" />
+    <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GL_Text_Render_Main.cpp" />
+    <ClCompile Include="Menu_ID_Counter.cpp" />
     <ClCompile Include="network_tcp_iocp_server.cpp" />
   </ItemGroup>
   <ItemGroup>

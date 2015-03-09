@@ -1,6 +1,8 @@
 #include <gtest\gtest.h>
 #include "../window2/SysUtils_Load_Library.h"
 #include "FreeTypeCheck.h"
+#include "PhysicsTest.h"
+#include "GeometryTest.h"
 //http://stackoverflow.com/questions/531941/how-to-setup-google-c-testing-framework-gtest-on-visual-studio-2005
 //@TODO: gmock-brauch dann wohl gtest net mehr	
 int add(int n1,int  n2){

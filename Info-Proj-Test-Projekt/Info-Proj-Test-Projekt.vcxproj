@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\unit-testing\googletest\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\objs\win32\vc2010;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\unit-testing\googletest\msvc\info-proj\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\bulletphyics-2.82\src;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\include;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\unit-testing\googletest\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\window2\ext\bulletphyics-2.82\msvs2013_build\lib\Debug;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\freetype-2.5.3\objs\win32\vc2010;D:\Aktuelle Dateien\ultimateFORCE\Eigene Dokumente\Visual Studio 2013\Projects\window2\ext\unit-testing\googletest\msvc\info-proj\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -51,7 +51,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies);freetype253_D.lib</AdditionalDependencies>
+      <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies);freetype253_D.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>msvcprtd.lib;MSVCRTD.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -70,10 +70,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Main\Physics_Input_Data.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Main\Physics_Input_Data.h" />
     <ClInclude Include="FreeTypeCheck.h" />
+    <ClInclude Include="GeometryTest.h" />
+    <ClInclude Include="PhysicsTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\gyp_workspace2\editor.vcxproj">

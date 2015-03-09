@@ -18,9 +18,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="..\Main\Physics_Input_Data.cpp">
+      <Filter>Headerdateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeTypeCheck.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsTest.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Main\Physics_Input_Data.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryTest.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
   </ItemGroup>

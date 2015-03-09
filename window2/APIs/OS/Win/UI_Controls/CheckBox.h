@@ -2,7 +2,8 @@
 #include "../../../Window.h"
 class CheckBox{
 private:
-	Windows::Window*main_window;;
+	Windows::Window*main_window;
+	unsigned int menu_id;
 public:
 	CheckBox(LPCSTR text, Windows::WindowRect rect, Windows::Window*mw, DWORD additional_styles=WS_VISIBLE);
 	Windows::Window*window;

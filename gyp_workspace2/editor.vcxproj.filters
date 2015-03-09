@@ -621,6 +621,12 @@
     <ClCompile Include="..\window2\ShaderSource.cpp" />
     <ClCompile Include="..\window2\GLProgram.cpp" />
     <ClCompile Include="GL_Text_Render_Main.cpp" />
+    <ClCompile Include="Menu_ID_Counter.cpp">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>..\window2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\window2\APIs\OS\Win\UI_Controls\TreeView.h">
@@ -659,5 +665,11 @@
     <ClInclude Include="..\window2\ShaderSource.h" />
     <ClInclude Include="..\window2\GLProgram.h" />
     <ClInclude Include="GL_Text_Render_Main.h" />
+    <ClInclude Include="Menu_ID_Counter.h">
+      <Filter>..\window2\APIs\OS\Win\UI_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>..\window2</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
