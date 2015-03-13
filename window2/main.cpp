@@ -125,8 +125,10 @@ const UINT RT_MOUSE_FRAMEBUFFER_CAPTURE_PART1 = 2088;
 const UINT RT_GET_PIXELS = 2090;
 bool released = false;
 HANDLE event_add_to_buffer_added_finished, event_thread_initialized;
+CRITICAL_SECTION critical_section_glmain_draw_elements;
 DWORD WINAPI renderer_thread(void*dummy_arg){
 	Threading::register_thread_message_loop();
+	::InitializeCriticalSection(&critical_section_glmain_draw_elements);
 	::SetEvent(event_thread_initialized);
 	MSG msg;
 	while (Threading::message_get(msg)){
@@ -184,7 +186,7 @@ DWORD WINAPI renderer_thread(void*dummy_arg){
 			glmain->initGL(gp);//vieles wenn möglich als const markieren wegen thread-safety(überblick)
 			delete sc;
 			released = true;
-			physics_handler = new Physics_App_Handler(glmain, main_window->window_handle, renderer_thread_id,RT_RENDER);//ansonsten müsste ich es mit wait-Event machen,wichtig:die Adresse hat sich verändert,der vorherige hatte aber wohl noch adresse auf 0
+			physics_handler = new Physics_App_Handler(glmain, main_window->window_handle, renderer_thread_id,RT_RENDER,critical_section_glmain_draw_elements);//ansonsten müsste ich es mit wait-Event machen,wichtig:die Adresse hat sich verändert,der vorherige hatte aber wohl noch adresse auf 0
 
 		}; break;
 		case RT_MOUSE_FRAMEBUFFER_CAPTURE_PART1:{
@@ -525,12 +527,13 @@ void keydown(HWND hWnd, WPARAM wParam, LPARAM lParam){
 	glm::mat4 model_mat = translatemat*scalemat*rotmat;
 	//glmain->setCameraTransformMatrix(model_mat);
 	if (current_obj_selection != nullptr){
-
+		::EnterCriticalSection(&critical_section_glmain_draw_elements);
 		for (unsigned int i = current_obj_selection->startp; i < current_obj_selection->endp;i++){
 
 			glmain->draw_elements[i].matrix = /*glm::value_ptr(*/model_mat/*)*/;
 
 		}
+		::LeaveCriticalSection(&critical_section_glmain_draw_elements);
 	}
 	::PostThreadMessage(renderer_thread_id,RT_RENDER,0,0);
 	//glmain->render();//@TODO:es darf nicht sein,dass bei jedem Tastendruck gerendert wird,oder doch????????????!.!:.-magisches Ladezeichen
@@ -674,6 +677,7 @@ void dragdropstart(HWND hWnd, WPARAM wParam, LPARAM lParam,HWND caller_window){
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int iCmdShow)
 {
+	
 	using namespace Windows;
 	int width=1024, height=768;//@TODO:bind struct proggen
 	width += 300; height += 250;
@@ -799,6 +803,8 @@ m->showMenu();
 	uicontrol->save_threed_objects->on(BTN_CLICK, action_save_state);
 	uicontrol->set_mouse_pos_callback(on_opengl_click_moue_pos);
 
+	
+
 	uicontrol->dragdropbutton->on(BTN_CLICK,dragdropstart);
 	aw->addOnMessageInvoke(WM_MOUSEMOVE, dragdropmousemove);
 	aw->addOnMessageInvoke(WM_LBUTTONUP, capture_release);
@@ -809,11 +815,12 @@ m->showMenu();
 	//commanddata.push_back(handle_add);
 	//commanddata.push_back(save_handle);
 
-
+	
 	Thread t(renderer_thread);
 	renderer_thread_id = t.thread_id;
 	App_Inizialize_GL_DLL::dll_opengl = new SysUtils_Load_Library("opengl32.dll");
 	::WaitForSingleObject(event_thread_initialized,INFINITE);
+	
 	::PostThreadMessage(renderer_thread_id,RT_CREATE_CONTEXT,0,0);
 
 

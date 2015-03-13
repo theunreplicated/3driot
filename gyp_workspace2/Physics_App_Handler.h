@@ -17,7 +17,7 @@ public:
 	Physics::Main*physics_main;
 	GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>*m_glmain;
 	std::vector<btTransform>transform_vorherige_daten;
-	Physics_App_Handler(GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>*glmain,HWND mwh,DWORD renderer_thread_id,const UINT render_command);
+	Physics_App_Handler(GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>*glmain,HWND mwh,DWORD renderer_thread_id,const UINT render_command,CRITICAL_SECTION &acs_glamin_render_elements);
 	~Physics_App_Handler();
 	void start();
 	void stop();

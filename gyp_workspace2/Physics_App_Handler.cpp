@@ -8,6 +8,7 @@ Physics_App_Handler*phandler;
 HANDLE thread_end_event;
 HWND main_window_handle;
 DWORD alte_zeit = 0;
+CRITICAL_SECTION glm_cs;
 DWORD WINAPI physics_thread(void*dummy_arg){
 	while (true){
 		
@@ -21,9 +22,10 @@ DWORD WINAPI physics_thread(void*dummy_arg){
 			btVector3 aktueller = transform.getOrigin();
 			btVector3 vorheriger = phandler->transform_vorherige_daten[i].getOrigin();
 			//zuerst nur mal x,y,z
+			//::EnterCriticalSection(&glm_cs);
 			phandler->m_glmain->draw_elements[i].matrix = glm::translate(phandler->m_glmain->draw_elements[i].matrix, glm::vec3(
 				aktueller.getX() - vorheriger.getX(), aktueller.getY() - vorheriger.getY(), aktueller.getZ() - vorheriger.getZ()));
-
+			//::LeaveCriticalSection(&glm_cs);
 
 
 			phandler->transform_vorherige_daten[i] = transform;
@@ -46,9 +48,10 @@ DWORD WINAPI physics_thread(void*dummy_arg){
 	return 0;
 
 }
-Physics_App_Handler::Physics_App_Handler(GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>*glmain, HWND mwh, DWORD renderer_thread_id, const UINT render_command) :m_glmain(glmain),
+Physics_App_Handler::Physics_App_Handler(GLMain<swapBuffersFunc, OpenGLContext, THREEDObject>*glmain, HWND mwh, DWORD renderer_thread_id, const UINT render_command, CRITICAL_SECTION &acs_glamin_render_elements) :m_glmain(glmain),
 physics_main(new Physics::Main()), render_message(render_command), m_renderer_thread_id(renderer_thread_id)
 {
+	glm_cs = acs_glamin_render_elements;
 	main_window_handle = mwh;
 	thread_end_event = Threading::event_create();
 	::ResetEvent(thread_end_event);
